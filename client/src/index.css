@@ -157,3 +157,29 @@
   color: #10252b !important;
   -webkit-text-fill-color: #10252b !important;
 }
+
+
+/* Aluga Rodas · Estrada Editorial · PWA install prompt. */
+.pwa-install-prompt {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(390px, calc(100vw - 32px));
+  padding: 14px 16px;
+  background: #10252b;
+  color: #fffefa;
+  box-shadow: 0 18px 45px rgba(16, 37, 43, .24);
+}
+.pwa-install-icon { display: grid; place-items: center; flex: 0 0 34px; width: 34px; height: 34px; color: #10252b; background: #f7a07f; }
+.pwa-install-copy { display: grid; gap: 4px; min-width: 0; flex: 1; }
+.pwa-install-copy strong { font-size: 13px; letter-spacing: -.01em; }
+.pwa-install-copy span { display: inline-flex; align-items: center; gap: 4px; color: #d9e1dc; font-size: 11px; line-height: 1.35; }
+.pwa-install-action { border: 0; padding: 9px 12px; background: #f26a3d; color: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+.pwa-install-close { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; border: 0; padding: 2px; background: transparent; color: #d9e1dc; cursor: pointer; }
+@media (max-width: 640px) {
+  .pwa-install-prompt { right: 16px; bottom: 16px; width: calc(100vw - 32px); }
+}

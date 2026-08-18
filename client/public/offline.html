@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#10252b" />
+    <title>Você está sem conexão · Aluga Rodas</title>
+    <style>
+      :root { color-scheme: light; font-family: Arial, sans-serif; background: #f4f1ea; color: #10252b; }
+      * { box-sizing: border-box; }
+      body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; }
+      main { width: min(100%, 560px); background: #fffefa; border: 1px solid #dce3de; padding: clamp(28px, 7vw, 64px); box-shadow: 0 18px 60px rgba(16, 37, 43, .12); }
+      .mark { width: 54px; height: 54px; object-fit: contain; margin-bottom: 28px; }
+      .eyebrow { color: #f26a3d; font-size: 11px; font-weight: 700; letter-spacing: .18em; }
+      h1 { margin: 14px 0 14px; font-size: clamp(34px, 8vw, 58px); line-height: .98; letter-spacing: -.05em; }
+      p { color: #5a6965; font-size: 16px; line-height: 1.6; margin: 0 0 28px; }
+      button { border: 0; background: #f26a3d; color: white; font-size: 15px; font-weight: 700; padding: 14px 20px; cursor: pointer; }
+      button:active { transform: scale(.98); }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img class="mark" src="/manus-storage/icon-192_20bd5e82.png" alt="Aluga Rodas" />
+      <div class="eyebrow">PRA QUEM PRECISA RODAR</div>
+      <h1>Você está sem conexão.</h1>
+      <p>Confira sua internet e tente novamente. Quando a conexão voltar, você poderá continuar encontrando veículos na sua cidade.</p>
+      <button type="button" onclick="location.reload()">Tentar novamente</button>
+    </main>
+  </body>
+</html>

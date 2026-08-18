@@ -13,6 +13,7 @@ import VehicleDetails from "./pages/VehicleDetails";
 import Advertise from "./pages/Advertise";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import PwaInstallPrompt from "./components/PwaInstallPrompt";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -45,6 +46,7 @@ export function SiteHeader() {
 function Router() {
   return <>
     <SiteHeader />
+    <PwaInstallPrompt />
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/buscar" component={Search} />
