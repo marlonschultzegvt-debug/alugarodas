@@ -118,44 +118,21 @@
 }
 
 
-/* Aluga Rodas · Estrada Editorial · Espelho visual para valores selecionados em WebViews móveis. */
-.listing-form label:has(> select),
-.fipe-assist label:has(> select) {
-  position: relative;
-}
-
-.listing-form label:has(> select)::after,
-.fipe-assist label:has(> select)::after {
-  content: attr(data-selected-value);
-  position: absolute;
-  left: 14px;
-  right: 38px;
-  bottom: 13px;
-  z-index: 1;
-  overflow: hidden;
-  color: #10252b;
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 18px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  pointer-events: none;
-}
-
-.listing-form label:has(> select) > select,
-.fipe-assist label:has(> select) > select {
-  position: relative;
-  z-index: 2;
-  background: transparent !important;
-  color: transparent !important;
-  -webkit-text-fill-color: transparent !important;
-  text-shadow: none !important;
-}
-
-.listing-form label:has(> select) > select:focus,
-.fipe-assist label:has(> select) > select:focus {
+/* Aluga Rodas · Estrada Editorial · Selects alinhados e legíveis em WebViews móveis. */
+.listing-form select,
+.fipe-assist select {
+  min-height: 44px;
+  line-height: 1.2;
+  vertical-align: middle;
   color: #10252b !important;
   -webkit-text-fill-color: #10252b !important;
+  background-color: #fffefa !important;
+}
+
+.listing-form select option,
+.fipe-assist select option {
+  color: #10252b;
+  background: #fffefa;
 }
 
 
@@ -183,3 +160,23 @@
 @media (max-width: 640px) {
   .pwa-install-prompt { right: 16px; bottom: 16px; width: calc(100vw - 32px); }
 }
+
+
+/* Aluga Rodas · autenticação e controle de acesso. */
+.auth-page { min-height: 66vh; display: grid; place-items: center; padding: 72px 20px 96px; background: linear-gradient(135deg, #f5f4ef 0%, #e7efeb 100%); }
+.auth-card { width: min(100%, 620px); background: #fffefa; border: 1px solid #dfe1dc; padding: clamp(28px, 6vw, 58px); box-shadow: 0 24px 70px rgba(16,37,43,.12); }
+.auth-intro h1, .auth-loading h1 { font: 400 clamp(38px, 6vw, 58px)/.98 'DM Serif Display', serif; letter-spacing: -.045em; margin: 14px 0 16px; color: var(--petrol); }
+.auth-intro p, .auth-loading p { color: #667477; font-size: 14px; line-height: 1.7; max-width: 470px; margin-bottom: 28px; }
+.auth-role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 26px 0; }
+.auth-role-grid > div { display: grid; gap: 6px; min-height: 112px; padding: 15px; border: 1px solid var(--border); background: #f8f8f4; }
+.auth-role-grid svg { color: var(--orange); }
+.auth-role-grid strong { font-size: 12px; }
+.auth-role-grid span { color: #718080; font-size: 10px; line-height: 1.45; }
+.auth-submit { width: 100%; min-height: 48px; }
+.auth-security { display: flex; align-items: flex-start; gap: 7px; margin: 18px 0 0; color: #537c69; font-size: 10px; line-height: 1.5; }
+.auth-security svg { flex: none; }
+.auth-loading { text-align: center; }
+.auth-loading > svg { color: var(--orange); margin: 0 auto 12px; }
+.auth-spinner { animation: auth-spin .8s linear infinite; }
+@keyframes auth-spin { to { transform: rotate(360deg); } }
+@media (max-width: 640px) { .auth-page { min-height: 72vh; padding: 48px 16px 72px; } .auth-card { padding: 28px 22px; } .auth-role-grid { grid-template-columns: 1fr; } .auth-role-grid > div { min-height: auto; grid-template-columns: 22px 1fr; align-items: center; } .auth-role-grid span { grid-column: 2; } }

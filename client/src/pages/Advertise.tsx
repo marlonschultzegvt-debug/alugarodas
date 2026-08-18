@@ -19,17 +19,6 @@ export default function Advertise() {
   const [models, setModels] = useState<FipeOption[]>([]);
   const [vehicle, setVehicle] = useState({ brand: "", model: "", version: "", year: "2024", category: "Carro", fuel: "Flex", transmission: "Automático", description: "", requirements: "" });
   const cities = useMemo(() => citiesByState[state] || [], [state]);
-  useEffect(() => {
-    const syncSelectLabels = () => {
-      document.querySelectorAll<HTMLSelectElement>(".listing-form label > select, .fipe-assist label > select").forEach((select) => {
-        select.parentElement?.setAttribute("data-selected-value", select.options[select.selectedIndex]?.text || "");
-      });
-    };
-    syncSelectLabels();
-    document.addEventListener("change", syncSelectLabels);
-    return () => document.removeEventListener("change", syncSelectLabels);
-  }, []);
-
   useEffect(() => { fetchFipeOptions("carros/marcas").then(setBrands).catch(() => setBrands(fallbackBrands)); }, []);
   useEffect(() => { setCity(""); }, [state]);
   useEffect(() => {

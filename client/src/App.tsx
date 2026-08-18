@@ -12,7 +12,10 @@ import Search from "./pages/Search";
 import VehicleDetails from "./pages/VehicleDetails";
 import Advertise from "./pages/Advertise";
 import Dashboard from "./pages/Dashboard";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import AuthGuard from "./components/AuthGuard";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
 
 export function SiteHeader() {
@@ -25,6 +28,7 @@ export function SiteHeader() {
     ["Motos", "/buscar?categoria=Moto"],
     ["Como funciona", "/#como-funciona"],
   ];
+  // make sure to consider if you need authentication for certain routes
   return (
     <header className="site-header">
       <div className="container header-inner">
@@ -34,7 +38,7 @@ export function SiteHeader() {
         </Link>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navegação principal">
           {nav.map(([label, href]) => <Link key={label} href={href} className={location === href ? "active" : ""} onClick={() => setOpen(false)}>{label}</Link>)}
-          <Link href="/dashboard" className="nav-login" onClick={() => setOpen(false)}>Entrar</Link>
+          <Link href="/entrar" className="nav-login" onClick={() => setOpen(false)}>Entrar</Link>
           <Link href="/anunciar" className="nav-cta" onClick={() => setOpen(false)}>Anuncie seu veículo <ArrowRight size={16} /></Link>
         </nav>
         <button className="mobile-menu" onClick={() => setOpen((v) => !v)} aria-label={open ? "Fechar menu" : "Abrir menu"}>{open ? <X /> : <Menu />}</button>
@@ -51,12 +55,14 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/buscar" component={Search} />
       <Route path="/veiculo/:slug" component={VehicleDetails} />
-      <Route path="/anunciar" component={Advertise} />
-      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/anunciar"><AuthGuard roles={["admin", "locador"]}><Advertise /></AuthGuard></Route>
+      <Route path="/entrar" component={Login} />
+      <Route path="/admin"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>
+      <Route path="/dashboard"><AuthGuard roles={["admin", "locador"]}><Dashboard /></AuthGuard></Route>
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
-    <footer className="site-footer"><div className="container footer-grid"><div><div className="footer-brand">ALUGA<span>RODAS</span></div><p>Pra quem precisa rodar.</p></div><div><strong>Para quem aluga</strong><a href="/buscar">Buscar veículos</a><a href="/buscar?finalidade=APP">Carros para APP</a><a href="/#como-funciona">Como funciona</a></div><div><strong>Para quem anuncia</strong><a href="/anunciar">Anuncie seu veículo</a><a href="/dashboard">Área do anunciante</a><a href="mailto:oi@alugarodas.com.br">Fale com a gente</a></div><div><strong>Aluga Rodas</strong><p className="footer-note">Um marketplace brasileiro para encontrar veículos disponíveis com mais clareza e contato direto.</p></div></div><div className="container footer-bottom"><span>© 2026 Aluga Rodas</span><span>Feito para quem precisa seguir em frente.</span></div></footer>
+    <footer className="site-footer"><div className="container footer-grid"><div><div className="footer-brand">ALUGA<span>RODAS</span></div><p>Pra quem precisa rodar.</p></div><div><strong>Para quem aluga</strong><a href="/buscar">Buscar veículos</a><a href="/buscar?finalidade=APP">Carros para APP</a><a href="/#como-funciona">Como funciona</a></div><div><strong>Para quem anuncia</strong><a href="/anunciar">Anuncie seu veículo</a><a href="/entrar">Área do anunciante</a><a href="mailto:oi@alugarodas.com.br">Fale com a gente</a></div><div><strong>Aluga Rodas</strong><p className="footer-note">Um marketplace brasileiro para encontrar veículos disponíveis com mais clareza e contato direto.</p></div></div><div className="container footer-bottom"><span>© 2026 Aluga Rodas</span><span>Feito para quem precisa seguir em frente.</span></div></footer>
   </>;
 }
 
