@@ -40,7 +40,8 @@ const FIPE_API = "https://parallelum.com.br/fipe/api/v1";
 export async function fetchFipeOptions(path: string): Promise<FipeOption[]> {
   const response = await fetch(`${FIPE_API}/${path}`);
   if (!response.ok) throw new Error("Não foi possível carregar as opções FIPE agora.");
-  return response.json() as Promise<FipeOption[]>;
+  const payload = await response.json() as FipeOption[] | { modelos?: FipeOption[] };
+  return Array.isArray(payload) ? payload : (payload.modelos ?? []);
 }
 
 export async function fetchFipeVehicle({ type, brandCode, modelCode, yearCode }: FipeLookup): Promise<FipeVehicle> {
