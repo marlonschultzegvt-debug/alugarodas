@@ -1,7 +1,7 @@
 // Aluga Rodas · Estrada Editorial
 // Dados e tipos do catálogo de marketplace. O shape é compatível com uma futura API de veículos, leads e analytics.
 
-export type VehicleCategory = "Carro" | "Moto" | "Utilitário" | "Elétrico";
+export type VehicleCategory = "Carro" | "Moto" | "Utilitário" | "Elétrico" | "Híbrido";
 
 export type Vehicle = {
   id: string;
@@ -134,6 +134,7 @@ export const categories: { label: string; value: VehicleCategory | "Todos"; icon
   { label: "Motos", value: "Moto", icon: "◒" },
   { label: "Utilitários", value: "Utilitário", icon: "▰" },
   { label: "Elétricos", value: "Elétrico", icon: "ϟ" },
+  { label: "Híbridos", value: "Híbrido", icon: "⇄" },
 ];
 
 export function formatBRL(value: number) {
