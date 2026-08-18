@@ -9,3 +9,151 @@
 .modal-backdrop{animation:fade-in .18s ease}@keyframes fade-in{from{opacity:0}to{opacity:1}}@media (prefers-reduced-motion:no-preference){.hero-copy,.search-panel{animation:rise .5s var(--ease-out) both}@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}}
 @media(max-width:960px){.main-nav{gap:14px}.search-panel{grid-template-columns:1fr}.search-fields{grid-template-columns:repeat(2,1fr)}.search-button{width:100%}.shortcut-grid{grid-template-columns:repeat(3,1fr)}.trust-grid{gap:45px}.detail-hero{gap:30px}.detail-content{gap:35px}.advertiser-flow{gap:35px}.dashboard-layout{grid-template-columns:180px 1fr}.metric-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.container{padding-inline:18px}.site-header{height:70px}.brand-mark{width:30px;height:30px}.brand strong,.brand em{font-size:17px}.brand small{font-size:7px;top:21px}.mobile-menu{display:grid;place-items:center}.main-nav{display:none;position:absolute;top:69px;left:0;right:0;background:#fffefa;border-bottom:1px solid var(--border);padding:16px 18px;flex-direction:column;align-items:stretch;gap:0;box-shadow:0 15px 30px rgba(16,37,43,.1)}.main-nav.is-open{display:flex}.main-nav a{padding:13px 4px}.nav-login{border-left:0;padding-left:4px;border-top:1px solid var(--border);margin-top:5px}.nav-cta{justify-content:center;margin-top:7px}.hero,.hero-inner{min-height:515px}.hero-image{background-position:63% center}.hero-overlay{background:linear-gradient(90deg,rgba(16,37,43,.95),rgba(16,37,43,.55))}.hero h1{font-size:48px;max-width:370px}.hero-copy p{font-size:13px;max-width:325px}.hero-stamp{display:none}.search-panel-section{margin-top:-35px}.search-panel{padding:21px 18px}.search-intro h2{font-size:26px}.search-fields{grid-template-columns:1fr;gap:12px}.shortcut-section{padding:57px 18px}.section-heading{align-items:flex-start;flex-direction:column}.section-heading h2,.trust-lead h2,.how-section h2{font-size:34px}.shortcut-grid{display:flex;overflow:auto;margin-inline:-18px;padding-inline:18px;padding-bottom:8px}.shortcut-card{min-width:145px}.inventory-section{padding:59px 0 66px}.inventory-grid{grid-template-columns:1fr}.inventory-grid .vehicle-card:nth-child(n+3){display:none}.outline-button{padding:10px 13px}.trust-section{padding:61px 0}.trust-grid{grid-template-columns:1fr;gap:35px}.trust-lead h2{font-size:42px}.trust-items{grid-template-columns:1fr;gap:18px}.how-section{padding-top:62px;padding-bottom:65px}.steps{grid-template-columns:1fr;gap:25px}.steps>div,.steps>div+div{padding:18px 0 0;border-left:0;border-top:1px solid #c5ceca}.steps h3{margin-top:12px}.announce-banner{padding:57px 0}.announce-inner{flex-direction:column;align-items:flex-start}.announce-inner h2{font-size:39px}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.footer-grid>div:first-child,.footer-grid>div:last-child{grid-column:1/-1}.footer-bottom{gap:12px;flex-direction:column}.search-page-head{display:block;padding-top:36px;padding-bottom:35px}.search-page-head h1,.announce-hero h1{font-size:47px}.search-quick{width:100%;margin-top:25px}.results-layout{grid-template-columns:1fr;gap:24px}.filters{background:#fffefa;padding:14px;border:1px solid var(--border);border-radius:9px}.filters label{display:inline-flex;width:31%;margin:0 1.5% 0 0}.filters label:last-of-type{margin-right:0}.filters label>span{font-size:9px}.filters select{font-size:10px;padding:10px 7px}.filter-note{display:none}.results-toolbar{align-items:flex-start}.detail-hero{grid-template-columns:1fr;padding-top:20px;gap:25px}.detail-gallery{height:270px}.detail-summary h1{font-size:47px}.detail-content{grid-template-columns:1fr;padding-top:48px}.detail-aside{order:-1}.aside-card{position:static}.spec-grid{grid-template-columns:repeat(2,1fr)}.detail-section h2{font-size:30px}.announce-hero{padding:58px 0}.announce-hero-grid{grid-template-columns:1fr;gap:35px}.announce-callout{padding:28px;min-height:220px}.announce-hero h1{font-size:59px}.advertiser-flow{grid-template-columns:1fr;padding-top:55px}.profile-cards{flex-direction:row}.profile-cards button{flex:1;padding:13px 10px;grid-template-columns:1fr;gap:5px}.profile-cards svg{grid-row:auto}.fipe-fields{grid-template-columns:1fr 1fr}.fipe-button{grid-column:1/-1}.form-grid{grid-template-columns:1fr 1fr}.description-grid{grid-template-columns:1fr}.check-options{grid-template-columns:1fr}.dashboard-page{padding-top:25px}.dashboard-layout{display:block}.dashboard-sidebar{margin-bottom:28px}.dashboard-sidebar nav{flex-direction:row;overflow:auto}.dashboard-sidebar nav a{white-space:nowrap;background:#fffefa}.sidebar-help{display:none}.dashboard-heading{display:block}.dashboard-heading .primary-button{margin-top:18px}.metric-grid{grid-template-columns:1fr 1fr;gap:8px}.metric-grid>div{padding:13px}.metric-grid strong{font-size:25px}.listing-row{grid-template-columns:42px 1fr 28px}.listing-row img{width:42px}.status-pill,.row-stats{display:none}.dashboard-lower{grid-template-columns:1fr}.desktop-only{display:none}}
+
+
+/* Aluga Rodas · Estrada Editorial · Formulário: valores preenchidos sempre legíveis no mobile. */
+.listing-form input,
+.listing-form select,
+.listing-form textarea,
+.fipe-assist select {
+  color: #10252b !important;
+  -webkit-text-fill-color: #10252b !important;
+  background-color: #fffefa !important;
+  opacity: 1 !important;
+}
+
+.listing-form input::placeholder,
+.listing-form textarea::placeholder {
+  color: #71807d !important;
+  -webkit-text-fill-color: #71807d !important;
+  opacity: 1 !important;
+}
+
+.listing-form select option,
+.fipe-assist select option {
+  color: #10252b !important;
+  background-color: #fffefa !important;
+}
+
+.listing-form input:focus,
+.listing-form select:focus,
+.listing-form textarea:focus,
+.fipe-assist select:focus {
+  border-color: #f26a3d !important;
+  outline: 3px solid rgba(242, 106, 61, .16) !important;
+  box-shadow: 0 0 0 1px #f26a3d !important;
+}
+
+@media (max-width: 700px) {
+  .listing-form input,
+  .listing-form select,
+  .listing-form textarea,
+  .fipe-assist select {
+    color: #10252b !important;
+    -webkit-text-fill-color: #10252b !important;
+    font-size: 16px !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .listing-form input,
+  .listing-form select,
+  .listing-form textarea,
+  .fipe-assist select {
+    color: #10252b !important;
+    -webkit-text-fill-color: #10252b !important;
+    background-color: #fffefa !important;
+  }
+}
+
+/* Aluga Rodas · Estrada Editorial · Controles desabilitados continuam distinguíveis, sem apagar seus valores. */
+.listing-form select:disabled,
+.fipe-assist select:disabled {
+  color: #52625f !important;
+  -webkit-text-fill-color: #52625f !important;
+  opacity: 1 !important;
+  background-color: #f1f3ef !important;
+}
+
+
+/* Aluga Rodas · Estrada Editorial · Selects nativos: o valor selecionado precisa aparecer também em WebViews móveis. */
+.listing-form select,
+.fipe-assist select {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  text-indent: 0 !important;
+  color: #10252b !important;
+  -webkit-text-fill-color: #10252b !important;
+}
+
+.listing-form select option,
+.fipe-assist select option {
+  color: #10252b !important;
+  -webkit-text-fill-color: #10252b !important;
+  background: #fffefa !important;
+}
+
+
+/* Aluga Rodas · Estrada Editorial · Fallback de renderização para selects em WebViews iOS. */
+.listing-form select,
+.fipe-assist select,
+.listing-form input,
+.listing-form textarea {
+  text-shadow: 0 0 0 #10252b !important;
+  -webkit-text-fill-color: #10252b !important;
+  color: #10252b !important;
+}
+
+
+/* Aluga Rodas · Estrada Editorial · Compatibilidade adicional com Safari/iOS WebView. */
+.listing-form select,
+.fipe-assist select {
+  appearance: menulist-button !important;
+  -webkit-appearance: menulist-button !important;
+  color-scheme: light !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+  color: #10252b !important;
+  -webkit-text-fill-color: #10252b !important;
+}
+
+
+/* Aluga Rodas · Estrada Editorial · Espelho visual para valores selecionados em WebViews móveis. */
+.listing-form label:has(> select),
+.fipe-assist label:has(> select) {
+  position: relative;
+}
+
+.listing-form label:has(> select)::after,
+.fipe-assist label:has(> select)::after {
+  content: attr(data-selected-value);
+  position: absolute;
+  left: 14px;
+  right: 38px;
+  bottom: 13px;
+  z-index: 1;
+  overflow: hidden;
+  color: #10252b;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.listing-form label:has(> select) > select,
+.fipe-assist label:has(> select) > select {
+  position: relative;
+  z-index: 2;
+  background: transparent !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+}
+
+.listing-form label:has(> select) > select:focus,
+.fipe-assist label:has(> select) > select:focus {
+  color: #10252b !important;
+  -webkit-text-fill-color: #10252b !important;
+}
