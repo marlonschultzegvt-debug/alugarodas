@@ -8,6 +8,13 @@
       "when": 1787059911537,
       "tag": "0000_parallel_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1787105861625,
+      "tag": "0001_mushy_pyro",
+      "breakpoints": true
     }
   ]
 }

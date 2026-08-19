@@ -10,11 +10,13 @@ interface BeforeInstallPromptEvent extends Event {
 
 type InstallPlatform = "ios" | "android" | "desktop";
 
+type InstallStatus = "idle" | "installing" | "manual";
+
 export default function PwaInstallPrompt() {
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
   const [platform, setPlatform] = useState<InstallPlatform>("desktop");
-  const [status, setStatus] = useState<"idle" | "installing" | "manual">("idle");
+  const [status, setStatus] = useState<InstallStatus>("idle");
 
   useEffect(() => {
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches || ("standalone" in window.navigator && Boolean((window.navigator as Navigator & { standalone?: boolean }).standalone));
@@ -50,8 +52,8 @@ export default function PwaInstallPrompt() {
     }
     try {
       setStatus("installing");
-      const timeout = new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("install-prompt-timeout")), 3000));
-      await Promise.race([installEvent.prompt(), timeout]);
+      const promptTimeout = new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("install-prompt-timeout")), 3000));
+      await Promise.race([installEvent.prompt(), promptTimeout]);
       const choice = await Promise.race([installEvent.userChoice, new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("install-choice-timeout")), 5000))]);
       setInstallEvent(null);
       if (choice.outcome === "accepted") setVisible(false);
@@ -69,6 +71,10 @@ export default function PwaInstallPrompt() {
       ? <>Use <Share2 size={13} /> Compartilhar e escolha “Adicionar à Tela de Início”.</>
       : <>Instale para abrir mais rápido, como um aplicativo.</>;
 
+  const actionLabel = platform === "ios"
+    ? status === "manual" ? "Entendi" : "Como instalar"
+    : status === "installing" ? "Abrindo…" : status === "manual" ? "Entendi" : "Instalar";
+
   return (
     <aside className="pwa-install-prompt" aria-label="Instalar Aluga Rodas">
       <button className="pwa-install-close" type="button" onClick={() => setVisible(false)} aria-label="Fechar aviso"><X size={16} /></button>
@@ -77,7 +83,7 @@ export default function PwaInstallPrompt() {
         <strong>{status === "manual" ? "Como instalar o Aluga Rodas" : "Leve o Aluga Rodas com você."}</strong>
         <span>{copy}</span>
       </div>
-      {platform !== "ios" && <button className="pwa-install-action" type="button" onClick={install} disabled={status === "installing"}>{status === "installing" ? "Abrindo…" : status === "manual" ? "Entendi" : "Instalar"}</button>}
+      <button className="pwa-install-action" type="button" onClick={install} disabled={status === "installing"}>{actionLabel}</button>
     </aside>
   );
 }
