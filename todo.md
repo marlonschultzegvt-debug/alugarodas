@@ -317,3 +317,5 @@
 - [x] Corrigir QA-01: ao clicar em Salvar veículo sem sessão, exibir feedback claro e link para Entrar/Cadastre-se, sem falhar silenciosamente.
 - [x] Corrigir QA-02: garantir que o subdomínio publicado reflita a correção QA-01 do favorito e repetir a verificação após o deploy.
 - [ ] Investigar o portal OAuth que retornou `about:blank` sem elementos e repetir a autenticação quando houver sessão oficial disponível.
+- [ ] Criar conta Admin de teste somente via OAuth oficial ou staging isolado, sem senha fixa, sem credencial hardcoded e sem promover privilégio Admin pelo cadastro público.
+- [ ] Repetir testes autenticados de Admin/Locador após a sessão oficial concluir o desafio Cloudflare/OAuth.

@@ -101,3 +101,7 @@ O botão de fechar do modal de interesse da Honda retornou ao detalhe da moto se
 ## CTA WhatsApp
 
 O botão WhatsApp da Honda CG 160 Start abriu a página oficial `api.whatsapp.com` com o número configurado e a mensagem pré-preenchida: `Olá! Tenho interesse no Honda CG 160 Start anunciado no Aluga Rodas.` Nenhuma mensagem foi enviada automaticamente.
+
+## Bloqueio de Admin de teste e OAuth
+
+O navegador real exibiu o portal Manus com provedores Facebook, Google, Microsoft e Apple, mas o desafio Cloudflare mostrou `Verification failed` e manteve o botão de continuação desabilitado. Não foi criada a conta fixa sugerida pelo usuário, pois o produto usa OAuth e uma credencial Admin previsível seria insegura em produção. A validação autenticada fica condicionada à conclusão oficial do desafio e ao uso de uma sessão temporária/staging.
