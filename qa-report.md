@@ -73,3 +73,31 @@ A auditoria dos logs locais mostrou reinícios normais do servidor durante HMR e
 ## Correção QA-02
 
 Após o checkpoint `0020dff4`, a revalidação pública do detalhe Geely EX2 confirmou o feedback do favorito: ao clicar em **Salvar veículo**, aparecem `Entre para salvar este veículo`, `Entrar` e `cadastre-se`. A divergência preview/produção foi resolvida.
+
+## Tentativa de autenticação na rodada final
+
+O botão **Entrar com acesso seguro** abriu o endpoint OAuth do Manus, mas o portal permaneceu sem elementos visíveis e a sessão retornou para `about:blank`. Não foram inseridas credenciais nem aceitos termos. O cadastro de veículo, chat autenticado, dashboard e moderação permanecem bloqueados por ausência de sessão concluída.
+
+## Filtro Híbrido no preview
+
+A busca combinada do preview foi aberta pela home e o filtro **Híbrido** foi selecionado. A opção aparece no controle, o catálogo retorna `0 veículos encontrados` sem erro e o empty state apresenta orientação e botão **Limpar filtros**. Não houve quebra de layout ou console visível.
+
+## Recuperação e ordenação da busca
+
+No preview, o botão **Limpar filtros** restaurou os quatro veículos após o empty state de Híbrido. Em seguida, o controle **Menor preço** foi selecionado e permaneceu visualmente funcional, com os cards e CTAs carregados sem quebra aparente.
+
+## Detalhe de moto
+
+O card da Honda CG 160 Start abriu `/veiculo/moto-para-entrega-maringa` corretamente no preview. A página renderizou foto, preço semanal/mensal, caução, combustível Flex, câmbio manual, quilometragem livre, disponibilidade em dois dias, seguro opcional, requisitos e compatibilidade com iFood/99 Entrega.
+
+## Lead em anúncio de moto
+
+O botão **Tenho interesse** da Honda CG 160 Start abriu o modal correto, com identificação do veículo, campos separados para nome e WhatsApp, fechamento e botão **Enviar interesse**. O envio não foi repetido para evitar criar leads fictícios adicionais; o fluxo já foi enviado e validado anteriormente com dados explícitos de QA no Geely.
+
+## Fechamento de modal
+
+O botão de fechar do modal de interesse da Honda retornou ao detalhe da moto sem navegação inesperada, mantendo preço, características e os CTAs principais disponíveis.
+
+## CTA WhatsApp
+
+O botão WhatsApp da Honda CG 160 Start abriu a página oficial `api.whatsapp.com` com o número configurado e a mensagem pré-preenchida: `Olá! Tenho interesse no Honda CG 160 Start anunciado no Aluga Rodas.` Nenhuma mensagem foi enviada automaticamente.

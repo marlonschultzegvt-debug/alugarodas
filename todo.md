@@ -316,3 +316,4 @@
 - [x] Repetir testes críticos após as correções e publicar checkpoint da rodada.
 - [x] Corrigir QA-01: ao clicar em Salvar veículo sem sessão, exibir feedback claro e link para Entrar/Cadastre-se, sem falhar silenciosamente.
 - [x] Corrigir QA-02: garantir que o subdomínio publicado reflita a correção QA-01 do favorito e repetir a verificação após o deploy.
+- [ ] Investigar o portal OAuth que retornou `about:blank` sem elementos e repetir a autenticação quando houver sessão oficial disponível.
