@@ -303,3 +303,15 @@
 - [x] Executar auditoria pós-deploy de rotas, console, rede e links principais e registrar os resultados.
 - [x] Revalidar manifest, service worker, fallback offline e instalação PWA após o code splitting no deploy publicado; manifest e service worker foram confirmados, e a instalação física permanece dependente de aparelho do usuário.
 - [x] Executar nova auditoria de console e recursos após o deploy do code splitting e registrar ausência de erros.
+
+# Rodada autônoma de QA e pré-lançamento
+
+- [x] Criar matriz de QA com rotas, CTAs, links externos, guards, PWA e estados de erro.
+- [x] Percorrer todas as rotas públicas em produção e testar navegação, filtros, cards, favoritos e CTAs; o favorito anônimo gerou o achado QA-01, corrigido no código.
+- [x] Testar WhatsApp/lead sem enviar comunicação comercial externa; registrar o comportamento do clique e do formulário.
+- [x] Testar cadastro/login/Cadastre-se e os pontos de entrada Google/Gmail e Apple/iCloud sem expor credenciais; conclusão OAuth bloqueada pelo aviso externo do Manus.
+- [ ] Testar cadastro de veículo de teste, persistência, dashboard e moderação quando houver sessão autorizada.
+- [x] Testar visualização mobile e desktop, PWA, console, rede e links quebrados.
+- [x] Registrar todos os erros encontrados em relatório QA e corrigir os reproduzíveis.
+- [ ] Repetir testes críticos após as correções e publicar checkpoint da rodada.
+- [x] Corrigir QA-01: ao clicar em Salvar veículo sem sessão, exibir feedback claro e link para Entrar/Cadastre-se, sem falhar silenciosamente.
