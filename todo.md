@@ -14,7 +14,7 @@
 - [x] Confirmar onde o domínio `alugarodas.com.br` foi comprado: Registro.br.
 - [ ] Obter acesso ao painel DNS do Registro.br e validar permissão para editar os registros.
 - [x] Criar ou confirmar o e-mail oficial `suporte@alugarodas.com.br`.
-- [ ] Informar o @ oficial do Instagram.
+- [x] Informar o @ oficial do Instagram: `@alugarodas`.
 - [ ] Não criar contas Vercel/Netlify/banco externo sem necessidade.
 - [ ] Associar o domínio no painel do projeto.
 - [ ] Atualizar links de suporte, Instagram, SEO e rodapé.

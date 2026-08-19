@@ -73,3 +73,7 @@ A revisão mobile do `/cadastre-se` mostrou os dois perfis permitidos, botões G
 ## Logs do cadastro
 
 Os logs recentes do preview registraram carregamento das rotas `/cadastre-se` e `/entrar` e eventos de analytics HTTP 200, sem erro de console ou falha de rede visível na auditoria. Dados identificáveis de sessão foram tratados como privados e não serão incluídos no relatório.
+
+## Divergência pós-publicação do cadastro
+
+Após o checkpoint `4e8beba0`, o preview local contém `/cadastre-se`, mas `https://alugarodas-jp8f2bzz.manus.space/cadastre-se` ainda retorna a página 404. A home pública permanece acessível. É necessário aguardar ou disparar uma nova publicação para que a rota recém-criada seja refletida no subdomínio.
