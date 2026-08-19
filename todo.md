@@ -313,6 +313,6 @@
 - [ ] Testar cadastro de veículo de teste, persistência, dashboard e moderação quando houver sessão autorizada.
 - [x] Testar visualização mobile e desktop, PWA, console, rede e links quebrados.
 - [x] Registrar todos os erros encontrados em relatório QA e corrigir os reproduzíveis.
-- [ ] Repetir testes críticos após as correções e publicar checkpoint da rodada.
+- [x] Repetir testes críticos após as correções e publicar checkpoint da rodada.
 - [x] Corrigir QA-01: ao clicar em Salvar veículo sem sessão, exibir feedback claro e link para Entrar/Cadastre-se, sem falhar silenciosamente.
-- [ ] Corrigir QA-02: garantir que o subdomínio publicado reflita a correção QA-01 do favorito e repetir a verificação após o deploy.
+- [x] Corrigir QA-02: garantir que o subdomínio publicado reflita a correção QA-01 do favorito e repetir a verificação após o deploy.

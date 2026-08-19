@@ -69,3 +69,7 @@ A abertura de `/anunciar` no navegador conectado resolveu para `/entrar` após o
 ## Logs do QA
 
 A auditoria dos logs locais mostrou reinícios normais do servidor durante HMR e nenhum stack trace ou erro fatal. Os eventos `[Auth] Missing session cookie` correspondem às tentativas controladas de abrir `/anunciar` e `/adm` sem sessão, portanto são esperados nos guards. Não foram identificadas falhas adicionais de runtime nos logs consultados.
+
+## Correção QA-02
+
+Após o checkpoint `0020dff4`, a revalidação pública do detalhe Geely EX2 confirmou o feedback do favorito: ao clicar em **Salvar veículo**, aparecem `Entre para salvar este veículo`, `Entrar` e `cadastre-se`. A divergência preview/produção foi resolvida.
