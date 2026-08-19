@@ -4,20 +4,20 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Route, Switch, Link, useLocation } from "wouter";
 import { ArrowRight, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-import Search from "./pages/Search";
-import VehicleDetails from "./pages/VehicleDetails";
-import Advertise from "./pages/Advertise";
-import Dashboard from "./pages/Dashboard";
-import Admin from "./pages/Admin";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import SignUp from "./pages/SignUp";
+const Home = lazy(() => import("./pages/Home"));
+const Search = lazy(() => import("./pages/Search"));
+const VehicleDetails = lazy(() => import("./pages/VehicleDetails"));
+const Advertise = lazy(() => import("./pages/Advertise"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Admin = lazy(() => import("./pages/Admin"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Login = lazy(() => import("./pages/Login"));
+const SignUp = lazy(() => import("./pages/SignUp"));
 import AuthGuard from "./components/AuthGuard";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
 import { dashboardRouteRoles } from "./lib/access";
@@ -78,6 +78,7 @@ function SignupRoleSync() {
 
 function Router() {
   return <>
+    <Suspense fallback={<main className="route-loading" aria-live="polite">Carregando Aluga Rodas…</main>}>
     <SiteHeader />
     <SignupRoleSync />
     <PwaInstallPrompt />
@@ -94,6 +95,7 @@ function Router() {
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
+    </Suspense>
     <footer className="site-footer"><div className="container footer-grid"><div><div className="footer-brand">ALUGA<span>RODAS</span></div><p>Pra quem precisa rodar.</p></div><div><strong>Para quem aluga</strong><a href="/buscar">Buscar veículos</a><a href="/buscar?finalidade=APP">Carros para APP</a><a href="/#como-funciona">Como funciona</a></div><div><strong>Para quem anuncia</strong><a href="/anunciar">Anuncie seu veículo</a><a href="/entrar">Área do anunciante</a><a href={SUPPORT_MAILTO}>Fale com a gente</a></div><div><strong>Aluga Rodas</strong><p className="footer-note">Um marketplace brasileiro para encontrar veículos disponíveis com mais clareza e contato direto.</p><a href="https://www.instagram.com/alugarodas" target="_blank" rel="noreferrer">Instagram @alugarodas</a></div></div><div className="container footer-bottom"><span>© 2026 Aluga Rodas</span><span>Feito para quem precisa seguir em frente.</span></div></footer>
   </>;
 }

@@ -218,3 +218,5 @@
 .spin { animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 640px) { .admin-vehicle-row { align-items: flex-start; flex-direction: column; } .admin-status-button { width: 100%; } }
+
+.route-loading { min-height: 52vh; display: grid; place-items: center; color: #536364; font-family: inherit; letter-spacing: .02em; }

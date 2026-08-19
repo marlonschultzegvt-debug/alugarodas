@@ -127,7 +127,7 @@
 - [x] Remover ou corrigir o espelho visual duplicado sem perder contraste.
 - [ ] Validar ano, estado, cidade, combustível, câmbio e categoria dentro dos controles após login.
 - [ ] Testar desktop e mobile com todos os selects preenchidos após login.
-- [ ] Confirmar PWA preservada, console sem erros e build aprovado na rodada final.
+- [x] Confirmar PWA preservada, console sem erros e build aprovado na rodada final.
 
 ## Nova rodada
 
@@ -152,7 +152,7 @@
 - [ ] Promover o TiDB staging para produção somente após aprovação explícita.
 - [x] Manter `DATABASE_URL` inalterado até a decisão de promoção.
 - [ ] Corrigir a referência de asset `/manus-storage/aluga-rodas-hero_82e5fd36.jpg` se necessário.
-- [ ] Avaliar divisão do bundle JavaScript acima de 500 kB.
+- [x] Avaliar divisão do bundle JavaScript acima de 500 kB; rotas foram divididas e o chunk inicial caiu para cerca de 647 kB, permanecendo uma oportunidade futura de otimização.
 
 # Integração real do marketplace
 
@@ -301,3 +301,5 @@
 - [x] Cobrir o CRUD/moderação administrativa com testes RBAC positivos e negativos.
 - [x] Documentar explicitamente o fluxo operacional Manus hosting + TiDB/MySQL + storage S3.
 - [x] Executar auditoria pós-deploy de rotas, console, rede e links principais e registrar os resultados.
+- [ ] Revalidar manifest, service worker, fallback offline e instalação PWA após o code splitting no deploy publicado.
+- [ ] Executar nova auditoria de console e recursos após o deploy do code splitting e registrar ausência de erros.
