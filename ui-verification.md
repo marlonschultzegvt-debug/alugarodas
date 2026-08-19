@@ -81,3 +81,11 @@ Após o checkpoint `4e8beba0`, o preview local contém `/cadastre-se`, mas `http
 ## Cadastro publicado
 
 Após o republish `26f2a3d6`, o subdomínio Manus passou a responder corretamente em `/cadastre-se`. A página pública apresenta os perfis Quero alugar e Quero anunciar, as opções Google/Gmail e Apple/iCloud, o CTA de acesso seguro, o link para `/entrar`, o suporte oficial e o Instagram `https://www.instagram.com/alugarodas`.
+
+## Auditoria pós-deploy — checkpoint 588cb042
+
+No subdomínio publicado, `/adm` sem sessão foi corretamente direcionado para `/entrar`, sem expor o painel administrativo. A rota `/buscar` carregou o catálogo público com quatro cards, filtros de cidade/categoria/finalidade, preços, seguro, WhatsApp e links de detalhe; o footer exibiu suporte e Instagram @alugarodas. A revisão foi passiva, sem autenticar ou alterar dados.
+
+## Console e recursos
+
+Na auditoria pós-deploy, o console do navegador não apresentou saída de erro. A inspeção de recursos confirmou carregamento do bundle JavaScript, CSS, `manifest.webmanifest`, ícone PWA e imagens do catálogo/hero no subdomínio publicado. A análise não alterou sessão, banco ou leads.

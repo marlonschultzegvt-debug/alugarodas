@@ -300,4 +300,4 @@
 - [x] Implementar ações server-side de aprovação, pausa e reativação de anúncios no `/adm`.
 - [x] Cobrir o CRUD/moderação administrativa com testes RBAC positivos e negativos.
 - [x] Documentar explicitamente o fluxo operacional Manus hosting + TiDB/MySQL + storage S3.
-- [ ] Executar auditoria pós-deploy de rotas, console, rede e links principais e registrar os resultados.
+- [x] Executar auditoria pós-deploy de rotas, console, rede e links principais e registrar os resultados.
