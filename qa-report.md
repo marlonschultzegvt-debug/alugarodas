@@ -53,3 +53,19 @@ Capturas em viewport 390x844 cobriram `/`, `/buscar`, `/cadastre-se`, `/veiculo/
 ## Correção QA-01
 
 No preview atualizado, o clique em **Salvar veículo** passou a exibir `Entre para salvar este veículo. Entrar ou cadastre-se.` com links funcionais. A falha silenciosa foi corrigida e o detalhe continua visualmente estável.
+
+## Revalidação pós-deploy de QA-01
+
+A correção do favorito foi confirmada no preview, mas a revalidação em `https://alugarodas-jp8f2bzz.manus.space/veiculo/geely-ex2-curitiba` ainda não exibiu a mensagem após o clique em **Salvar veículo**. O HTML público continua no comportamento antigo, sem links Entrar/Cadastre-se. **Achado QA-02 — divergência de publicação:** o subdomínio aparenta estar servindo uma versão anterior ao checkpoint `395e062b`; não foi feita nova alteração de código após a correção.
+
+## Teste de anúncio e cadastro no preview
+
+O preview sem sessão redirecionou `/anunciar` para `/entrar`, sem expor o formulário de veículo. O clique em **Cadastre-se** abriu a tela correta, com os perfis Quero alugar/Quero anunciar e os pontos de entrada Google, Apple e acesso seguro. Não há sessão autorizada disponível neste navegador para concluir o cadastro ou criar um veículo real.
+
+## Bloqueio de teste autenticado
+
+A abertura de `/anunciar` no navegador conectado resolveu para `/entrar` após o carregamento do guard. Não há sessão autenticada disponível nesta janela; por isso não foi possível cadastrar um veículo de teste, persistir dados ou validar o dashboard/moderação ponta a ponta sem solicitar credenciais. O bloqueio foi registrado sem tentar criar conta, aceitar aviso OAuth ou usar dados pessoais.
+
+## Logs do QA
+
+A auditoria dos logs locais mostrou reinícios normais do servidor durante HMR e nenhum stack trace ou erro fatal. Os eventos `[Auth] Missing session cookie` correspondem às tentativas controladas de abrir `/anunciar` e `/adm` sem sessão, portanto são esperados nos guards. Não foram identificadas falhas adicionais de runtime nos logs consultados.
