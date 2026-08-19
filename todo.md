@@ -13,7 +13,7 @@
 
 - [x] Confirmar onde o domínio `alugarodas.com.br` foi comprado: Registro.br.
 - [ ] Obter acesso ao painel DNS do Registro.br e validar permissão para editar os registros.
-- [ ] Criar ou confirmar o e-mail oficial `suporte@alugarodas.com.br`.
+- [x] Criar ou confirmar o e-mail oficial `suporte@alugarodas.com.br`.
 - [ ] Informar o @ oficial do Instagram.
 - [ ] Não criar contas Vercel/Netlify/banco externo sem necessidade.
 - [ ] Associar o domínio no painel do projeto.
@@ -43,7 +43,7 @@
 # Preparação para operação online
 
 - [ ] Confirmar domínio final e registrar a configuração de DNS necessária.
-- [ ] Confirmar e-mail oficial de suporte e @ oficial do Instagram.
+- [ ] Confirmar e-mail oficial de suporte e @ oficial do Instagram; e-mail confirmado, Instagram ainda pendente.
 - [ ] Definir fluxo de publicação: Manus como hosting, banco MySQL/TiDB e storage S3.
 - [ ] Criar alimentação persistente de veículos, imagens, locadoras e leads.
 - [ ] Criar área administrativa para cadastrar, editar, pausar e moderar anúncios.
@@ -213,8 +213,8 @@
 - [x] Criar no Registro.br um TXT no host raiz `@` com o valor de verificação fornecido pelo Zoho.
 - [x] Aguardar propagação e repetir a verificação TXT no Zoho.
 - [x] Registrar os MX oficiais do Zoho somente após a propriedade ser confirmada; MX, SPF e DKIM foram reconhecidos pelo Zoho.
-- [ ] Criar `suporte@alugarodas.com.br` e testar envio/recebimento.
-- [ ] Atualizar os links de suporte do site depois de confirmar o endereço.
+- [x] Criar `suporte@alugarodas.com.br` e testar recebimento a partir de outro e-mail; envio pela própria conta ainda pode ser confirmado opcionalmente.
+- [x] Atualizar os links de suporte no site depois de confirmar o endereço.
 
 # E-mail oficial no site
 
@@ -228,3 +228,34 @@
 - [x] Confirmar que o mailto da home aponta para `suporte@alugarodas.com.br`.
 - [x] Confirmar que o mailto do dashboard aponta para `suporte@alugarodas.com.br`.
 - [x] Revisar visualmente home e dashboard em desktop/mobile após a troca do suporte; dashboard mobile revisado em captura dedicada.
+
+## Teste bidirecional do suporte
+
+- [ ] Enviar uma mensagem usando a própria conta `suporte@alugarodas.com.br`.
+- [ ] Confirmar recebimento da mensagem e resposta no endereço de suporte.
+- [ ] Atualizar o checklist para registrar o teste completo de envio e recebimento.
+
+# Domínio customizado em produção
+
+- [ ] Abrir Settings → Domains no painel de hospedagem.
+- [ ] Adicionar `alugarodas.com.br` como domínio principal ou customizado.
+- [ ] Aplicar no Registro.br os registros exigidos pelo painel, sem remover MX/SPF/DKIM do Zoho.
+- [ ] Confirmar propagação DNS e certificado HTTPS.
+- [ ] Revisar home, rotas públicas, PWA e mailto no domínio customizado.
+- [ ] Registrar domínio online e salvar checkpoint operacional.
+
+# Implantação online no subdomínio Manus
+
+- [ ] Confirmar que o subdomínio Manus publicado responde corretamente.
+- [ ] Validar rotas públicas, metadados, robots, sitemap e manifest em produção.
+- [ ] Validar instalação PWA, offline e atualização do service worker em produção.
+- [ ] Validar login/logout e guardas de Cliente, Locador e Admin sem expor credenciais.
+- [ ] Validar `/anunciar`, busca, detalhe e fluxo de lead em desktop/mobile.
+- [ ] Confirmar console/rede limpos e ausência de links quebrados.
+- [ ] Documentar pendências: domínio customizado, promoção TiDB, Instagram e login real do proprietário.
+
+## SEO no domínio ativo
+
+- [ ] Ajustar `robots.txt` para apontar o sitemap ao subdomínio Manus enquanto o domínio customizado estiver desligado.
+- [ ] Verificar `sitemap.xml` e manifest no endereço publicado.
+- [ ] Restaurar o sitemap para `alugarodas.com.br` quando o domínio customizado for conectado.
