@@ -1,11 +1,21 @@
-import { eq } from "drizzle-orm";
+import { and, asc, desc, eq, like, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import {
+  companies,
+  InsertCompany,
+  InsertLead,
+  InsertUser,
+  InsertVehicle,
+  InsertVehicleImage,
+  leads,
+  users,
+  vehicleImages,
+  vehicles,
+} from "../drizzle/schema";
+import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
-// Lazily create the drizzle instance so local tooling can run without a DB.
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -19,74 +29,106 @@ export async function getDb() {
 }
 
 export async function upsertUser(user: InsertUser): Promise<void> {
-  if (!user.openId) {
-    throw new Error("User openId is required for upsert");
-  }
-
+  if (!user.openId) throw new Error("User openId is required for upsert");
   const db = await getDb();
-  if (!db) {
-    console.warn("[Database] Cannot upsert user: database not available");
-    return;
+  if (!db) return;
+
+  const values: InsertUser = { openId: user.openId };
+  const updateSet: Record<string, unknown> = {};
+  const textFields = ["name", "email", "loginMethod"] as const;
+  for (const field of textFields) {
+    if (user[field] !== undefined) {
+      values[field] = user[field] ?? null;
+      updateSet[field] = user[field] ?? null;
+    }
   }
-
-  try {
-    const values: InsertUser = {
-      openId: user.openId,
-    };
-    const updateSet: Record<string, unknown> = {};
-
-    const textFields = ["name", "email", "loginMethod"] as const;
-    type TextField = (typeof textFields)[number];
-
-    const assignNullable = (field: TextField) => {
-      const value = user[field];
-      if (value === undefined) return;
-      const normalized = value ?? null;
-      values[field] = normalized;
-      updateSet[field] = normalized;
-    };
-
-    textFields.forEach(assignNullable);
-
-    if (user.lastSignedIn !== undefined) {
-      values.lastSignedIn = user.lastSignedIn;
-      updateSet.lastSignedIn = user.lastSignedIn;
-    }
-    if (user.role !== undefined) {
-      values.role = user.role;
-      updateSet.role = user.role;
-    } else if (user.openId === ENV.ownerOpenId) {
-      values.role = 'admin';
-      updateSet.role = 'admin';
-    }
-
-    if (!values.lastSignedIn) {
-      values.lastSignedIn = new Date();
-    }
-
-    if (Object.keys(updateSet).length === 0) {
-      updateSet.lastSignedIn = new Date();
-    }
-
-    await db.insert(users).values(values).onDuplicateKeyUpdate({
-      set: updateSet,
-    });
-  } catch (error) {
-    console.error("[Database] Failed to upsert user:", error);
-    throw error;
+  if (user.lastSignedIn !== undefined) {
+    values.lastSignedIn = user.lastSignedIn;
+    updateSet.lastSignedIn = user.lastSignedIn;
   }
+  if (user.role !== undefined) {
+    values.role = user.role;
+    updateSet.role = user.role;
+  } else if (user.openId === ENV.ownerOpenId) {
+    values.role = "admin";
+    updateSet.role = "admin";
+  }
+  values.lastSignedIn ??= new Date();
+  if (Object.keys(updateSet).length === 0) updateSet.lastSignedIn = new Date();
+  await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
 }
 
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
-  if (!db) {
-    console.warn("[Database] Cannot get user: database not available");
-    return undefined;
-  }
-
+  if (!db) return undefined;
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-
-  return result.length > 0 ? result[0] : undefined;
+  return result[0];
 }
 
-// TODO: add feature queries here as your schema grows.
+export async function listVehicles(filters?: { city?: string; category?: string; purpose?: string; search?: string }) {
+  const db = await getDb();
+  if (!db) return [];
+  const conditions = [eq(vehicles.status, "active")];
+  if (filters?.city) conditions.push(eq(vehicles.city, filters.city));
+  if (filters?.category) conditions.push(eq(vehicles.category, filters.category as typeof vehicles.category.enumValues[number]));
+  if (filters?.search) {
+    const term = `%${filters.search}%`;
+    conditions.push(or(like(vehicles.brand, term), like(vehicles.model, term))!);
+  }
+  if (filters?.purpose === "APP") conditions.push(eq(vehicles.acceptsApp, true));
+  if (filters?.purpose === "UberX") conditions.push(eq(vehicles.acceptsUberX, true));
+  if (filters?.purpose === "Uber Comfort") conditions.push(eq(vehicles.acceptsUberComfort, true));
+  if (filters?.purpose === "Uber Black") conditions.push(eq(vehicles.acceptsUberBlack, true));
+  if (filters?.purpose === "99") conditions.push(eq(vehicles.accepts99, true));
+  return db.select().from(vehicles).where(and(...conditions)).orderBy(desc(vehicles.createdAt));
+}
+
+export async function getVehicleById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(vehicles).where(eq(vehicles.id, id)).limit(1);
+  if (!result[0]) return undefined;
+  const images = await db.select().from(vehicleImages).where(eq(vehicleImages.vehicleId, id)).orderBy(asc(vehicleImages.sortOrder));
+  const company = await db.select().from(companies).where(eq(companies.id, result[0].companyId)).limit(1);
+  return { ...result[0], images, company: company[0] };
+}
+
+export async function listCompaniesByOwner(ownerUserId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(companies).where(eq(companies.ownerUserId, ownerUserId)).orderBy(desc(companies.createdAt));
+}
+
+export async function createCompany(input: InsertCompany) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const result = await db.insert(companies).values(input);
+  return Number(result[0].insertId);
+}
+
+export async function createVehicle(input: InsertVehicle) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const result = await db.insert(vehicles).values(input);
+  return Number(result[0].insertId);
+}
+
+export async function listVehicleImages(vehicleId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicleId)).orderBy(asc(vehicleImages.sortOrder));
+}
+
+export async function createVehicleImage(input: InsertVehicleImage) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const result = await db.insert(vehicleImages).values(input);
+  return Number(result[0].insertId);
+}
+
+export async function createLead(input: InsertLead) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const result = await db.insert(leads).values(input);
+  return Number(result[0].insertId);
+}

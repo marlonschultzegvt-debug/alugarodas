@@ -153,3 +153,28 @@
 - [ ] Manter `DATABASE_URL` inalterado até a decisão de promoção.
 - [ ] Corrigir a referência de asset `/manus-storage/aluga-rodas-hero_82e5fd36.jpg` se necessário.
 - [ ] Avaliar divisão do bundle JavaScript acima de 500 kB.
+
+# Integração real do marketplace
+
+- [x] Criar helpers Drizzle para companies, vehicles, vehicle_images e leads.
+- [x] Criar procedimentos tRPC públicos para busca/detalhe e protegidos para cadastro e gestão.
+- [x] Conectar o formulário Advertise ao cadastro persistente de empresa e veículo atrás de `VITE_MARKETPLACE_API_ENABLED`.
+- [x] Conectar Search e VehicleDetails ao catálogo persistente atrás de `VITE_MARKETPLACE_API_ENABLED`, preservando fallback estático.
+- [x] Integrar o modal de interesse ao procedimento persistente de leads e manter analytics de contato.
+- [x] Validar RBAC de locador/admin e acesso público de busca; mutação de veículo foi coberta por teste Vitest e busca pública permanece sem guarda.
+- [x] Executar TypeScript, Vitest, build e revisão visual desktop/mobile antes do próximo checkpoint.
+
+## Ajustes da integração persistente
+
+- [x] Persistir preços, caução, limite de km, seguro, disponibilidade e flags de APP no Advertise.
+- [x] Adicionar estados de carregamento e erro no envio do anúncio.
+- [x] Enviar categoria ao procedimento de busca e preservar empty state real da API.
+- [x] Fazer VehicleDetails renderizar dados persistentes por identificador real.
+- [x] Adicionar sucesso/erro no envio de lead e suportar veículos reais sem slug estático.
+
+## Fechamento de qualidade da integração
+
+- [x] Cobrir permissões positivas de locador/admin nos endpoints companyCreate, vehicleCreate e vehicleImageCreate.
+- [x] Adicionar loading e erro na busca persistente.
+- [x] Adicionar loading, erro e not-found reais no detalhe persistente sem mascarar falhas.
+- [x] Bloquear sucesso de lead quando a mutação não executar e identificar claramente o modo preview.
