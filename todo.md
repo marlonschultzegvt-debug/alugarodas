@@ -291,3 +291,5 @@
 - [ ] Promover TiDB staging para produção após sincronização e ativar `VITE_MARKETPLACE_API_ENABLED`.
 - [ ] Validar cadastro, login, RBAC e marketplace após a promoção do banco.
 - [x] Manter a promoção do `DATABASE_URL` adiada até o usuário cadastrar a URI TiDB no painel seguro; não ativar a API persistente em produção neste momento.
+- [x] Persistir no servidor a intenção Cliente/Locador escolhida em `/cadastre-se` após o retorno do OAuth, sem permitir alteração para Admin.
+- [x] Testar a sincronização server-side da intenção de cadastro e preservar o bloqueio de Admin.

@@ -1,5 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("./db", () => ({ upsertUser: vi.fn().mockResolvedValue(undefined) }));
+
 import { appRouter } from "./routers";
+import { upsertUser } from "./db";
 import type { TrpcContext } from "./_core/context";
 
 function createContext(role: "admin" | "cliente" | "locador" | "user"): TrpcContext {
@@ -19,6 +23,21 @@ function createContext(role: "admin" | "cliente" | "locador" | "user"): TrpcCont
     res: {} as TrpcContext["res"],
   };
 }
+
+describe("auth.setSignupRole", () => {
+  it("persists only the selected public role", async () => {
+    const result = await appRouter.createCaller(createContext("cliente")).auth.setSignupRole({ role: "locador" });
+    expect(result).toEqual({ role: "locador" });
+    expect(upsertUser).toHaveBeenCalledWith({ openId: "test-cliente", role: "locador" });
+  });
+
+  it("keeps admin as admin and does not write a public role", async () => {
+    vi.mocked(upsertUser).mockClear();
+    const result = await appRouter.createCaller(createContext("admin")).auth.setSignupRole({ role: "locador" });
+    expect(result).toEqual({ role: "admin" });
+    expect(upsertUser).not.toHaveBeenCalled();
+  });
+});
 
 describe("admin.health", () => {
   it("allows admin users", async () => {

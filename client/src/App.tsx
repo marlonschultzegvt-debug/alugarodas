@@ -4,7 +4,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Route, Switch, Link, useLocation } from "wouter";
 import { ArrowRight, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/_core/hooks/useAuth";
+import { trpc } from "@/lib/trpc";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -50,9 +52,34 @@ export function SiteHeader() {
   );
 }
 
+function SignupRoleSync() {
+  const { user } = useAuth();
+  const syncRole = trpc.auth.setSignupRole.useMutation();
+  const utils = trpc.useUtils();
+
+  useEffect(() => {
+    if (!user || typeof window === "undefined") return;
+    const intent = window.localStorage.getItem("aluga_signup_intent");
+    if (intent !== "cliente" && intent !== "locador") return;
+    if (user.role === "admin") {
+      window.localStorage.removeItem("aluga_signup_intent");
+      return;
+    }
+    syncRole.mutate({ role: intent }, {
+      onSuccess: () => {
+        window.localStorage.removeItem("aluga_signup_intent");
+        void utils.auth.me.invalidate();
+      },
+    });
+  }, [syncRole, user, utils]);
+
+  return null;
+}
+
 function Router() {
   return <>
     <SiteHeader />
+    <SignupRoleSync />
     <PwaInstallPrompt />
     <Switch>
       <Route path="/" component={Home} />

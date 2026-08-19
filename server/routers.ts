@@ -14,6 +14,7 @@ import {
   listVehicleImages,
   listVehicles,
   createVehicleImage,
+  upsertUser,
 } from "./db";
 
 const publisherProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -57,6 +58,13 @@ export const appRouter = router({
   }),
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
+    setSignupRole: protectedProcedure
+      .input(z.object({ role: z.enum(["cliente", "locador"]) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role === "admin") return { role: "admin" as const };
+        await upsertUser({ openId: ctx.user.openId, role: input.role });
+        return { role: input.role };
+      }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });

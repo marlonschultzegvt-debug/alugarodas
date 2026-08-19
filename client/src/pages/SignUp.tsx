@@ -13,6 +13,7 @@ export default function SignUp() {
   const continueWithSecureAccess = () => {
     setStarting(true);
     setError("");
+    if (typeof window !== "undefined") window.localStorage.setItem("aluga_signup_intent", intent);
     try {
       startLogin();
     } catch {

@@ -77,3 +77,7 @@ Os logs recentes do preview registraram carregamento das rotas `/cadastre-se` e 
 ## Divergência pós-publicação do cadastro
 
 Após o checkpoint `4e8beba0`, o preview local contém `/cadastre-se`, mas `https://alugarodas-jp8f2bzz.manus.space/cadastre-se` ainda retorna a página 404. A home pública permanece acessível. É necessário aguardar ou disparar uma nova publicação para que a rota recém-criada seja refletida no subdomínio.
+
+## Cadastro publicado
+
+Após o republish `26f2a3d6`, o subdomínio Manus passou a responder corretamente em `/cadastre-se`. A página pública apresenta os perfis Quero alugar e Quero anunciar, as opções Google/Gmail e Apple/iCloud, o CTA de acesso seguro, o link para `/entrar`, o suporte oficial e o Instagram `https://www.instagram.com/alugarodas`.
