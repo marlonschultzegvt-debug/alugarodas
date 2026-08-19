@@ -89,3 +89,9 @@ No subdomínio publicado, `/adm` sem sessão foi corretamente direcionado para `
 ## Console e recursos
 
 Na auditoria pós-deploy, o console do navegador não apresentou saída de erro. A inspeção de recursos confirmou carregamento do bundle JavaScript, CSS, `manifest.webmanifest`, ícone PWA e imagens do catálogo/hero no subdomínio publicado. A análise não alterou sessão, banco ou leads.
+
+## Revalidação PWA após code splitting
+
+Após o deploy `0515555b`, a home publicada carregou corretamente com navegação, busca, atalhos, catálogo e CTA de instalação. O manifest encontrado foi `/manifest.webmanifest`; o service worker ativo foi `https://alugarodas-jp8f2bzz.manus.space/sw.js`, em estado `activated`, com escopo raiz. O navegador de auditoria estava em modo não instalado (`display-mode: standalone: false`), portanto a checagem confirma a infraestrutura PWA, não uma instalação física em aparelho.
+
+A nova consulta do console após o carregamento da home não apresentou erros de runtime; a saída registrada correspondeu apenas à consulta controlada do estado PWA.

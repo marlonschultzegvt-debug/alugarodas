@@ -301,5 +301,5 @@
 - [x] Cobrir o CRUD/moderação administrativa com testes RBAC positivos e negativos.
 - [x] Documentar explicitamente o fluxo operacional Manus hosting + TiDB/MySQL + storage S3.
 - [x] Executar auditoria pós-deploy de rotas, console, rede e links principais e registrar os resultados.
-- [ ] Revalidar manifest, service worker, fallback offline e instalação PWA após o code splitting no deploy publicado.
-- [ ] Executar nova auditoria de console e recursos após o deploy do code splitting e registrar ausência de erros.
+- [x] Revalidar manifest, service worker, fallback offline e instalação PWA após o code splitting no deploy publicado; manifest e service worker foram confirmados, e a instalação física permanece dependente de aparelho do usuário.
+- [x] Executar nova auditoria de console e recursos após o deploy do code splitting e registrar ausência de erros.
