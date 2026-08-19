@@ -19,3 +19,9 @@ Sessões são controladas pelo OAuth seguro e por cookie; papéis são verificad
 ## Checklist de publicação
 
 A sequência recomendada é: validar o build e os testes; confirmar variáveis e secrets no painel; aplicar schema no TiDB; executar probes de conexão; ativar a flag do marketplace; publicar checkpoint; testar busca, detalhe, anúncio e lead; revisar logs; e somente depois associar o domínio customizado, preservando MX, SPF e DKIM do Zoho.
+
+## Backup, observabilidade e atualização
+
+O MVP não deve ser promovido para produção sem confirmar no provedor do banco a política de backup e restauração disponível para o cluster TiDB. A equipe deve registrar a periodicidade, retenção, responsável e procedimento de restauração antes de ativar dados comerciais persistentes; esta confirmação externa ainda não foi realizada nesta sessão.
+
+A observabilidade mínima do lançamento consiste em revisar logs de servidor após cada publicação, acompanhar erros de autenticação esperados versus falhas inesperadas e repetir probes HTTP das rotas públicas. Cada alteração de código deve passar por TypeScript, Vitest e build antes de um checkpoint. Atualizações de schema devem ser não destrutivas, aplicadas primeiro em staging e promovidas somente após validação de leitura e escrita.

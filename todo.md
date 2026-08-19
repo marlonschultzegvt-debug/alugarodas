@@ -151,7 +151,7 @@
 
 - [ ] Promover o TiDB staging para produção somente após aprovação explícita.
 - [x] Manter `DATABASE_URL` inalterado até a decisão de promoção.
-- [ ] Corrigir a referência de asset `/manus-storage/aluga-rodas-hero_82e5fd36.jpg` se necessário.
+- [x] Validar a referência de asset `/manus-storage/aluga-rodas-hero_82e5fd36.jpg`; o recurso respondeu HTTP 200 em produção.
 - [x] Avaliar divisão do bundle JavaScript acima de 500 kB; rotas foram divididas e o chunk inicial caiu para cerca de 647 kB, permanecendo uma oportunidade futura de otimização.
 
 # Integração real do marketplace
