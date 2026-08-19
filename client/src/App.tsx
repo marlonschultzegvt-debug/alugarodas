@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 import AuthGuard from "./components/AuthGuard";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
 import { dashboardRouteRoles } from "./lib/access";
@@ -59,13 +60,14 @@ function Router() {
       <Route path="/veiculo/:slug" component={VehicleDetails} />
       <Route path="/anunciar"><AuthGuard roles={["admin", "locador"]}><Advertise /></AuthGuard></Route>
       <Route path="/entrar" component={Login} />
+      <Route path="/cadastre-se" component={SignUp} />
       <Route path="/adm"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>
       <Route path="/admin"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>
       <Route path="/dashboard"><AuthGuard roles={dashboardRouteRoles}><Dashboard /></AuthGuard></Route>
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
-    <footer className="site-footer"><div className="container footer-grid"><div><div className="footer-brand">ALUGA<span>RODAS</span></div><p>Pra quem precisa rodar.</p></div><div><strong>Para quem aluga</strong><a href="/buscar">Buscar veículos</a><a href="/buscar?finalidade=APP">Carros para APP</a><a href="/#como-funciona">Como funciona</a></div><div><strong>Para quem anuncia</strong><a href="/anunciar">Anuncie seu veículo</a><a href="/entrar">Área do anunciante</a><a href={SUPPORT_MAILTO}>Fale com a gente</a></div><div><strong>Aluga Rodas</strong><p className="footer-note">Um marketplace brasileiro para encontrar veículos disponíveis com mais clareza e contato direto.</p></div></div><div className="container footer-bottom"><span>© 2026 Aluga Rodas</span><span>Feito para quem precisa seguir em frente.</span></div></footer>
+    <footer className="site-footer"><div className="container footer-grid"><div><div className="footer-brand">ALUGA<span>RODAS</span></div><p>Pra quem precisa rodar.</p></div><div><strong>Para quem aluga</strong><a href="/buscar">Buscar veículos</a><a href="/buscar?finalidade=APP">Carros para APP</a><a href="/#como-funciona">Como funciona</a></div><div><strong>Para quem anuncia</strong><a href="/anunciar">Anuncie seu veículo</a><a href="/entrar">Área do anunciante</a><a href={SUPPORT_MAILTO}>Fale com a gente</a></div><div><strong>Aluga Rodas</strong><p className="footer-note">Um marketplace brasileiro para encontrar veículos disponíveis com mais clareza e contato direto.</p><a href="https://www.instagram.com/alugarodas" target="_blank" rel="noreferrer">Instagram @alugarodas</a></div></div><div className="container footer-bottom"><span>© 2026 Aluga Rodas</span><span>Feito para quem precisa seguir em frente.</span></div></footer>
   </>;
 }
 

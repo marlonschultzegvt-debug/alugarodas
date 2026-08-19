@@ -7,3 +7,9 @@ describe("official support contact", () => {
     expect(SUPPORT_MAILTO).toBe("mailto:suporte@alugarodas.com.br");
   });
 });
+
+describe("official Instagram contact", () => {
+  it("uses the Aluga Rodas handle", () => {
+    expect("https://www.instagram.com/alugarodas").toContain("alugarodas");
+  });
+});

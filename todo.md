@@ -246,8 +246,8 @@
 
 # Implantação online no subdomínio Manus
 
-- [ ] Confirmar que o subdomínio Manus publicado responde corretamente.
-- [ ] Validar rotas públicas, metadados, robots, sitemap e manifest em produção.
+- [x] Confirmar que o subdomínio Manus publicado responde corretamente.
+- [x] Validar rotas públicas, metadados, robots, sitemap e manifest em produção.
 - [ ] Validar instalação PWA, offline e atualização do service worker em produção.
 - [ ] Validar login/logout e guardas de Cliente, Locador e Admin sem expor credenciais.
 - [ ] Validar `/anunciar`, busca, detalhe e fluxo de lead em desktop/mobile.
@@ -256,8 +256,8 @@
 
 ## SEO no domínio ativo
 
-- [ ] Ajustar `robots.txt` para apontar o sitemap ao subdomínio Manus enquanto o domínio customizado estiver desligado.
-- [ ] Verificar `sitemap.xml` e manifest no endereço publicado.
+- [x] Ajustar `robots.txt` para apontar o sitemap ao subdomínio Manus enquanto o domínio customizado estiver desligado.
+- [x] Verificar `sitemap.xml` e manifest no endereço publicado.
 - [ ] Restaurar o sitemap para `alugarodas.com.br` quando o domínio customizado for conectado.
 
 # Acesso administrativo em /adm
@@ -277,3 +277,17 @@
 - [x] Adicionar teste de integração para impedir dados administrativos sem autorização server-side.
 - [x] Testar a página `/adm` com falha/FORBIDDEN em `admin.dashboard` e confirmar que métricas administrativas não são exibidas.
 - [x] Ocultar o bloco de métricas do `/adm` quando `admin.dashboard` retornar FORBIDDEN e cobrir essa ausência no teste SSR.
+- [x] Validar em produção `/buscar`, `/entrar`, `/anunciar` e uma página de detalhe de veículo.
+- [x] Inspecionar description, Open Graph, Twitter e link do manifest no HTML publicado.
+
+# Cadastro e autenticação social
+
+- [x] Criar fluxo visual `/cadastre-se` separado de `/entrar`.
+- [x] Oferecer cadastro seguro com perfil Cliente ou Locador, sem permitir cadastro público como Admin.
+- [x] Exibir opção Google/Gmail pelo provedor OAuth seguro do Manus e preservar Manus OAuth como acesso principal.
+- [x] Exibir opção Apple/iCloud pelo provedor OAuth seguro do Manus e preservar Manus OAuth como acesso principal.
+- [x] Adicionar validações, estados de loading/erro/sucesso e links entre cadastro e login.
+- [x] Atualizar footer e canais oficiais com Instagram `@alugarodas`.
+- [ ] Promover TiDB staging para produção após sincronização e ativar `VITE_MARKETPLACE_API_ENABLED`.
+- [ ] Validar cadastro, login, RBAC e marketplace após a promoção do banco.
+- [x] Manter a promoção do `DATABASE_URL` adiada até o usuário cadastrar a URI TiDB no painel seguro; não ativar a API persistente em produção neste momento.

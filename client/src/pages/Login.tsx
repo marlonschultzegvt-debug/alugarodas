@@ -1,6 +1,6 @@
 import { ArrowRight, ShieldCheck, UserRound, Store, Settings2 } from "lucide-react";
 import { useEffect } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { startLogin } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { rolePath, type UserRole } from "@/lib/access";
@@ -34,6 +34,7 @@ export default function Login() {
         </div>
         <button type="button" className="primary-button auth-submit" onClick={startLogin}>Entrar com acesso seguro <ArrowRight size={17} /></button>
         <p className="auth-security"><ShieldCheck size={15} /> Seu perfil e suas permissões são definidos no servidor, nunca pelo navegador.</p>
+        <p className="signup-footer">Ainda não tem uma conta? <Link href="/cadastre-se">Cadastre-se</Link></p>
       </section>
     </main>
   );

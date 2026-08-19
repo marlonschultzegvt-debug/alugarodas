@@ -180,3 +180,26 @@
 .auth-spinner { animation: auth-spin .8s linear infinite; }
 @keyframes auth-spin { to { transform: rotate(360deg); } }
 @media (max-width: 640px) { .auth-page { min-height: 72vh; padding: 48px 16px 72px; } .auth-card { padding: 28px 22px; } .auth-role-grid { grid-template-columns: 1fr; } .auth-role-grid > div { min-height: auto; grid-template-columns: 22px 1fr; align-items: center; } .auth-role-grid span { grid-column: 2; } }
+
+.signup-card { max-width: 620px; }
+.signup-intent { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 24px 0 21px; }
+.signup-intent button { display: grid; grid-template-columns: 22px 1fr 18px; align-items: center; gap: 10px; min-height: 78px; padding: 14px; border: 1px solid var(--border); border-radius: 10px; text-align: left; transition: border-color .18s ease, background .18s ease, transform .18s var(--ease-out); }
+.signup-intent button:hover { transform: translateY(-2px); border-color: #b4c6c2; }
+.signup-intent button.is-selected { background: #edf4f0; border-color: #8fb4a2; box-shadow: 0 0 0 3px rgba(83,124,105,.08); }
+.signup-intent button > svg:first-child { color: var(--orange); }
+.signup-intent button > svg:last-child { color: #537c69; }
+.signup-intent span { display: flex; flex-direction: column; gap: 4px; }
+.signup-intent strong, .provider-button strong { font-size: 12px; }
+.signup-intent small, .provider-button small { color: #718080; font-size: 10px; line-height: 1.4; }
+.signup-providers { border-top: 1px solid var(--border); padding-top: 18px; }
+.signup-label { margin: 0 0 9px; color: #7e8989; font-size: 10px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.provider-button { width: 100%; display: grid; grid-template-columns: 22px 1fr 18px; align-items: center; gap: 10px; min-height: 59px; padding: 11px 13px; margin-top: 8px; border: 1px solid var(--border); background: #fffefa; border-radius: 8px; text-align: left; transition: border-color .18s ease, background .18s ease, transform .18s var(--ease-out); }
+.provider-button:hover { border-color: #b4c6c2; background: #f8faf6; transform: translateY(-2px); }
+.provider-button > svg:first-child { color: var(--petrol); }
+.provider-button > svg:last-child { color: var(--orange); }
+.provider-button span { display: flex; flex-direction: column; gap: 3px; }
+.signup-footer { margin: 18px 0 0; color: #718080; font-size: 11px; text-align: center; }
+.signup-footer a { color: var(--orange); font-weight: 800; }
+@media (max-width: 640px) { .signup-intent { grid-template-columns: 1fr; } .signup-intent button { min-height: 67px; } .provider-button { min-height: 64px; } }
+.auth-error { margin: 12px 0 0; color: #a94732; background: #fff0eb; border: 1px solid #f2c7ba; border-radius: 7px; padding: 10px 12px; font-size: 11px; line-height: 1.5; }
+.provider-button:disabled, .primary-button:disabled { cursor: wait; opacity: .7; transform: none; }

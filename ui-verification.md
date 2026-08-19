@@ -35,3 +35,41 @@ A revisão do dashboard em mobile confirmou que o rodapé, a navegação horizon
 O preview desktop confirmou que `/adm` renderiza o painel administrativo com a identidade visual existente, sidebar, métricas de estrutura e estado protegido. A rota continua sob `AuthGuard` de `admin`; a tela pública `/entrar` mantém os perfis Cliente, Locador e Admin sem seleção de papel pelo navegador.
 
 A revisão mobile do `/adm` mostrou header compacto, navegação horizontal dos módulos, cards em duas colunas e painel de moderação sem cortes. O conteúdo administrativo permanece legível em 375px; a navegação horizontal é intencional para acomodar as seções da sidebar.
+
+## Auditoria de produção após checkpoint c080307f
+
+A home publicada em `https://alugarodas-jp8f2bzz.manus.space/` respondeu corretamente. O título exibido é `Aluguel de carros para Uber e APP | Aluga Rodas`; a página apresenta busca por cidade, categoria e finalidade, atalhos de APP, elétricos, motos, utilitários e mensal, cards de Geely EX2, Honda CG 160 Start e Fiat Fiorino, CTA de WhatsApp, fluxo Como funciona, anúncio e `mailto:suporte@alugarodas.com.br`. O subdomínio está acessível e a identidade visual Estrada Editorial está presente.
+
+## Divergência encontrada em produção
+
+A URL pública `https://alugarodas-jp8f2bzz.manus.space/adm` retornou a página 404, enquanto o preview local renderiza o painel `/adm`. Isso indica que a publicação acessada ainda não está refletindo a rota administrativa ou que o subdomínio está servindo uma versão anterior; a divergência precisa ser corrigida antes de considerar a rota administrativa validada em produção.
+
+A tentativa de consultar `https://alugarodas-jp8f2bzz.manus.space/__manus__/version.json` também exibiu a página 404 da aplicação, em vez do JSON de versão. A home continua acessível, mas rotas/arquivos internos do build não estão refletindo o estado do preview; a publicação deve ser revalidada pelo painel após o checkpoint.
+
+## Artefatos HTTP em produção
+
+No subdomínio publicado, `robots.txt`, `sitemap.xml`, `manifest.webmanifest` e `sw.js` responderam HTTP 200 com content-types corretos. O robots aponta temporariamente para o sitemap do subdomínio Manus; o manifest preserva nome, short name, descrição, start URL, scope e display standalone; o service worker público está acessível.
+
+## Rotas públicas adicionais em produção
+
+`/buscar` respondeu com catálogo público de quatro veículos, filtros de cidade/categoria/finalidade, ordenação, detalhes e WhatsApp. `/entrar` respondeu com Cliente, Locador e Admin apenas como descrições de perfis, botão único de acesso seguro e aviso de que permissões são definidas no servidor; não há seleção pública de papel.
+
+`/anunciar` em produção redirecionou corretamente visitantes sem sessão para `/entrar`, sem expor o formulário protegido. O detalhe `/veiculo/geely-ex2-curitiba` respondeu com galeria, preço semanal/mensal, caução, seguro, manutenção, quilometragem, disponibilidade, compatibilidade APP, botão Tenho interesse, WhatsApp e favoritos.
+
+## Metadados publicados
+
+A home pública contém `link rel="manifest"` para `/manifest.webmanifest`, meta description, `og:type`, `og:site_name`, `og:title`, `og:description`, `og:image` e `twitter:card`, todos acessíveis no HTML publicado.
+
+## PWA em produção
+
+No navegador em produção, `navigator.serviceWorker` está disponível e há um registro ativo com escopo `https://alugarodas-jp8f2bzz.manus.space/` e script `https://alugarodas-jp8f2bzz.manus.space/sw.js`; não há registro waiting. A verificação confirma o service worker ativo no domínio publicado, embora a validação de instalação/offline real em dispositivos ainda dependa de teste manual.
+
+A produção também respondeu `offline.html` com HTTP 200 e content-type HTML, e o navegador expôs apenas o cache público `aluga-rodas-static-v1`. Isso confirma a presença do fallback e a estratégia de cache restrito; a instalação em Android/iOS continua exigindo teste manual em dispositivo.
+
+## Cadastro e Instagram
+
+A revisão mobile do `/cadastre-se` mostrou os dois perfis permitidos, botões Google/Gmail e Apple/iCloud, CTA seguro, mensagem de proteção administrativa e retorno para Entrar, sem cortes em 375px. O footer exibe `Instagram @alugarodas` em coluna legível. A captura de `/entrar` no preview manteve uma sessão administrativa persistida do navegador e por isso exibiu o painel protegido; isso não altera os testes de visitante sem sessão nem o guard server-side.
+
+## Logs do cadastro
+
+Os logs recentes do preview registraram carregamento das rotas `/cadastre-se` e `/entrar` e eventos de analytics HTTP 200, sem erro de console ou falha de rede visível na auditoria. Dados identificáveis de sessão foram tratados como privados e não serão incluídos no relatório.
