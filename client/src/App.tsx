@@ -17,6 +17,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import AuthGuard from "./components/AuthGuard";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
+import { dashboardRouteRoles } from "./lib/access";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -58,7 +59,7 @@ function Router() {
       <Route path="/anunciar"><AuthGuard roles={["admin", "locador"]}><Advertise /></AuthGuard></Route>
       <Route path="/entrar" component={Login} />
       <Route path="/admin"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>
-      <Route path="/dashboard"><AuthGuard roles={["admin", "locador"]}><Dashboard /></AuthGuard></Route>
+      <Route path="/dashboard"><AuthGuard roles={dashboardRouteRoles}><Dashboard /></AuthGuard></Route>
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

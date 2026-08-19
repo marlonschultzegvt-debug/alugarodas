@@ -1,5 +1,14 @@
 export type UserRole = "admin" | "cliente" | "locador" | "user";
 
+export const dashboardRouteRoles: UserRole[] = ["admin", "locador"];
+export type AuthGuardDecision = "loading" | "redirect" | "denied" | "allowed";
+
+export function authGuardDecision(role: UserRole | undefined, loading: boolean, allowedRoles?: UserRole[]): AuthGuardDecision {
+  if (loading) return "loading";
+  if (!role) return "redirect";
+  return canAccess(role, allowedRoles) ? "allowed" : "denied";
+}
+
 export function normalizeRole(role: UserRole | undefined) {
   return role === "user" ? "cliente" : role;
 }

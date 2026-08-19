@@ -8,6 +8,7 @@ import {
   createCompany,
   createLead,
   createVehicle,
+  getPublisherDashboard,
   getVehicleById,
   listCompaniesByOwner,
   listVehicleImages,
@@ -67,6 +68,7 @@ export const appRouter = router({
       .query(({ input }) => listVehicles(input)),
     vehicle: publicProcedure.input(z.object({ id: z.number().int().positive() })).query(({ input }) => getVehicleById(input.id)),
     companiesMine: publisherProcedure.query(({ ctx }) => listCompaniesByOwner(ctx.user.id)),
+    dashboard: publisherProcedure.query(({ ctx }) => getPublisherDashboard(ctx.user.id)),
     companyCreate: publisherProcedure
       .input(z.object({ name: z.string().min(2).max(160), legalName: z.string().max(200).optional(), document: z.string().max(32).optional(), type: z.enum(["anunciante", "locadora"]), phone: z.string().max(32).optional(), whatsapp: z.string().max(32).optional(), email: z.string().email().optional() }))
       .mutation(({ ctx, input }) => createCompany({ ...input, ownerUserId: ctx.user.id })),

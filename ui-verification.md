@@ -15,3 +15,7 @@ A API marketplace permanece atrás de `VITE_MARKETPLACE_API_ENABLED`, portanto a
 ## Revisão após fechamento dos gaps
 
 A busca continua visualmente íntegra com o fallback estático ativo. O detalhe `/veiculo/geely-ex2-curitiba` permanece compatível com o catálogo legado, enquanto rotas numéricas passam a usar loading, erro e not-found reais quando a API é habilitada. O prompt PWA permanece visível no canto inferior direito e não há elementos principais cortados no desktop.
+
+## Dashboard persistente
+
+No desktop, métricas, inventário vazio e CTA de cadastro aparecem alinhados e legíveis. No mobile, o cabeçalho colapsa corretamente e os cards de métricas formam uma grade de duas colunas. A navegação horizontal de atalhos do dashboard permanece acessível, embora o usuário precise deslizar para ver todos os itens; não há sobreposição estrutural além do prompt PWA fixo esperado.

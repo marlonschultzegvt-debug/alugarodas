@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, like, or } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   companies,
@@ -97,6 +97,27 @@ export async function listCompaniesByOwner(ownerUserId: number) {
   const db = await getDb();
   if (!db) return [];
   return db.select().from(companies).where(eq(companies.ownerUserId, ownerUserId)).orderBy(desc(companies.createdAt));
+}
+
+export async function getPublisherDashboard(ownerUserId: number) {
+  const db = await getDb();
+  if (!db) return { companies: [], vehicles: [], leads: [], metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } };
+  const ownedCompanies = await listCompaniesByOwner(ownerUserId);
+  const companyIds = ownedCompanies.map((company) => company.id);
+  if (companyIds.length === 0) return { companies: [], vehicles: [], leads: [], metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } };
+  const ownedVehicles = await db.select().from(vehicles).where(inArray(vehicles.companyId, companyIds)).orderBy(desc(vehicles.createdAt));
+  const ownedLeads = await db.select().from(leads).where(inArray(leads.companyId, companyIds)).orderBy(desc(leads.createdAt));
+  return {
+    companies: ownedCompanies,
+    vehicles: ownedVehicles,
+    leads: ownedLeads,
+    metrics: {
+      views: 0,
+      whatsappClicks: 0,
+      leads: ownedLeads.length,
+      activeVehicles: ownedVehicles.filter((vehicle) => vehicle.status === "active").length,
+    },
+  };
 }
 
 export async function createCompany(input: InsertCompany) {

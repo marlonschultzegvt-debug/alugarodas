@@ -21,6 +21,10 @@ function contextFor(role: "admin" | "cliente" | "locador"): TrpcContext {
 }
 
 describe("marketplace publisher RBAC", () => {
+  it("rejects dashboard metrics for cliente before accessing the database", async () => {
+    await expect(appRouter.createCaller(contextFor("cliente")).marketplace.dashboard()).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
   it("rejects vehicle creation for cliente before accessing the database", async () => {
     await expect(
       appRouter.createCaller(contextFor("cliente")).marketplace.vehicleCreate({

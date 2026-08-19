@@ -178,3 +178,32 @@
 - [x] Adicionar loading e erro na busca persistente.
 - [x] Adicionar loading, erro e not-found reais no detalhe persistente sem mascarar falhas.
 - [x] Bloquear sucesso de lead quando a mutação não executar e identificar claramente o modo preview.
+
+# Dashboard persistente do anunciante
+
+- [x] Criar consulta agregada de veículos e leads por anunciante.
+- [x] Expor dashboard tRPC protegido para locador/admin.
+- [x] Conectar Dashboard aos dados persistentes com loading e estados vazios.
+- [x] Validar que cliente não acessa as métricas protegidas.
+- [x] Testar build, Vitest e responsividade do dashboard.
+
+## Fechamento RBAC do dashboard
+
+- [x] Testar que cliente recebe FORBIDDEN ao consultar marketplace.dashboard.
+- [x] Validar frontend que cliente não abre /dashboard nem vê métricas persistentes.
+
+## Validação explícita da rota do dashboard
+
+- [x] Criar teste de rota/guard para cliente autenticado ao acessar `/dashboard`.
+- [x] Confirmar que cliente é redirecionado ou bloqueado antes de renderizar métricas persistentes.
+
+## Contrato testável do AuthGuard
+
+- [x] Criar função compartilhada de decisão do AuthGuard para loading, redirecionamento, bloqueio e acesso.
+- [x] Testar explicitamente `/dashboard` com cliente autenticado como bloqueado antes de renderizar filhos.
+- [x] Registrar no checklist que o comportamento esperado é bloqueio visual, não redirecionamento automático, para cliente autenticado.
+
+## Teste de renderização do dashboard protegido
+
+- [x] Renderizar AuthGuard em `/dashboard` com cliente autenticado e confirmar mensagem de acesso restrito.
+- [x] Confirmar no HTML renderizado que métricas/filhos do Dashboard não aparecem para cliente.

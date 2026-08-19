@@ -5,6 +5,7 @@ vi.mock("./db", () => ({
   createLead: vi.fn().mockResolvedValue(12),
   createVehicle: vi.fn().mockResolvedValue(13),
   createVehicleImage: vi.fn().mockResolvedValue(14),
+  getPublisherDashboard: vi.fn().mockResolvedValue({ companies: [], vehicles: [], leads: [], metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } }),
   getVehicleById: vi.fn(),
   listCompaniesByOwner: vi.fn().mockResolvedValue([]),
   listVehicleImages: vi.fn().mockResolvedValue([]),
@@ -51,5 +52,6 @@ describe("marketplace positive RBAC", () => {
     await expect(caller.marketplace.companyCreate({ name: "Empresa de teste", type: "anunciante" })).resolves.toBe(11);
     await expect(caller.marketplace.vehicleCreate(vehicle)).resolves.toBe(13);
     await expect(caller.marketplace.vehicleImageCreate({ vehicleId: 13, url: "https://example.com/vehicle.jpg" })).resolves.toBe(14);
+    await expect(caller.marketplace.dashboard()).resolves.toMatchObject({ metrics: { activeVehicles: 0 } });
   });
 });
