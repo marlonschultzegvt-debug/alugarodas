@@ -53,6 +53,7 @@ export const appRouter = router({
   system: systemRouter,
   admin: router({
     health: adminProcedure.query(({ ctx }) => ({ ok: true, role: ctx.user.role })),
+    dashboard: adminProcedure.query(({ ctx }) => ({ ok: true, role: ctx.user.role, canManage: true })),
   }),
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),

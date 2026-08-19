@@ -31,3 +31,15 @@ describe("admin.health", () => {
     await expect(appRouter.createCaller(createContext("cliente")).admin.health()).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });
+
+describe("admin.dashboard", () => {
+  it("confirms administrative authorization for admins", async () => {
+    const result = await appRouter.createCaller(createContext("admin")).admin.dashboard();
+    expect(result).toEqual({ ok: true, role: "admin", canManage: true });
+  });
+
+  it("does not expose administrative data to client or locador", async () => {
+    await expect(appRouter.createCaller(createContext("cliente")).admin.dashboard()).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(appRouter.createCaller(createContext("locador")).admin.dashboard()).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+});

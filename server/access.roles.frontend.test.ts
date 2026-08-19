@@ -27,6 +27,12 @@ describe("role access", () => {
     expect(authGuardDecision(undefined, false, dashboardRouteRoles)).toBe("redirect");
   });
 
+  it("routes admin to /adm and keeps advertiser/client destinations separate", () => {
+    expect(rolePath("admin")).toBe("/adm");
+    expect(rolePath("locador")).toBe("/dashboard");
+    expect(rolePath("cliente")).toBe("/buscar");
+  });
+
   it("allows only admin into the admin area", () => {
     expect(canAccess("admin", ["admin"])).toBe(true);
     expect(canAccess("locador", ["admin"])).toBe(false);

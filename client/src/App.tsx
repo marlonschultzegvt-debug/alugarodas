@@ -59,6 +59,7 @@ function Router() {
       <Route path="/veiculo/:slug" component={VehicleDetails} />
       <Route path="/anunciar"><AuthGuard roles={["admin", "locador"]}><Advertise /></AuthGuard></Route>
       <Route path="/entrar" component={Login} />
+      <Route path="/adm"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>
       <Route path="/admin"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>
       <Route path="/dashboard"><AuthGuard roles={dashboardRouteRoles}><Dashboard /></AuthGuard></Route>
       <Route path="/404" component={NotFound} />

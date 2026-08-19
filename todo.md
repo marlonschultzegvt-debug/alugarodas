@@ -259,3 +259,21 @@
 - [ ] Ajustar `robots.txt` para apontar o sitemap ao subdomínio Manus enquanto o domínio customizado estiver desligado.
 - [ ] Verificar `sitemap.xml` e manifest no endereço publicado.
 - [ ] Restaurar o sitemap para `alugarodas.com.br` quando o domínio customizado for conectado.
+
+# Acesso administrativo em /adm
+
+- [x] Criar rota `/adm` separada do fluxo `/entrar` comum.
+- [x] Permitir acesso a `/adm` somente para `admin` no servidor e no frontend.
+- [x] Impedir seleção pública de papel Admin no cadastro/login.
+- [x] Redirecionar Admin para `/adm` após autenticação, sem quebrar Cliente/Locador.
+- [x] Criar teste positivo Admin e negativos Cliente/Locador para `/adm`.
+- [x] Revisar `/adm` em desktop/mobile; checkpoint será salvo após a auditoria completa da implantação online.
+
+## Proteção server-side do /adm
+
+- [x] Criar procedimento tRPC `admin.dashboard` protegido por `adminOnlyProcedure`.
+- [x] Consumir o procedimento no painel Admin antes de renderizar dados administrativos.
+- [x] Testar FORBIDDEN para cliente e locador e acesso permitido para admin.
+- [x] Adicionar teste de integração para impedir dados administrativos sem autorização server-side.
+- [x] Testar a página `/adm` com falha/FORBIDDEN em `admin.dashboard` e confirmar que métricas administrativas não são exibidas.
+- [x] Ocultar o bloco de métricas do `/adm` quando `admin.dashboard` retornar FORBIDDEN e cobrir essa ausência no teste SSR.
