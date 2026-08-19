@@ -1,9 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("./db", () => ({ upsertUser: vi.fn().mockResolvedValue(undefined) }));
+vi.mock("./db", () => ({
+  upsertUser: vi.fn().mockResolvedValue(undefined),
+  listAdminVehicles: vi.fn().mockResolvedValue([{ vehicle: { id: 9, brand: "Geely", model: "EX2", status: "draft" }, company: { id: 3, name: "Locadora teste" } }]),
+  updateVehicleStatus: vi.fn().mockResolvedValue({ vehicleId: 9, status: "active" }),
+}));
 
 import { appRouter } from "./routers";
-import { upsertUser } from "./db";
+import { listAdminVehicles, updateVehicleStatus, upsertUser } from "./db";
 import type { TrpcContext } from "./_core/context";
 
 function createContext(role: "admin" | "cliente" | "locador" | "user"): TrpcContext {
@@ -36,6 +40,23 @@ describe("auth.setSignupRole", () => {
     const result = await appRouter.createCaller(createContext("admin")).auth.setSignupRole({ role: "locador" });
     expect(result).toEqual({ role: "admin" });
     expect(upsertUser).not.toHaveBeenCalled();
+  });
+});
+
+describe("admin.vehicle moderation", () => {
+  it("lists and updates vehicles for admins", async () => {
+    const caller = appRouter.createCaller(createContext("admin"));
+    const vehicles = await caller.admin.vehicles();
+    expect(vehicles[0]?.vehicle.model).toBe("EX2");
+    const updated = await caller.admin.vehicleStatus({ vehicleId: 9, status: "active" });
+    expect(updated).toEqual({ vehicleId: 9, status: "active" });
+    expect(listAdminVehicles).toHaveBeenCalled();
+    expect(updateVehicleStatus).toHaveBeenCalledWith(9, "active");
+  });
+
+  it("rejects listing and moderation for non-admin roles", async () => {
+    await expect(appRouter.createCaller(createContext("locador")).admin.vehicles()).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(appRouter.createCaller(createContext("cliente")).admin.vehicleStatus({ vehicleId: 9, status: "paused" })).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });
 

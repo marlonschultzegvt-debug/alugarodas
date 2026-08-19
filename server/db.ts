@@ -134,6 +134,19 @@ export async function createVehicle(input: InsertVehicle) {
   return Number(result[0].insertId);
 }
 
+export async function listAdminVehicles() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select({ vehicle: vehicles, company: companies }).from(vehicles).leftJoin(companies, eq(vehicles.companyId, companies.id)).orderBy(desc(vehicles.createdAt));
+}
+
+export async function updateVehicleStatus(vehicleId: number, status: "draft" | "active" | "paused" | "rented") {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.update(vehicles).set({ status }).where(eq(vehicles.id, vehicleId));
+  return { vehicleId, status };
+}
+
 export async function listVehicleImages(vehicleId: number) {
   const db = await getDb();
   if (!db) return [];

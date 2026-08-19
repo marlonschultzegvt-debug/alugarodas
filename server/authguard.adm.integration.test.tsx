@@ -26,7 +26,14 @@ vi.mock("@/lib/trpc", () => ({
           ? { data: { ok: true, role: "admin", canManage: true }, isLoading: false, error: null }
           : { data: undefined, isLoading: false, error: new Error("FORBIDDEN") },
       },
+      vehicles: {
+        useQuery: () => ({ data: [], isLoading: false, error: null }),
+      },
+      vehicleStatus: {
+        useMutation: () => ({ isPending: false, mutate: vi.fn() }),
+      },
     },
+    useUtils: () => ({ admin: { vehicles: { invalidate: vi.fn() } } }),
   },
 }));
 

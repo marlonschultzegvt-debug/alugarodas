@@ -1,11 +1,25 @@
 import React from "react";
-import { BarChart3, CarFront, CheckCircle2, ShieldCheck, Users } from "lucide-react";
+import { BarChart3, CarFront, CheckCircle2, Loader2, PauseCircle, PlayCircle, ShieldCheck, Users } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
+
+type VehicleStatus = "draft" | "active" | "paused" | "rented";
+
+const statusLabel: Record<VehicleStatus, string> = {
+  draft: "Em análise",
+  active: "Ativo",
+  paused: "Pausado",
+  rented: "Alugado",
+};
 
 export default function Admin() {
   const dashboardQuery = trpc.admin.dashboard.useQuery();
   const serverAuthorized = dashboardQuery.data?.canManage === true;
+  const vehiclesQuery = trpc.admin.vehicles.useQuery(undefined, { enabled: serverAuthorized });
+  const utils = trpc.useUtils();
+  const statusMutation = trpc.admin.vehicleStatus.useMutation({
+    onSuccess: () => void utils.admin.vehicles.invalidate(),
+  });
   const securityLabel = dashboardQuery.isLoading
     ? "Verificando"
     : serverAuthorized
@@ -23,10 +37,7 @@ export default function Admin() {
         <aside className="dashboard-sidebar">
           <div className="dashboard-profile">
             <span className="avatar">AR</span>
-            <div>
-              <strong>Aluga Rodas</strong>
-              <span> administração</span>
-            </div>
+            <div><strong>Aluga Rodas</strong><span> administração</span></div>
           </div>
           <nav>
             <a className="active" href="#visao-geral"><BarChart3 size={17} /> Visão geral</a>
@@ -48,27 +59,41 @@ export default function Admin() {
 
           {!dashboardQuery.error && (
             <div className="metric-grid">
-              <div><span><Users size={17} /> Usuários</span><strong>—</strong><em className="neutral">Aguardando dados reais</em></div>
-              <div><span><CarFront size={17} /> Anúncios</span><strong>—</strong><em className="neutral">Aguardando dados reais</em></div>
-              <div><span><BarChart3 size={17} /> Leads</span><strong>—</strong><em className="neutral">Aguardando dados reais</em></div>
+              <div><span><Users size={17} /> Usuários</span><strong>—</strong><em className="neutral">Dados de usuários</em></div>
+              <div><span><CarFront size={17} /> Anúncios</span><strong>{vehiclesQuery.data?.length ?? "—"}</strong><em className="neutral">Inventário total</em></div>
+              <div><span><BarChart3 size={17} /> Leads</span><strong>—</strong><em className="neutral">Métricas de leads</em></div>
               <div id="seguranca"><span><ShieldCheck size={17} /> Segurança</span><strong>{securityLabel}</strong><em className={serverAuthorized ? "" : "neutral"}><CheckCircle2 size={14} /> {securityNote}</em></div>
             </div>
           )}
 
           <div className="dashboard-panel" id="usuarios">
-            <div className="panel-heading">
-              <div>
-                <span className="eyebrow orange">PRÓXIMA CAMADA</span>
-                <h2>Moderação e operações</h2>
+            <div className="panel-heading"><div><span className="eyebrow orange">OPERAÇÕES</span><h2>Moderação de anúncios</h2></div></div>
+            {dashboardQuery.isLoading && <p className="admin-placeholder">Confirmando a autorização administrativa antes de carregar operações.</p>}
+            {dashboardQuery.error && <p className="admin-placeholder">A sessão não foi autorizada pelo servidor. Nenhum dado administrativo foi carregado.</p>}
+            {serverAuthorized && vehiclesQuery.isLoading && <p className="admin-placeholder"><Loader2 size={15} className="spin" /> Carregando anúncios reais.</p>}
+            {serverAuthorized && vehiclesQuery.error && <p className="admin-placeholder">Não foi possível carregar os anúncios. Tente novamente.</p>}
+            {serverAuthorized && !vehiclesQuery.isLoading && !vehiclesQuery.error && vehiclesQuery.data?.length === 0 && <p className="admin-placeholder">Nenhum anúncio cadastrado ainda.</p>}
+            {serverAuthorized && vehiclesQuery.data && vehiclesQuery.data.length > 0 && (
+              <div className="admin-vehicle-list" id="anuncios">
+                {vehiclesQuery.data.map(({ vehicle, company }) => {
+                  const status = vehicle.status as VehicleStatus;
+                  const nextStatus: VehicleStatus = status === "active" ? "paused" : "active";
+                  return (
+                    <article className="admin-vehicle-row" key={vehicle.id}>
+                      <div className="admin-vehicle-copy">
+                        <strong>{vehicle.brand} {vehicle.model}</strong>
+                        <span>{vehicle.city} - {vehicle.state} · {company?.name ?? "Locadora não informada"}</span>
+                        <small className={`status-chip status-${status}`}>{statusLabel[status]}</small>
+                      </div>
+                      <button type="button" className="outline-button admin-status-button" disabled={statusMutation.isPending} onClick={() => statusMutation.mutate({ vehicleId: vehicle.id, status: nextStatus })}>
+                        {statusMutation.isPending ? <Loader2 size={14} className="spin" /> : status === "active" ? <PauseCircle size={14} /> : <PlayCircle size={14} />}
+                        {status === "active" ? "Pausar" : "Ativar"}
+                      </button>
+                    </article>
+                  );
+                })}
               </div>
-            </div>
-            <p className="admin-placeholder">
-              {dashboardQuery.isLoading
-                ? "Confirmando a autorização administrativa antes de carregar operações."
-                : dashboardQuery.error
-                  ? "A sessão não foi autorizada pelo servidor. Nenhum dado administrativo foi carregado."
-                  : "A estrutura de acesso administrativo está protegida. A próxima etapa conecta os usuários, veículos e leads reais ao painel, sem dados demonstrativos."}
-            </p>
+            )}
           </div>
         </section>
       </div>

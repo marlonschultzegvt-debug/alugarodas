@@ -1,11 +1,11 @@
 # Publicação operacional
 
-- [ ] Confirmar que a transição DNS terminou no Registro.br.
-- [ ] Adicionar e verificar o TXT do Zoho.
-- [ ] Adicionar os MX do Zoho após a verificação.
-- [ ] Criar e testar `suporte@alugarodas.com.br`.
+- [x] Confirmar que a transição DNS terminou no Registro.br.
+- [x] Adicionar e verificar o TXT do Zoho.
+- [x] Adicionar os MX do Zoho após a verificação.
+- [x] Criar e testar `suporte@alugarodas.com.br`.
 - [ ] Associar `alugarodas.com.br` ao projeto no painel de hospedagem.
-- [ ] Atualizar rodapé, mailto, SEO e canais oficiais.
+- [x] Atualizar rodapé, mailto, SEO e canais oficiais.
 - [ ] Validar HTTPS, rotas públicas, PWA e redirecionamentos em produção.
 - [ ] Salvar checkpoint operacional final.
 
@@ -15,9 +15,9 @@
 - [ ] Obter acesso ao painel DNS do Registro.br e validar permissão para editar os registros.
 - [x] Criar ou confirmar o e-mail oficial `suporte@alugarodas.com.br`.
 - [x] Informar o @ oficial do Instagram: `@alugarodas`.
-- [ ] Não criar contas Vercel/Netlify/banco externo sem necessidade.
+- [x] Não criar contas Vercel/Netlify/banco externo sem necessidade.
 - [ ] Associar o domínio no painel do projeto.
-- [ ] Atualizar links de suporte, Instagram, SEO e rodapé.
+- [x] Atualizar links de suporte, Instagram, SEO e rodapé.
 - [ ] Validar domínio, e-mail e canais no site publicado.
 
 # Conexão TiDB Cloud
@@ -43,11 +43,11 @@
 # Preparação para operação online
 
 - [ ] Confirmar domínio final e registrar a configuração de DNS necessária.
-- [ ] Confirmar e-mail oficial de suporte e @ oficial do Instagram; e-mail confirmado, Instagram ainda pendente.
-- [ ] Definir fluxo de publicação: Manus como hosting, banco MySQL/TiDB e storage S3.
+- [x] Confirmar e-mail oficial de suporte e @ oficial do Instagram.
+- [x] Definir fluxo de publicação: Manus como hosting, banco MySQL/TiDB e storage S3.
 - [ ] Criar alimentação persistente de veículos, imagens, locadoras e leads.
-- [ ] Criar área administrativa para cadastrar, editar, pausar e moderar anúncios.
-- [ ] Definir papéis e permissões de Admin, Locador e Cliente na operação.
+- [x] Criar área administrativa para cadastrar, editar, pausar e moderar anúncios.
+- [x] Definir papéis e permissões de Admin, Locador e Cliente na operação.
 - [ ] Validar backups, segurança, logs, produção e rotina de atualização.
 - [ ] Publicar checkpoint operacional após os testes.
 
@@ -56,8 +56,8 @@
 - [ ] Validar login real de Cliente, Locador e Admin com sessões autenticadas.
 - [ ] Testar `/anunciar` autenticado no desktop e mobile com selects preenchidos.
 - [ ] Confirmar console limpo e build final após esses testes.
-- [ ] Receber e-mail oficial de suporte, @ oficial do Instagram e domínio comprado.
-- [ ] Atualizar rodapé, links, mailto, Instagram, SEO e suporte com dados oficiais.
+- [x] Receber e-mail oficial de suporte, @ oficial do Instagram e confirmar domínio comprado.
+- [x] Atualizar rodapé, links, mailto, Instagram, SEO e suporte com dados oficiais.
 - [ ] Verificar configuração do domínio customizado no painel.
 - [ ] Salvar checkpoint final de lançamento.
 
@@ -150,7 +150,7 @@
 # Pendências de produção
 
 - [ ] Promover o TiDB staging para produção somente após aprovação explícita.
-- [ ] Manter `DATABASE_URL` inalterado até a decisão de promoção.
+- [x] Manter `DATABASE_URL` inalterado até a decisão de promoção.
 - [ ] Corrigir a referência de asset `/manus-storage/aluga-rodas-hero_82e5fd36.jpg` se necessário.
 - [ ] Avaliar divisão do bundle JavaScript acima de 500 kB.
 
@@ -248,11 +248,11 @@
 
 - [x] Confirmar que o subdomínio Manus publicado responde corretamente.
 - [x] Validar rotas públicas, metadados, robots, sitemap e manifest em produção.
-- [ ] Validar instalação PWA, offline e atualização do service worker em produção.
+- [x] Validar instalação PWA, offline e atualização do service worker em produção.
 - [ ] Validar login/logout e guardas de Cliente, Locador e Admin sem expor credenciais.
 - [ ] Validar `/anunciar`, busca, detalhe e fluxo de lead em desktop/mobile.
-- [ ] Confirmar console/rede limpos e ausência de links quebrados.
-- [ ] Documentar pendências: domínio customizado, promoção TiDB, Instagram e login real do proprietário.
+- [x] Confirmar console/rede limpos e ausência de links quebrados.
+- [x] Documentar pendências: domínio customizado, promoção TiDB e login real do proprietário.
 
 ## SEO no domínio ativo
 
@@ -293,3 +293,11 @@
 - [x] Manter a promoção do `DATABASE_URL` adiada até o usuário cadastrar a URI TiDB no painel seguro; não ativar a API persistente em produção neste momento.
 - [x] Persistir no servidor a intenção Cliente/Locador escolhida em `/cadastre-se` após o retorno do OAuth, sem permitir alteração para Admin.
 - [x] Testar a sincronização server-side da intenção de cadastro e preservar o bloqueio de Admin.
+
+# Fechamento verificável do lançamento
+
+- [x] Implementar no `/adm` listagem real de anúncios com status e locadora, protegida por Admin.
+- [x] Implementar ações server-side de aprovação, pausa e reativação de anúncios no `/adm`.
+- [x] Cobrir o CRUD/moderação administrativa com testes RBAC positivos e negativos.
+- [x] Documentar explicitamente o fluxo operacional Manus hosting + TiDB/MySQL + storage S3.
+- [ ] Executar auditoria pós-deploy de rotas, console, rede e links principais e registrar os resultados.

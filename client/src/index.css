@@ -203,3 +203,18 @@
 @media (max-width: 640px) { .signup-intent { grid-template-columns: 1fr; } .signup-intent button { min-height: 67px; } .provider-button { min-height: 64px; } }
 .auth-error { margin: 12px 0 0; color: #a94732; background: #fff0eb; border: 1px solid #f2c7ba; border-radius: 7px; padding: 10px 12px; font-size: 11px; line-height: 1.5; }
 .provider-button:disabled, .primary-button:disabled { cursor: wait; opacity: .7; transform: none; }
+
+.admin-vehicle-list { display: grid; gap: 10px; margin-top: 22px; }
+.admin-vehicle-row { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 15px 0; border-top: 1px solid var(--border); }
+.admin-vehicle-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.admin-vehicle-copy strong { font-size: 14px; }
+.admin-vehicle-copy span { color: #718080; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status-chip { align-self: flex-start; display: inline-flex; width: fit-content; padding: 4px 8px; border-radius: 999px; font-size: 9px; font-weight: 800; }
+.status-active { color: #3d7154; background: #e4f0e8; }
+.status-paused { color: #8a5b25; background: #fff0d9; }
+.status-draft { color: #667477; background: #eef0ed; }
+.status-rented { color: #385f7b; background: #e3edf5; }
+.admin-status-button { flex: none; padding: 9px 12px; font-size: 10px; }
+.spin { animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 640px) { .admin-vehicle-row { align-items: flex-start; flex-direction: column; } .admin-status-button { width: 100%; } }

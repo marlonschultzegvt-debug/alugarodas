@@ -13,6 +13,8 @@ import {
   listCompaniesByOwner,
   listVehicleImages,
   listVehicles,
+  listAdminVehicles,
+  updateVehicleStatus,
   createVehicleImage,
   upsertUser,
 } from "./db";
@@ -55,6 +57,10 @@ export const appRouter = router({
   admin: router({
     health: adminProcedure.query(({ ctx }) => ({ ok: true, role: ctx.user.role })),
     dashboard: adminProcedure.query(({ ctx }) => ({ ok: true, role: ctx.user.role, canManage: true })),
+    vehicles: adminProcedure.query(() => listAdminVehicles()),
+    vehicleStatus: adminProcedure
+      .input(z.object({ vehicleId: z.number().int().positive(), status: z.enum(["draft", "active", "paused", "rented"]) }))
+      .mutation(({ input }) => updateVehicleStatus(input.vehicleId, input.status)),
   }),
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
