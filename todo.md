@@ -207,3 +207,24 @@
 
 - [x] Renderizar AuthGuard em `/dashboard` com cliente autenticado e confirmar mensagem de acesso restrito.
 - [x] Confirmar no HTML renderizado que métricas/filhos do Dashboard não aparecem para cliente.
+
+# Configuração Zoho Mail
+
+- [x] Criar no Registro.br um TXT no host raiz `@` com o valor de verificação fornecido pelo Zoho.
+- [x] Aguardar propagação e repetir a verificação TXT no Zoho.
+- [x] Registrar os MX oficiais do Zoho somente após a propriedade ser confirmada; MX, SPF e DKIM foram reconhecidos pelo Zoho.
+- [ ] Criar `suporte@alugarodas.com.br` e testar envio/recebimento.
+- [ ] Atualizar os links de suporte do site depois de confirmar o endereço.
+
+# E-mail oficial no site
+
+- [x] Substituir referências de `oi@alugarodas.com.br` por `suporte@alugarodas.com.br`.
+- [x] Revisar rodapé, contato e mensagens de suporte sem alterar credenciais.
+- [x] Validar links `mailto:` no desktop e mobile.
+- [x] Executar TypeScript, Vitest e build antes do checkpoint de suporte.
+
+## Validação de links de suporte
+
+- [x] Confirmar que o mailto da home aponta para `suporte@alugarodas.com.br`.
+- [x] Confirmar que o mailto do dashboard aponta para `suporte@alugarodas.com.br`.
+- [x] Revisar visualmente home e dashboard em desktop/mobile após a troca do suporte; dashboard mobile revisado em captura dedicada.

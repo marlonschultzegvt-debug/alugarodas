@@ -19,3 +19,13 @@ A busca continua visualmente íntegra com o fallback estático ativo. O detalhe 
 ## Dashboard persistente
 
 No desktop, métricas, inventário vazio e CTA de cadastro aparecem alinhados e legíveis. No mobile, o cabeçalho colapsa corretamente e os cards de métricas formam uma grade de duas colunas. A navegação horizontal de atalhos do dashboard permanece acessível, embora o usuário precise deslizar para ver todos os itens; não há sobreposição estrutural além do prompt PWA fixo esperado.
+
+## E-mail oficial no site
+
+O rodapé foi revisado em desktop e mobile. O link de contato agora aponta para `mailto:suporte@alugarodas.com.br`; a composição do rodapé permanece legível, sem quebra de colunas ou corte no mobile. A home mantém a hierarquia visual e os CTAs responsivos após a alteração.
+
+## Validação explícita dos links de suporte
+
+A home foi revisada em desktop e mobile após a centralização de `SUPPORT_MAILTO`; o rodapé permanece legível e o link usa `mailto:suporte@alugarodas.com.br`. O dashboard foi revisado em desktop; sem sessão persistente no preview, o AuthGuard exibe o estado de verificação de acesso, portanto as métricas não aparecem antes da autenticação. O link de suporte do dashboard usa a mesma constante oficial e foi coberto pelo teste `server/contact.links.test.ts`.
+
+A revisão do dashboard em mobile confirmou que o rodapé, a navegação horizontal, os cards de métricas, o inventário vazio e o bloco de leads permanecem dentro da largura da tela após a centralização do contato. Não há cortes ou sobreposição; o contato de suporte permanece acessível no bloco de ajuda quando a sessão do anunciante está ativa.
