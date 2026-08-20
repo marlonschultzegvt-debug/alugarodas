@@ -546,3 +546,20 @@
 - [x] Revisar PWA, desktop/mobile, console, rede, SEO e links.
 - [x] Corrigir bloqueios encontrados e repetir os testes.
 - [x] Publicar checkpoint com status de lançamento e pendências operacionais.
+
+# Domínio customizado
+
+- [ ] Verificar se alugarodas.com.br está associado ao projeto publicado.
+- [ ] Identificar por que a opção de domínio não aparece no painel atual.
+- [ ] Confirmar o caminho de DNS ou alternativa de conexão disponível.
+- [ ] Orientar a configuração final sem trocar a hospedagem funcional.
+
+# Correção de localização e resultados
+
+- [x] Auditar por que o filtro mostra apenas poucas cidades e por que a cidade escolhida não restringe os resultados.
+- [x] Ampliar a lista de cidades com estado e normalização de acentos.
+- [x] Aplicar filtro exato de cidade na consulta de veículos persistentes.
+- [x] Evitar fallback para veículo de outra cidade quando houver localidade escolhida.
+- [x] Corrigir autocomplete e filtro mobile para mostrar todas as opções relevantes.
+- [x] Validar Curitiba, Maringá, Londrina, Fortaleza, Olinda e cidades sem resultados.
+- [x] Executar Vitest, TypeScript, build e revisão desktop/mobile antes de publicar.

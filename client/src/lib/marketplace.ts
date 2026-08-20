@@ -127,7 +127,6 @@ export const vehicles: Vehicle[] = [
   },
 ];
 
-export const cities = ["Curitiba", "Maringá", "Londrina", "Joinville", "Florianópolis", "São Paulo"];
 export const cityOptions = [
   { city: "Curitiba", state: "PR", country: "Brasil" },
   { city: "São Paulo", state: "SP", country: "Brasil" },
@@ -136,7 +135,19 @@ export const cityOptions = [
   { city: "Maringá", state: "PR", country: "Brasil" },
   { city: "Florianópolis", state: "SC", country: "Brasil" },
   { city: "Joinville", state: "SC", country: "Brasil" },
-];
+  { city: "Fortaleza", state: "CE", country: "Brasil" },
+  { city: "Olinda", state: "PE", country: "Brasil" },
+  { city: "Recife", state: "PE", country: "Brasil" },
+  { city: "São José dos Pinhais", state: "PR", country: "Brasil" },
+  { city: "Ponta Grossa", state: "PR", country: "Brasil" },
+  { city: "Cascavel", state: "PR", country: "Brasil" },
+  { city: "Londrina", state: "PR", country: "Brasil" },
+  { city: "Balneário Camboriú", state: "SC", country: "Brasil" },
+  { city: "Campinas", state: "SP", country: "Brasil" },
+  { city: "Belo Horizonte", state: "MG", country: "Brasil" },
+  { city: "Rio de Janeiro", state: "RJ", country: "Brasil" },
+].filter((item, index, list) => list.findIndex((candidate) => candidate.city === item.city) === index);
+export const cities = cityOptions.map((item) => item.city);
 export const categories: { label: string; value: VehicleCategory | "Todos"; icon: string }[] = [
   { label: "Todos", value: "Todos", icon: "✦" },
   { label: "Carros", value: "Carro", icon: "▱" },
