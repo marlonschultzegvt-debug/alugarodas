@@ -319,3 +319,10 @@
 - [ ] Investigar o portal OAuth que retornou `about:blank` sem elementos e repetir a autenticação quando houver sessão oficial disponível.
 - [ ] Criar conta Admin de teste somente via OAuth oficial ou staging isolado, sem senha fixa, sem credencial hardcoded e sem promover privilégio Admin pelo cadastro público.
 - [ ] Repetir testes autenticados de Admin/Locador após a sessão oficial concluir o desafio Cloudflare/OAuth.
+
+# Nova publicação virtual
+
+- [x] Executar `pnpm check`, `pnpm test` e `pnpm build` antes da nova publicação; 33 testes passaram e o aviso do hero é apenas resolução de asset em runtime.
+- [x] Testar virtualmente home, busca, filtros, detalhe, lead demonstrativo, guards, PWA e console/rede; a consulta manual do service worker teve timeout, mas a PWA segue confirmada pelas auditorias anteriores.
+- [x] Corrigir regressões reproduzíveis encontradas nesta rodada e repetir os testes críticos; não foram encontrados novos erros reproduzíveis.
+- [ ] Publicar nova versão somente após a validação técnica e registrar as limitações de OAuth, Admin e dados persistentes.

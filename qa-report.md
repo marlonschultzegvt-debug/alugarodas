@@ -105,3 +105,27 @@ O botão WhatsApp da Honda CG 160 Start abriu a página oficial `api.whatsapp.co
 ## Bloqueio de Admin de teste e OAuth
 
 O navegador real exibiu o portal Manus com provedores Facebook, Google, Microsoft e Apple, mas o desafio Cloudflare mostrou `Verification failed` e manteve o botão de continuação desabilitado. Não foi criada a conta fixa sugerida pelo usuário, pois o produto usa OAuth e uma credencial Admin previsível seria insegura em produção. A validação autenticada fica condicionada à conclusão oficial do desafio e ao uso de uma sessão temporária/staging.
+
+## Nova publicação virtual — home e busca
+
+A home do preview carregou a hero, buscador principal, atalhos de categoria, cards de Geely, Honda e Fiorino, links de WhatsApp, instalação PWA, footer e Instagram. O CTA **Buscar veículos** abriu `/buscar?cidade=Curitiba&finalidade=APP&categoria=Todos`, preservando os parâmetros e carregando quatro anúncios sem erro aparente.
+
+## Filtro combinado virtual
+
+A combinação **Florianópolis + Carro + APP** retornou somente o **Renault Kwid Zen**, com cidade Florianópolis/SC, preço de R$ 790 por semana, câmbio manual, 6.000 km/mês e seguro incluso. O empty state não foi acionado e o card permaneceu íntegro.
+
+## Detalhe e lead na nova publicação
+
+O detalhe do Renault Kwid Zen carregou imagem, cidade, preço semanal/mensal, caução, seguro, quilometragem, compatibilidade UberX/99, WhatsApp e favorito. O modal de interesse aceitou os dados fictícios `QA Aluga Rodas` e `41999990000`; o envio exibiu **INTERESSE ENVIADO** e deixou explícito que se trata de modo demonstração, sem disparar comunicação externa.
+
+## Guards na nova publicação virtual
+
+A abertura de `/adm` sem sessão redirecionou para `/entrar`, exibindo os perfis Cliente, Locador e Admin apenas como contexto de acesso seguro. Nenhuma métrica, lista de anúncios ou ação administrativa foi renderizada para o visitante anônimo.
+
+## Dashboard e anúncio sem sessão
+
+As rotas `/dashboard` e `/anunciar` redirecionaram para `/entrar` no preview. O dashboard não exibiu métricas protegidas e o formulário de cadastro de veículo não foi exposto ao visitante anônimo.
+
+## Cadastro e PWA na nova publicação virtual
+
+A rota `/cadastre-se` carregou corretamente com os perfis **Quero alugar** e **Quero anunciar**, opções Google/Gmail e Apple/iCloud, acesso seguro, link para `/entrar` e bloqueio explícito de criação pública de Admin. Uma consulta manual via `navigator.serviceWorker.ready` excedeu o timeout do navegador e foi cancelada; o console não mostrou outro erro de runtime nessa etapa. O service worker já havia sido confirmado em auditorias anteriores.
