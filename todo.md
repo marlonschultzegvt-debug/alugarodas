@@ -359,3 +359,10 @@
 - [x] Criar consulta da área Cliente com favoritos, interesses e contadores reais.
 - [x] Integrar salvar favorito e envio de interesse à área `/cliente`.
 - [x] Testar persistência, RBAC, TypeScript, Vitest, build e responsividade.
+
+# Confirmação do cadastro de veículo
+
+- [x] Corrigir o título cortado da confirmação após salvar dados iniciais.
+- [x] Reescrever a mensagem para indicar claramente que o anúncio foi salvo como rascunho.
+- [x] Ajustar o CTA e o layout da confirmação para desktop e mobile.
+- [x] Testar o fluxo, acessibilidade, TypeScript, Vitest, build e responsividade.
