@@ -87,7 +87,11 @@ export async function listVehicles(filters?: { city?: string; category?: string;
   if (filters?.purpose === "Uber Comfort") conditions.push(eq(vehicles.acceptsUberComfort, true));
   if (filters?.purpose === "Uber Black") conditions.push(eq(vehicles.acceptsUberBlack, true));
   if (filters?.purpose === "99") conditions.push(eq(vehicles.accepts99, true));
-  return db.select().from(vehicles).where(and(...conditions)).orderBy(desc(vehicles.createdAt));
+  const rows = await db.select().from(vehicles).where(and(...conditions)).orderBy(desc(vehicles.createdAt));
+  return Promise.all(rows.map(async (vehicle) => {
+    const cover = await db.select({ url: vehicleImages.url }).from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicle.id)).orderBy(asc(vehicleImages.sortOrder)).limit(1);
+    return { ...vehicle, coverImageUrl: cover[0]?.url ?? null };
+  }));
 }
 
 export async function getVehicleById(id: number) {

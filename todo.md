@@ -503,3 +503,11 @@
 - [ ] Fazer a home priorizar anúncios persistentes aprovados e usar demonstrações apenas como fallback identificado.
 - [x] Exibir no Admin o estado editorial de cada anúncio.
 - [x] Validar RBAC, vitrine pública, TypeScript, Vitest, build e responsividade.
+
+# Foto de capa do anúncio
+
+- [x] Auditar por que o catálogo usa imagem padrão em vez da foto enviada.
+- [x] Priorizar a imagem do veículo cadastrada no storage como capa real.
+- [x] Permitir escolher outra foto como capa quando houver várias imagens.
+- [ ] Atualizar catálogo, detalhe e painel para usar a capa persistente.
+- [x] Validar upload, seleção de capa, RBAC, TypeScript, Vitest, build e responsividade.

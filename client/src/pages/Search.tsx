@@ -48,7 +48,7 @@ export default function Search() {
         insurance: item.insuranceIncluded ? "Seguro incluso" : "Seguro a consultar",
         availability: item.status === "active" ? "Disponível agora" : "Consulte disponibilidade",
         verified: false,
-        image: "/manus-storage/aluga-rodas-hero_82e5fd36.jpg",
+        image: item.coverImageUrl ?? "/manus-storage/aluga-rodas-hero_82e5fd36.jpg",
         purpose: item.acceptsApp ? "APP" : "Uso pessoal",
         appClasses: [
           ...(item.acceptsUberX ? ["UberX"] : []),
