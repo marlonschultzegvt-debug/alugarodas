@@ -537,3 +537,12 @@
 - [x] Usar prompt nativo quando disponível e instruções específicas no iPhone.
 - [x] Atualizar manifest, favicon e Apple Touch Icon com o novo ícone.
 - [x] Validar desktop/mobile, TypeScript, Vitest, build e revisão visual.
+
+# Rodada máxima de lançamento
+
+- [x] Preparar matriz de fluxos Cliente, quem aluga, Locador e Admin.
+- [x] Executar testes automatizados, banco, rotas, RBAC e segurança.
+- [x] Testar no navegador busca, cadastro, login/logout, favoritos, interesse, leads, anúncio, fotos, capa e moderação.
+- [x] Revisar PWA, desktop/mobile, console, rede, SEO e links.
+- [x] Corrigir bloqueios encontrados e repetir os testes.
+- [x] Publicar checkpoint com status de lançamento e pendências operacionais.
