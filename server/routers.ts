@@ -4,6 +4,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
+import { storagePut } from "./storage";
 import {
   createClientInterest,
   createCompany,
@@ -113,6 +114,20 @@ export const appRouter = router({
     vehicleImageCreate: publisherProcedure
       .input(z.object({ vehicleId: z.number().int().positive(), url: z.string().url(), storageKey: z.string().max(512).optional(), altText: z.string().max(180).optional(), sortOrder: z.number().int().nonnegative().optional(), isCover: z.boolean().optional() }))
       .mutation(({ input }) => createVehicleImage(input)),
+    vehicleImageUpload: publisherProcedure
+      .input(z.object({ vehicleId: z.number().int().positive(), fileName: z.string().min(1).max(160), contentType: z.enum(["image/jpeg", "image/png", "image/webp"]), data: z.string().min(32).max(7_000_000), sortOrder: z.number().int().nonnegative().optional() }))
+      .mutation(async ({ ctx, input }) => {
+        const vehicle = await getVehicleById(input.vehicleId);
+        if (!vehicle || (ctx.user.role !== "admin" && vehicle.company?.ownerUserId !== ctx.user.id)) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Você não pode alterar este anúncio." });
+        }
+        const safeName = input.fileName.replace(/[^a-zA-Z0-9._-]/g, "-");
+        const bytes = Buffer.from(input.data, "base64");
+        if (bytes.length > 5 * 1024 * 1024) throw new TRPCError({ code: "BAD_REQUEST", message: "Cada imagem deve ter no máximo 5 MB." });
+        const uploaded = await storagePut(`vehicles/${input.vehicleId}/${safeName}`, bytes, input.contentType);
+        const imageId = await createVehicleImage({ vehicleId: input.vehicleId, url: uploaded.url, storageKey: uploaded.key, altText: safeName, sortOrder: input.sortOrder ?? 0, isCover: (input.sortOrder ?? 0) === 0 });
+        return { imageId, ...uploaded };
+      }),
     leadCreate: publicProcedure
       .input(z.object({ vehicleId: z.number().int().positive(), companyId: z.number().int().positive(), requesterUserId: z.number().int().positive().optional(), name: z.string().min(2).max(160), email: z.string().email().optional(), phone: z.string().max(32).optional(), message: z.string().max(2000).optional(), source: z.string().max(64).optional(), utmSource: z.string().max(120).optional(), utmMedium: z.string().max(120).optional(), utmCampaign: z.string().max(120).optional() }))
       .mutation(({ input }) => createLead(input)),

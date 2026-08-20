@@ -366,3 +366,12 @@
 - [x] Reescrever a mensagem para indicar claramente que o anúncio foi salvo como rascunho.
 - [x] Ajustar o CTA e o layout da confirmação para desktop e mobile.
 - [x] Testar o fluxo, acessibilidade, TypeScript, Vitest, build e responsividade.
+
+# Salvamento real e fotos do anúncio
+
+- [x] Auditar por que o cadastro mostra sucesso sem persistir quando o marketplace está desabilitado.
+- [x] Garantir criação persistente de empresa e veículo para anunciante autenticado.
+- [x] Implementar upload real de fotos com armazenamento seguro e validação de tipo/tamanho.
+- [x] Associar imagens enviadas ao veículo criado e exibir prévias/estado de erro.
+- [x] Confirmar sucesso somente após veículo e fotos serem persistidos.
+- [x] Testar fluxo, RBAC, storage, TypeScript, Vitest, build e responsividade.
