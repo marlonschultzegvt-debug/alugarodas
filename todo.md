@@ -375,3 +375,9 @@
 - [x] Associar imagens enviadas ao veículo criado e exibir prévias/estado de erro.
 - [x] Confirmar sucesso somente após veículo e fotos serem persistidos.
 - [x] Testar fluxo, RBAC, storage, TypeScript, Vitest, build e responsividade.
+
+# Correção da validação do anúncio
+
+- [x] Exibir erro específico quando a descrição tiver menos de 10 caracteres.
+- [x] Evitar que a tentativa de salvar com fotos falhe sem orientação clara ao anunciante.
+- [x] Testar salvamento após corrigir a descrição e manter upload de fotos funcionando.
