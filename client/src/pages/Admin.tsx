@@ -1,5 +1,5 @@
 import React from "react";
-import { BarChart3, CarFront, CheckCircle2, Loader2, LogOut, PauseCircle, PlayCircle, ShieldCheck, Users } from "lucide-react";
+import { BarChart3, Building2, CarFront, CheckCircle2, Eye, Loader2, LogOut, PauseCircle, PlayCircle, ShieldCheck, Trash2, Users } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -19,7 +19,11 @@ export default function Admin() {
   const serverAuthorized = dashboardQuery.data?.canManage === true;
   const vehiclesQuery = trpc.admin.vehicles.useQuery(undefined, { enabled: serverAuthorized });
   const utils = trpc.useUtils();
+  const [selectedAdvertiser, setSelectedAdvertiser] = React.useState<{ name: string; type?: string | null; email?: string | null; phone?: string | null; whatsapp?: string | null; verified?: boolean | null } | null>(null);
   const statusMutation = trpc.admin.vehicleStatus.useMutation({
+    onSuccess: () => void utils.admin.vehicles.invalidate(),
+  });
+  const deleteMutation = trpc.admin.vehicleDelete.useMutation({
     onSuccess: () => void utils.admin.vehicles.invalidate(),
   });
   const securityLabel = dashboardQuery.isLoading
@@ -87,16 +91,14 @@ export default function Admin() {
                         <span>{vehicle.city} - {vehicle.state} · {company?.name ?? "Locadora não informada"}</span>
                         <small className={`status-chip status-${status}`}>{statusLabel[status]}</small>
                       </div>
-                      <button type="button" className="outline-button admin-status-button" disabled={statusMutation.isPending} onClick={() => statusMutation.mutate({ vehicleId: vehicle.id, status: nextStatus })}>
-                        {statusMutation.isPending ? <Loader2 size={14} className="spin" /> : status === "active" ? <PauseCircle size={14} /> : <PlayCircle size={14} />}
-                        {status === "active" ? "Pausar" : "Ativar"}
-                      </button>
+                      <div className="admin-vehicle-actions"><Link href={`/veiculo/${vehicle.id}`} className="outline-button admin-action-button"><Eye size={14} /> Ver anúncio</Link><button type="button" className="outline-button admin-action-button" onClick={() => setSelectedAdvertiser(company ? { name: company.name, type: company.type, email: company.email, phone: company.phone, whatsapp: company.whatsapp, verified: company.verified } : { name: "Anunciante não informado" })}><Building2 size={14} /> Ver anunciante</button><button type="button" className="outline-button admin-status-button" disabled={statusMutation.isPending || deleteMutation.isPending} onClick={() => statusMutation.mutate({ vehicleId: vehicle.id, status: nextStatus })}>{statusMutation.isPending ? <Loader2 size={14} className="spin" /> : status === "active" ? <PauseCircle size={14} /> : <PlayCircle size={14} />}{status === "active" ? "Pausar" : "Ativar"}</button><button type="button" className="outline-button admin-delete-button" disabled={deleteMutation.isPending} onClick={() => { const confirmed = window.confirm(`Excluir o anúncio ${vehicle.brand} ${vehicle.model}? Esta ação remove o anúncio, fotos, favoritos e leads relacionados.`); if (confirmed) deleteMutation.mutate({ vehicleId: vehicle.id }); }}><Trash2 size={14} /> Excluir</button></div>
                     </article>
                   );
                 })}
               </div>
             )}
           </div>
+          {selectedAdvertiser && <div className="admin-advertiser-modal" role="dialog" aria-modal="true" aria-label="Detalhes do anunciante"><div className="admin-advertiser-card"><button type="button" className="modal-close" onClick={() => setSelectedAdvertiser(null)} aria-label="Fechar detalhes do anunciante">×</button><span className="eyebrow orange">ANUNCIANTE</span><h2>{selectedAdvertiser.name}</h2><p>{selectedAdvertiser.type === "locadora" ? "Locadora" : "Anunciante"}{selectedAdvertiser.verified ? " · Verificado" : ""}</p><dl>{selectedAdvertiser.email && <><dt>E-mail</dt><dd>{selectedAdvertiser.email}</dd></>}{selectedAdvertiser.phone && <><dt>Telefone</dt><dd>{selectedAdvertiser.phone}</dd></>}{selectedAdvertiser.whatsapp && <><dt>WhatsApp</dt><dd>{selectedAdvertiser.whatsapp}</dd></>}</dl><button type="button" className="primary-button" onClick={() => setSelectedAdvertiser(null)}>Fechar</button></div></div>}
         </section>
       </div>
     </main>

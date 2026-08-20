@@ -313,3 +313,16 @@
 .row-menu-popover a, .row-menu-popover button { display: block; width: 100%; border: 0; background: transparent; color: var(--petrol); text-align: left; font: inherit; font-size: 10px; font-weight: 700; padding: 9px 10px; border-radius: 4px; cursor: pointer; text-decoration: none; }
 .row-menu-popover a:hover, .row-menu-popover button:hover, .row-menu-popover a:focus-visible, .row-menu-popover button:focus-visible { background: #edf1ed; outline: none; }
 @media (max-width: 640px) { .row-actions { min-width: 118px; gap: 2px; } .row-action span { display: none; } .row-menu-popover { right: 0; } }
+
+.admin-vehicle-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 7px; }
+.admin-action-button, .admin-delete-button { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; padding: 8px 10px; }
+.admin-delete-button { color: #a34335; border-color: #e9b5a9; }
+.admin-delete-button:hover, .admin-delete-button:focus-visible { background: #fff0ec; color: #8e3327; }
+.admin-advertiser-modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgba(10, 31, 34, .46); }
+.admin-advertiser-card { position: relative; width: min(440px, 100%); padding: 30px; border-radius: 10px; background: #fffefa; box-shadow: 0 22px 60px rgba(10, 31, 34, .22); }
+.admin-advertiser-card h2 { margin: 8px 0 5px; font: 400 29px 'DM Serif Display', serif; }
+.admin-advertiser-card p { margin: 0 0 22px; color: #71807f; font-size: 12px; }
+.admin-advertiser-card dl { display: grid; grid-template-columns: 90px 1fr; gap: 8px 12px; margin: 0 0 24px; font-size: 12px; }
+.admin-advertiser-card dt { color: #71807f; font-weight: 800; }
+.admin-advertiser-card dd { margin: 0; color: var(--petrol); overflow-wrap: anywhere; }
+@media (max-width: 760px) { .admin-vehicle-actions { justify-content: flex-start; margin-top: 14px; } .admin-action-button, .admin-delete-button { flex: 1 1 auto; justify-content: center; } }

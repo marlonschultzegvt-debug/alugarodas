@@ -389,3 +389,11 @@
 - [x] Tornar a ação de leads clicável e funcional.
 - [x] Tornar o menu de opções do veículo clicável, com ações seguras.
 - [x] Testar interações, navegação, TypeScript, Vitest, build e responsividade.
+
+# Ações administrativas de anúncios
+
+- [x] Adicionar ação Admin para abrir o anúncio.
+- [x] Adicionar ação Admin para visualizar o anunciante/locadora.
+- [x] Adicionar exclusão de anúncio protegida por confirmação explícita.
+- [x] Criar procedimento server-side de exclusão com limpeza segura das dependências.
+- [x] Testar RBAC, confirmação, navegação, TypeScript, Vitest, build e responsividade.

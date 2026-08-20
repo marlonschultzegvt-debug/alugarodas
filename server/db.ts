@@ -151,6 +151,20 @@ export async function updateVehicleStatus(vehicleId: number, status: "draft" | "
   return { vehicleId, status };
 }
 
+export async function deleteAdminVehicle(vehicleId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const existing = await db.select({ id: vehicles.id }).from(vehicles).where(eq(vehicles.id, vehicleId)).limit(1);
+  if (!existing[0]) return { vehicleId, deleted: false };
+  await db.transaction(async (tx) => {
+    await tx.delete(leads).where(eq(leads.vehicleId, vehicleId));
+    await tx.delete(vehicleImages).where(eq(vehicleImages.vehicleId, vehicleId));
+    await tx.delete(favorites).where(eq(favorites.vehicleKey, String(vehicleId)));
+    await tx.delete(vehicles).where(eq(vehicles.id, vehicleId));
+  });
+  return { vehicleId, deleted: true };
+}
+
 export async function listVehicleImages(vehicleId: number) {
   const db = await getDb();
   if (!db) return [];

@@ -32,6 +32,9 @@ vi.mock("@/lib/trpc", () => ({
       vehicleStatus: {
         useMutation: () => ({ isPending: false, mutate: vi.fn() }),
       },
+      vehicleDelete: {
+        useMutation: () => ({ isPending: false, mutate: vi.fn() }),
+      },
     },
     useUtils: () => ({ admin: { vehicles: { invalidate: vi.fn() } } }),
   },

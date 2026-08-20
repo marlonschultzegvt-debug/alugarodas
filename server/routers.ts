@@ -8,6 +8,7 @@ import { storagePut } from "./storage";
 import {
   createClientInterest,
   createCompany,
+  upsertUser,
   createLead,
   getClientArea,
   createVehicle,
@@ -21,7 +22,7 @@ import {
   listAdminVehicles,
   updateVehicleStatus,
   createVehicleImage,
-  upsertUser,
+  deleteAdminVehicle,
 } from "./db";
 
 const clientProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -73,6 +74,9 @@ export const appRouter = router({
     vehicleStatus: adminProcedure
       .input(z.object({ vehicleId: z.number().int().positive(), status: z.enum(["draft", "active", "paused", "rented"]) }))
       .mutation(({ input }) => updateVehicleStatus(input.vehicleId, input.status)),
+    vehicleDelete: adminProcedure
+      .input(z.object({ vehicleId: z.number().int().positive() }))
+      .mutation(({ input }) => deleteAdminVehicle(input.vehicleId)),
   }),
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
