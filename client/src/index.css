@@ -326,3 +326,7 @@
 .admin-advertiser-card dt { color: #71807f; font-weight: 800; }
 .admin-advertiser-card dd { margin: 0; color: var(--petrol); overflow-wrap: anywhere; }
 @media (max-width: 760px) { .admin-vehicle-actions { justify-content: flex-start; margin-top: 14px; } .admin-action-button, .admin-delete-button { flex: 1 1 auto; justify-content: center; } }
+
+.dashboard-sidebar nav button { display: flex; width: 100%; align-items: center; gap: 11px; border: 0; background: transparent; color: #71807f; font: inherit; font-size: 12px; font-weight: 700; text-align: left; padding: 13px 14px; border-radius: 6px; cursor: pointer; }
+.dashboard-sidebar nav button:hover, .dashboard-sidebar nav button:focus-visible { color: var(--petrol); background: #edf1ed; outline: none; }
+.dashboard-sidebar nav button.active { color: var(--petrol); background: #fffefa; box-shadow: 0 8px 20px rgba(18,45,48,.05); }

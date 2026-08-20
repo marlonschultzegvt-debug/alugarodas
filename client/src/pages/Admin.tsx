@@ -26,6 +26,7 @@ export default function Admin() {
   const deleteMutation = trpc.admin.vehicleDelete.useMutation({
     onSuccess: () => void utils.admin.vehicles.invalidate(),
   });
+  const scrollToSection = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   const securityLabel = dashboardQuery.isLoading
     ? "Verificando"
     : serverAuthorized
@@ -45,11 +46,11 @@ export default function Admin() {
             <span className="avatar">AR</span>
             <div><strong>Aluga Rodas</strong><span> administração</span></div>
           </div>
-          <nav>
-            <a className="active" href="#visao-geral"><BarChart3 size={17} /> Visão geral</a>
-            <a href="#usuarios"><Users size={17} /> Usuários</a>
-            <a href="#anuncios"><CheckCircle2 size={17} /> Anúncios</a>
-            <a href="#seguranca"><ShieldCheck size={17} /> Segurança</a>
+          <nav aria-label="Navegação administrativa">
+            <button type="button" className="active" onClick={() => scrollToSection("visao-geral")}><BarChart3 size={17} /> Visão geral</button>
+            <button type="button" onClick={() => scrollToSection("usuarios")}><Users size={17} /> Usuários</button>
+            <button type="button" onClick={() => scrollToSection("anuncios")}><CheckCircle2 size={17} /> Anúncios</button>
+            <button type="button" onClick={() => scrollToSection("seguranca")}><ShieldCheck size={17} /> Segurança</button>
           </nav>
         </aside>
 

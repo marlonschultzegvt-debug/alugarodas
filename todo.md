@@ -397,3 +397,10 @@
 - [x] Adicionar exclusão de anúncio protegida por confirmação explícita.
 - [x] Criar procedimento server-side de exclusão com limpeza segura das dependências.
 - [x] Testar RBAC, confirmação, navegação, TypeScript, Vitest, build e responsividade.
+
+# Correção da navegação Admin
+
+- [x] Tornar Usuários, Anúncios e Segurança navegáveis para seções reais do painel.
+- [x] Corrigir destaque/scroll das seções Admin no desktop e mobile.
+- [x] Revalidar Ver anúncio, Ver anunciante, Pausar/Ativar e Excluir após a última publicação.
+- [x] Testar handlers, RBAC, TypeScript, Vitest, build e responsividade.
