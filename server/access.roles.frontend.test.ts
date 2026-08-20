@@ -4,7 +4,7 @@ import { authGuardDecision, canAccess, dashboardRouteRoles, normalizeRole, roleP
 describe("role access", () => {
   it("normalizes the legacy user role to cliente", () => {
     expect(normalizeRole("user")).toBe("cliente");
-    expect(rolePath("user")).toBe("/buscar");
+    expect(rolePath("user")).toBe("/cliente");
   });
 
   it("allows only locador and admin into advertiser areas", () => {
@@ -30,7 +30,14 @@ describe("role access", () => {
   it("routes admin to /adm and keeps advertiser/client destinations separate", () => {
     expect(rolePath("admin")).toBe("/adm");
     expect(rolePath("locador")).toBe("/dashboard");
-    expect(rolePath("cliente")).toBe("/buscar");
+    expect(rolePath("cliente")).toBe("/cliente");
+  });
+
+  it("protects the client area for cliente only", () => {
+    expect(canAccess("cliente", ["cliente", "user"])).toBe(true);
+    expect(canAccess("user", ["cliente", "user"])).toBe(true);
+    expect(canAccess("locador", ["cliente", "user"])).toBe(false);
+    expect(canAccess("admin", ["cliente", "user"])).toBe(false);
   });
 
   it("allows only admin into the admin area", () => {

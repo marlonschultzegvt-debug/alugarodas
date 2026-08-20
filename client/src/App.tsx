@@ -18,15 +18,18 @@ const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Login = lazy(() => import("./pages/Login"));
 const SignUp = lazy(() => import("./pages/SignUp"));
+const ClientArea = lazy(() => import("./pages/ClientArea"));
 import AuthGuard from "./components/AuthGuard";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
-import { dashboardRouteRoles } from "./lib/access";
+import { dashboardRouteRoles, rolePath, type UserRole } from "./lib/access";
 import { SUPPORT_MAILTO } from "./lib/contact";
 import { PUBLIC_LOGIN_PATH } from "./lib/navigation";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
+  const { user } = useAuth();
+  const accountPath = rolePath(user?.role as UserRole | undefined);
   const nav = [
     ["Buscar veículos", "/buscar"],
     ["Carros para APP", "/buscar?finalidade=APP"],
@@ -44,7 +47,7 @@ export function SiteHeader() {
         </Link>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navegação principal">
           {nav.map(([label, href]) => <Link key={label} href={href} className={location === href ? "active" : ""} onClick={() => setOpen(false)}>{label}</Link>)}
-          <a href={PUBLIC_LOGIN_PATH} className="nav-login" onClick={() => setOpen(false)}>Entrar</a>
+          <a href={user ? accountPath : PUBLIC_LOGIN_PATH} className="nav-login" onClick={() => setOpen(false)}>{user ? "Minha área" : "Entrar"}</a>
           <Link href="/anunciar" className="nav-cta" onClick={() => setOpen(false)}>Anuncie seu veículo <ArrowRight size={16} /></Link>
         </nav>
         <button className="mobile-menu" onClick={() => setOpen((v) => !v)} aria-label={open ? "Fechar menu" : "Abrir menu"}>{open ? <X /> : <Menu />}</button>
@@ -90,6 +93,7 @@ function Router() {
       <Route path="/anunciar"><AuthGuard roles={["admin", "locador"]}><Advertise /></AuthGuard></Route>
       <Route path="/entrar" component={Login} />
       <Route path="/cadastre-se" component={SignUp} />
+      <Route path="/cliente"><AuthGuard roles={["cliente", "user"]}><ClientArea /></AuthGuard></Route>
       <Route path="/adm"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>
       <Route path="/admin"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>
       <Route path="/dashboard"><AuthGuard roles={dashboardRouteRoles}><Dashboard /></AuthGuard></Route>

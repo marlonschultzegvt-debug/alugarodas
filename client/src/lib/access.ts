@@ -22,5 +22,6 @@ export function canAccess(role: UserRole | undefined, allowedRoles?: UserRole[])
 export function rolePath(role: UserRole | undefined) {
   if (role === "admin") return "/adm";
   if (role === "locador") return "/dashboard";
+  if (role === "cliente" || role === "user") return "/cliente";
   return "/buscar";
 }

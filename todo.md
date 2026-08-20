@@ -329,3 +329,11 @@
 - [x] Corrigir QA-03: o CTA global **Entrar** deve abrir `/entrar`, nunca `/adm`.
 - [x] Validar que `/adm` continua exclusivo para Admin e que o login comum não expõe o painel administrativo.
 - [x] Repetir check, Vitest, build e validação visual/publicada após a correção QA-03.
+
+# Área logada do Cliente
+
+- [x] Criar rota protegida `/cliente` exclusiva para o papel Cliente.
+- [x] Redirecionar Cliente autenticado para `/cliente` após o login, mantendo Locador no dashboard e Admin em `/adm`.
+- [x] Criar experiência inicial da área do Cliente com resumo da conta, favoritos e interesses.
+- [x] Adicionar navegação contextual para o Cliente sem exibir ações de Locador ou Admin.
+- [x] Testar RBAC, TypeScript, Vitest, build e responsividade da área do Cliente.
