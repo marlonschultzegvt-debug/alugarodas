@@ -29,6 +29,13 @@
       "when": 1787186272543,
       "tag": "0003_elite_katie_power",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1787191952772,
+      "tag": "0004_hot_catseye",
+      "breakpoints": true
     }
   ]
 }

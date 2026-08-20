@@ -23,6 +23,7 @@ import {
   updateVehicleStatus,
   createVehicleImage,
   deleteAdminVehicle,
+  recordVehicleView,
 } from "./db";
 
 const clientProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -108,6 +109,7 @@ export const appRouter = router({
       .input(z.object({ city: z.string().optional(), category: z.string().optional(), purpose: z.string().optional(), search: z.string().optional() }).optional())
       .query(({ input }) => listVehicles(input)),
     vehicle: publicProcedure.input(z.object({ id: z.number().int().positive() })).query(({ input }) => getVehicleById(input.id)),
+    vehicleViewCreate: publicProcedure.input(z.object({ vehicleId: z.number().int().positive(), sessionKey: z.string().max(160).optional(), source: z.string().max(64).optional() })).mutation(({ input }) => recordVehicleView(input.vehicleId, input.sessionKey, input.source)),
     companiesMine: publisherProcedure.query(({ ctx }) => listCompaniesByOwner(ctx.user.id)),
     dashboard: publisherProcedure.query(({ ctx }) => getPublisherDashboard(ctx.user.id)),
     companyCreate: publisherProcedure

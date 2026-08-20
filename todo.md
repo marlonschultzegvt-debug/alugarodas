@@ -451,3 +451,11 @@
 - [x] Incluir link do anúncio e assinatura @AlugaRodas ao final.
 - [x] Exibir o botão WhatsApp somente no estado de lead salvo, com URL correta.
 - [x] Testar codificação da mensagem, link, TypeScript, Vitest, build e responsividade.
+
+# Inventário com métricas por anúncio
+
+- [x] Evitar quebra excessiva do nome/modelo do veículo no inventário.
+- [x] Exibir visualizações por anúncio com dado persistente quando disponível.
+- [x] Exibir leads por anúncio com contagem real.
+- [x] Reorganizar status e ações para manter alinhamento em desktop e mobile.
+- [x] Testar métricas, ações, TypeScript, Vitest, build e responsividade.

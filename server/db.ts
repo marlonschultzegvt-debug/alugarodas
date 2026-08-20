@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, like, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   clientInterests,
@@ -15,6 +15,7 @@ import {
   users,
   vehicleImages,
   vehicles,
+  vehicleViews,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -111,17 +112,30 @@ export async function getPublisherDashboard(ownerUserId: number) {
   if (companyIds.length === 0) return { companies: [], vehicles: [], leads: [], metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } };
   const ownedVehicles = await db.select().from(vehicles).where(inArray(vehicles.companyId, companyIds)).orderBy(desc(vehicles.createdAt));
   const ownedLeads = await db.select().from(leads).where(inArray(leads.companyId, companyIds)).orderBy(desc(leads.createdAt));
+  const viewRows = await db.select({ vehicleId: vehicleViews.vehicleId, count: sql<number>`count(*)` }).from(vehicleViews).where(inArray(vehicleViews.vehicleId, ownedVehicles.map((vehicle) => vehicle.id))).groupBy(vehicleViews.vehicleId);
+  const leadCounts = new Map<number, number>();
+  for (const lead of ownedLeads) leadCounts.set(lead.vehicleId, (leadCounts.get(lead.vehicleId) ?? 0) + 1);
+  const viewCounts = new Map<number, number>();
+  for (const row of viewRows) viewCounts.set(row.vehicleId, Number(row.count));
+  const vehiclesWithMetrics = ownedVehicles.map((vehicle) => ({ ...vehicle, viewCount: viewCounts.get(vehicle.id) ?? 0, leadCount: leadCounts.get(vehicle.id) ?? 0 }));
   return {
     companies: ownedCompanies,
-    vehicles: ownedVehicles,
+    vehicles: vehiclesWithMetrics,
     leads: ownedLeads,
     metrics: {
-      views: 0,
+      views: vehiclesWithMetrics.reduce((total, vehicle) => total + vehicle.viewCount, 0),
       whatsappClicks: 0,
       leads: ownedLeads.length,
       activeVehicles: ownedVehicles.filter((vehicle) => vehicle.status === "active").length,
     },
   };
+}
+
+export async function recordVehicleView(vehicleId: number, sessionKey?: string, source?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.insert(vehicleViews).values({ vehicleId, sessionKey, source });
+  return { vehicleId, recorded: true };
 }
 
 export async function createCompany(input: InsertCompany) {

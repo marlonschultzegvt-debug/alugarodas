@@ -122,6 +122,18 @@ export const leads = mysqlTable(
   ],
 );
 
+export const vehicleViews = mysqlTable(
+  "vehicle_views",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    vehicleId: int("vehicleId").notNull().references(() => vehicles.id),
+    sessionKey: varchar("sessionKey", { length: 160 }),
+    source: varchar("source", { length: 64 }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => [index("vehicle_views_vehicle_idx").on(table.vehicleId), index("vehicle_views_created_idx").on(table.createdAt)],
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   companies: many(companies),
   leads: many(leads),
@@ -135,11 +147,16 @@ export const companiesRelations = relations(companies, ({ one, many }) => ({
   leads: many(leads),
 }));
 
+export const vehicleViewsRelations = relations(vehicleViews, ({ one }) => ({
+  vehicle: one(vehicles, { fields: [vehicleViews.vehicleId], references: [vehicles.id] }),
+}));
+
 export const vehiclesRelations = relations(vehicles, ({ one, many }) => ({
   company: one(companies, { fields: [vehicles.companyId], references: [companies.id] }),
   images: many(vehicleImages),
   leads: many(leads),
   favorites: many(favorites),
+  views: many(vehicleViews),
 }));
 
 export const vehicleImagesRelations = relations(vehicleImages, ({ one }) => ({
@@ -202,6 +219,8 @@ export type VehicleImage = typeof vehicleImages.$inferSelect;
 export type InsertVehicleImage = typeof vehicleImages.$inferInsert;
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;
+export type VehicleView = typeof vehicleViews.$inferSelect;
+export type InsertVehicleView = typeof vehicleViews.$inferInsert;
 export type Favorite = typeof favorites.$inferSelect;
 export type InsertFavorite = typeof favorites.$inferInsert;
 export type ClientInterest = typeof clientInterests.$inferSelect;

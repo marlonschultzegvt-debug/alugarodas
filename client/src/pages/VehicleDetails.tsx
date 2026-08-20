@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight, FileText, Heart, MapPin, MessageCircle, ShieldCheck, Wrench } from "lucide-react";
 import { formatBRL, trackEvent, vehicles, type Vehicle } from "@/lib/marketplace";
@@ -110,6 +110,8 @@ export default function VehicleDetails() {
   const interestMutation = trpc.auth.interestCreate.useMutation();
   const favoriteSaveMutation = trpc.auth.favoriteSave.useMutation();
   const favoriteRemoveMutation = trpc.auth.favoriteRemove.useMutation();
+  const vehicleViewMutation = trpc.marketplace.vehicleViewCreate.useMutation();
+  const trackedViewId = useRef<number | null>(null);
   const announcementUrl = typeof window !== "undefined" ? new URL(`/veiculo/${vehicle.slug}`, window.location.origin).toString() : `/veiculo/${vehicle.slug}`;
   const whatsappText = `Olá! Demonstrei interesse em alugar o veículo ${vehicle.brand} ${vehicle.model}.
 
@@ -120,6 +122,11 @@ Link do anúncio: ${announcementUrl}
   const gallery = useMemo(() => persistentVehicle?.imageUrls.length ? persistentVehicle.imageUrls : [vehicle.image], [persistentVehicle, vehicle.image]);
   const [photoIndex, setPhotoIndex] = useState(0);
   useEffect(() => { setPhotoIndex(0); }, [vehicle.id, gallery.length]);
+  useEffect(() => {
+    if (!sourceId || trackedViewId.current === sourceId) return;
+    trackedViewId.current = sourceId;
+    void vehicleViewMutation.mutateAsync({ vehicleId: sourceId, source: "vehicle_details" }).catch((error) => console.error("[VehicleDetails] failed to record view", error));
+  }, [sourceId, vehicleViewMutation]);
   useEffect(() => {
     if (!isClient || !clientAreaQuery.data) return;
     setFavoriteSaved(clientAreaQuery.data.favorites.some((favorite) => favorite.vehicleKey === String(vehicle.id)));
