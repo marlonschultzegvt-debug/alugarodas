@@ -381,3 +381,11 @@
 - [x] Exibir erro específico quando a descrição tiver menos de 10 caracteres.
 - [x] Evitar que a tentativa de salvar com fotos falhe sem orientação clara ao anunciante.
 - [x] Testar salvamento após corrigir a descrição e manter upload de fotos funcionando.
+
+# Correção do inventário do anunciante
+
+- [x] Corrigir o título truncado da seção de inventário.
+- [x] Tornar a ação de visualizar anúncio clicável e funcional.
+- [x] Tornar a ação de leads clicável e funcional.
+- [x] Tornar o menu de opções do veículo clicável, com ações seguras.
+- [x] Testar interações, navegação, TypeScript, Vitest, build e responsividade.

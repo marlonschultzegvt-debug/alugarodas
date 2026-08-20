@@ -304,3 +304,12 @@
 .photo-preview-grid div { aspect-ratio: 1; overflow: hidden; border-radius: 6px; background: #e9eeea; }
 .photo-preview-grid img { width: 100%; height: 100%; object-fit: cover; }
 @media (max-width: 640px) { .photo-preview-grid { grid-template-columns: repeat(3, 1fr); } }
+
+.row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: 170px; }
+.row-action { display: inline-flex; align-items: center; gap: 4px; border: 0; background: transparent; color: #71807f; font: inherit; font-size: 10px; font-weight: 800; cursor: pointer; padding: 7px 5px; border-radius: 5px; text-decoration: none; }
+.row-action:hover, .row-action:focus-visible { color: var(--petrol); background: #edf1ed; outline: none; }
+.row-menu-wrap { position: relative; }
+.row-menu-popover { position: absolute; z-index: 4; right: 0; top: calc(100% + 6px); width: 160px; padding: 6px; background: #fffefa; border: 1px solid #e2e7e2; border-radius: 7px; box-shadow: 0 12px 28px rgba(18, 45, 48, .14); }
+.row-menu-popover a, .row-menu-popover button { display: block; width: 100%; border: 0; background: transparent; color: var(--petrol); text-align: left; font: inherit; font-size: 10px; font-weight: 700; padding: 9px 10px; border-radius: 4px; cursor: pointer; text-decoration: none; }
+.row-menu-popover a:hover, .row-menu-popover button:hover, .row-menu-popover a:focus-visible, .row-menu-popover button:focus-visible { background: #edf1ed; outline: none; }
+@media (max-width: 640px) { .row-actions { min-width: 118px; gap: 2px; } .row-action span { display: none; } .row-menu-popover { right: 0; } }
