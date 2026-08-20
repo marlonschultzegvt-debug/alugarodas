@@ -128,6 +128,15 @@ export const vehicles: Vehicle[] = [
 ];
 
 export const cities = ["Curitiba", "Maringá", "Londrina", "Joinville", "Florianópolis", "São Paulo"];
+export const cityOptions = [
+  { city: "Curitiba", state: "PR", country: "Brasil" },
+  { city: "São Paulo", state: "SP", country: "Brasil" },
+  { city: "Foz do Iguaçu", state: "PR", country: "Brasil" },
+  { city: "Londrina", state: "PR", country: "Brasil" },
+  { city: "Maringá", state: "PR", country: "Brasil" },
+  { city: "Florianópolis", state: "SC", country: "Brasil" },
+  { city: "Joinville", state: "SC", country: "Brasil" },
+];
 export const categories: { label: string; value: VehicleCategory | "Todos"; icon: string }[] = [
   { label: "Todos", value: "Todos", icon: "✦" },
   { label: "Carros", value: "Carro", icon: "▱" },

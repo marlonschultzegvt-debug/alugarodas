@@ -475,3 +475,12 @@
 - [x] Manter o registro de interesse na área do Cliente sem duplicar indevidamente o contato.
 - [x] Exibir o lead associado ao veículo correto no dashboard do anunciante.
 - [x] Testar fluxo Cliente/anunciante, associações, RBAC, TypeScript, Vitest, build e responsividade.
+
+# Busca de cidade com autocomplete
+
+- [x] Auditar o campo de cidade atual e o catálogo de cidades disponível.
+- [x] Iniciar a busca de cidade sem valor pré-selecionado.
+- [x] Exibir sugestões filtradas a partir de três caracteres digitados.
+- [x] Mostrar cidade e estado nas sugestões, com navegação por teclado e seleção por clique.
+- [x] Permitir pesquisar sem cidade definida e preservar o valor selecionado nos filtros.
+- [x] Validar desktop/mobile, busca, TypeScript, Vitest e build.
