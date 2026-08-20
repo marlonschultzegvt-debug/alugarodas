@@ -218,7 +218,13 @@ export async function getClientArea(userId: number) {
   if (!db) return { favorites: [], interests: [] };
   const savedFavorites = await db.select().from(favorites).where(eq(favorites.userId, userId)).orderBy(desc(favorites.createdAt));
   const interests = await db.select().from(clientInterests).where(eq(clientInterests.userId, userId)).orderBy(desc(clientInterests.createdAt));
-  return { favorites: savedFavorites, interests };
+  const favoriteVehicles = (await Promise.all(savedFavorites.map(async (favorite) => {
+    if (!/^\\d+$/.test(favorite.vehicleKey)) return null;
+    const vehicle = await getVehicleById(Number(favorite.vehicleKey));
+    if (!vehicle) return null;
+    return { favoriteId: favorite.id, vehicleKey: favorite.vehicleKey, vehicle };
+  }))).filter((item): item is NonNullable<typeof item> => Boolean(item));
+  return { favorites: savedFavorites, favoriteVehicles, interests };
 }
 
 export async function createClientInterest(input: InsertClientInterest) {

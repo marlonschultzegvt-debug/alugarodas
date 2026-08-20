@@ -10,7 +10,21 @@ export default function ClientArea() {
   const clientAreaQuery = trpc.auth.clientArea.useQuery(undefined, { enabled: Boolean(user) });
   const favorites = clientAreaQuery.data?.favorites ?? [];
   const interests = clientAreaQuery.data?.interests ?? [];
-  const favoriteVehicles = favorites.map((favorite) => vehicles.find((vehicle) => vehicle.id === favorite.vehicleKey)).filter(Boolean);
+  const persistentFavoriteVehicles = (clientAreaQuery.data?.favoriteVehicles ?? []).map(({ vehicle }) => ({
+    id: String(vehicle.id),
+    slug: String(vehicle.id),
+    brand: vehicle.brand,
+    model: vehicle.model,
+    city: vehicle.city,
+    state: vehicle.state,
+    priceWeekly: Number(vehicle.weeklyPrice ?? vehicle.monthlyPrice ?? 0),
+    image: vehicle.images?.[0]?.url ?? "",
+  }));
+  const staticFavoriteVehicles = favorites
+    .filter((favorite) => !/^\d+$/.test(favorite.vehicleKey))
+    .map((favorite) => vehicles.find((vehicle) => vehicle.id === favorite.vehicleKey))
+    .filter(Boolean);
+  const favoriteVehicles = [...persistentFavoriteVehicles, ...staticFavoriteVehicles];
 
   return (
     <main className="client-area-page">

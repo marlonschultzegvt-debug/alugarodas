@@ -459,3 +459,11 @@
 - [x] Exibir leads por anúncio com contagem real.
 - [x] Reorganizar status e ações para manter alinhamento em desktop e mobile.
 - [x] Testar métricas, ações, TypeScript, Vitest, build e responsividade.
+
+# Correção da aba de favoritos do Cliente
+
+- [x] Auditar a chave usada ao salvar e consultar favoritos.
+- [x] Corrigir a sincronização da mutação com a consulta da área Cliente.
+- [x] Exibir veículos favoritos salvos, não somente contador.
+- [x] Atualizar contador e lista imediatamente após salvar/remover.
+- [x] Testar persistência, contadores, lista, RBAC, TypeScript, Vitest, build e responsividade.
