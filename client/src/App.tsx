@@ -28,7 +28,7 @@ import { PUBLIC_LOGIN_PATH } from "./lib/navigation";
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [location] = useLocation();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const accountPath = rolePath(user?.role as UserRole | undefined);
   const nav = [
     ["Buscar veículos", "/buscar"],
@@ -48,6 +48,7 @@ export function SiteHeader() {
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navegação principal">
           {nav.map(([label, href]) => <Link key={label} href={href} className={location === href ? "active" : ""} onClick={() => setOpen(false)}>{label}</Link>)}
           <a href={user ? accountPath : PUBLIC_LOGIN_PATH} className="nav-login" onClick={() => setOpen(false)}>{user ? "Minha área" : "Entrar"}</a>
+          {user && <button type="button" className="nav-logout" onClick={() => { setOpen(false); void logout(); }}>Sair</button>}
           <Link href="/anunciar" className="nav-cta" onClick={() => setOpen(false)}>Anuncie seu veículo <ArrowRight size={16} /></Link>
         </nav>
         <button className="mobile-menu" onClick={() => setOpen((v) => !v)} aria-label={open ? "Fechar menu" : "Abrir menu"}>{open ? <X /> : <Menu />}</button>

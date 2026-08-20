@@ -1,9 +1,9 @@
-import { ArrowRight, Bookmark, Heart, MapPin, Search, ShieldCheck, UserRound } from "lucide-react";
+import { ArrowRight, Bookmark, Heart, LogOut, MapPin, Search, ShieldCheck, UserRound } from "lucide-react";
 import { Link } from "wouter";
 import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function ClientArea() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const displayName = user?.name?.split(" ")[0] || "motorista";
 
   return (
@@ -15,7 +15,7 @@ export default function ClientArea() {
             <h1>Olá, {displayName}.</h1>
             <p>Encontre opções para seguir em frente, salve seus favoritos e acompanhe os contatos que você iniciou.</p>
           </div>
-          <div className="client-trust-card"><ShieldCheck size={20} /><span>Conta protegida pelo acesso seguro do Aluga Rodas.</span></div>
+          <div className="client-hero-actions"><div className="client-trust-card"><ShieldCheck size={20} /><span>Conta protegida pelo acesso seguro do Aluga Rodas.</span></div><button type="button" className="client-logout-button" onClick={() => void logout()}><LogOut size={16} /> Sair da conta</button></div>
         </div>
       </section>
 

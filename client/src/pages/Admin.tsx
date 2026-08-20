@@ -1,7 +1,8 @@
 import React from "react";
-import { BarChart3, CarFront, CheckCircle2, Loader2, PauseCircle, PlayCircle, ShieldCheck, Users } from "lucide-react";
+import { BarChart3, CarFront, CheckCircle2, Loader2, LogOut, PauseCircle, PlayCircle, ShieldCheck, Users } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 type VehicleStatus = "draft" | "active" | "paused" | "rented";
 
@@ -13,6 +14,7 @@ const statusLabel: Record<VehicleStatus, string> = {
 };
 
 export default function Admin() {
+  const { logout } = useAuth();
   const dashboardQuery = trpc.admin.dashboard.useQuery();
   const serverAuthorized = dashboardQuery.data?.canManage === true;
   const vehiclesQuery = trpc.admin.vehicles.useQuery(undefined, { enabled: serverAuthorized });
@@ -54,7 +56,7 @@ export default function Admin() {
               <h1>Visão da plataforma.</h1>
               <p>Modere usuários, anúncios e sinais de confiança do marketplace.</p>
             </div>
-            <Link href="/" className="outline-button">Ver site público</Link>
+            <div className="admin-heading-actions"><Link href="/" className="outline-button">Ver site público</Link><button type="button" className="outline-button" onClick={() => void logout()}><LogOut size={15} /> Sair</button></div>
           </div>
 
           {!dashboardQuery.error && (

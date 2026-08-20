@@ -337,3 +337,10 @@
 - [x] Criar experiência inicial da área do Cliente com resumo da conta, favoritos e interesses.
 - [x] Adicionar navegação contextual para o Cliente sem exibir ações de Locador ou Admin.
 - [x] Testar RBAC, TypeScript, Vitest, build e responsividade da área do Cliente.
+
+# Logout visível nas áreas autenticadas
+
+- [x] Adicionar ação **Sair** visível no cabeçalho quando houver sessão autenticada.
+- [x] Adicionar ação **Sair** dentro das áreas Cliente, Locador e Admin.
+- [x] Confirmar que o logout real limpa a sessão e retorna ao fluxo público sem deixar acesso protegido aberto.
+- [x] Testar logout, RBAC, TypeScript, Vitest, build e responsividade.

@@ -257,3 +257,18 @@
   .client-next-step { display: block; padding: 24px 22px; }
   .client-next-step .primary-button { width: 100%; margin-top: 20px; justify-content: center; }
 }
+
+/* Ações de sessão visíveis em todas as áreas autenticadas. */
+.nav-logout { border: 0; padding: 8px 10px; background: transparent; color: #a94732; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; transition: color .18s ease, transform .18s var(--ease-out); }
+.nav-logout:hover { color: #7e2f21; transform: translateY(-1px); }
+.admin-heading-actions, .dashboard-heading-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.admin-heading-actions .outline-button, .dashboard-heading-actions .outline-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.client-hero-actions { display: grid; gap: 12px; justify-items: stretch; min-width: 250px; }
+.client-logout-button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 40px; padding: 10px 14px; border: 1px solid rgba(255,255,255,.24); background: transparent; color: #fffefa; font-size: 12px; font-weight: 800; cursor: pointer; transition: background .18s ease, border-color .18s ease, transform .18s var(--ease-out); }
+.client-logout-button:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.42); transform: translateY(-1px); }
+@media (max-width: 700px) {
+  .nav-logout { padding: 13px 4px; border-top: 1px solid var(--border); margin-top: 5px; text-align: left; }
+  .admin-heading-actions, .dashboard-heading-actions { justify-content: flex-start; margin-top: 18px; }
+  .dashboard-heading-actions .primary-button, .dashboard-heading-actions .outline-button { margin-top: 0; }
+  .client-hero-actions { min-width: 0; margin-top: 24px; }
+}
