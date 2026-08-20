@@ -404,3 +404,11 @@
 - [x] Corrigir destaque/scroll das seções Admin no desktop e mobile.
 - [x] Revalidar Ver anúncio, Ver anunciante, Pausar/Ativar e Excluir após a última publicação.
 - [x] Testar handlers, RBAC, TypeScript, Vitest, build e responsividade.
+
+# Seleção explícita no formulário de anúncio
+
+- [x] Deixar Ano inicialmente sem seleção.
+- [x] Deixar Estado inicialmente sem seleção e liberar cidades somente após escolha.
+- [x] Deixar Combustível, Câmbio e Categoria inicialmente sem seleção.
+- [x] Adicionar placeholders e validação obrigatória para os campos alterados.
+- [x] Testar preenchimento, validação, TypeScript, Vitest, build e responsividade.
