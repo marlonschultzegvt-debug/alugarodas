@@ -1,5 +1,5 @@
 import React from "react";
-import { BarChart3, Building2, CarFront, CheckCircle2, Eye, Loader2, LogOut, PauseCircle, PlayCircle, ShieldCheck, Trash2, Users } from "lucide-react";
+import { BarChart3, Building2, CarFront, CheckCircle2, Eye, Loader2, LogOut, PauseCircle, PlayCircle, ShieldCheck, Star, Trash2, Users } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -24,6 +24,9 @@ export default function Admin() {
     onSuccess: () => void utils.admin.vehicles.invalidate(),
   });
   const deleteMutation = trpc.admin.vehicleDelete.useMutation({
+    onSuccess: () => void utils.admin.vehicles.invalidate(),
+  });
+  const featuredMutation = trpc.admin.vehicleFeatured.useMutation({
     onSuccess: () => void utils.admin.vehicles.invalidate(),
   });
   const scrollToSection = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -90,9 +93,9 @@ export default function Admin() {
                       <div className="admin-vehicle-copy">
                         <strong>{vehicle.brand} {vehicle.model}</strong>
                         <span>{vehicle.city} - {vehicle.state} · {company?.name ?? "Locadora não informada"}</span>
-                        <small className={`status-chip status-${status}`}>{statusLabel[status]}</small>
+                        <small className={`status-chip status-${status}`}>{statusLabel[status]}</small>{vehicle.isFeatured && <small className="status-chip status-featured"><Star size={11} /> Destaque aprovado</small>}
                       </div>
-                      <div className="admin-vehicle-actions"><Link href={`/veiculo/${vehicle.id}`} className="outline-button admin-action-button"><Eye size={14} /> Ver anúncio</Link><button type="button" className="outline-button admin-action-button" onClick={() => setSelectedAdvertiser(company ? { name: company.name, type: company.type, email: company.email, phone: company.phone, whatsapp: company.whatsapp, verified: company.verified } : { name: "Anunciante não informado" })}><Building2 size={14} /> Ver anunciante</button><button type="button" className="outline-button admin-status-button" disabled={statusMutation.isPending || deleteMutation.isPending} onClick={() => statusMutation.mutate({ vehicleId: vehicle.id, status: nextStatus })}>{statusMutation.isPending ? <Loader2 size={14} className="spin" /> : status === "active" ? <PauseCircle size={14} /> : <PlayCircle size={14} />}{status === "active" ? "Pausar" : "Ativar"}</button><button type="button" className="outline-button admin-delete-button" disabled={deleteMutation.isPending} onClick={() => { const confirmed = window.confirm(`Excluir o anúncio ${vehicle.brand} ${vehicle.model}? Esta ação remove o anúncio, fotos, favoritos e leads relacionados.`); if (confirmed) deleteMutation.mutate({ vehicleId: vehicle.id }); }}><Trash2 size={14} /> Excluir</button></div>
+                      <div className="admin-vehicle-actions"><Link href={`/veiculo/${vehicle.id}`} className="outline-button admin-action-button"><Eye size={14} /> Ver anúncio</Link><button type="button" className="outline-button admin-action-button" onClick={() => setSelectedAdvertiser(company ? { name: company.name, type: company.type, email: company.email, phone: company.phone, whatsapp: company.whatsapp, verified: company.verified } : { name: "Anunciante não informado" })}><Building2 size={14} /> Ver anunciante</button><button type="button" className="outline-button admin-action-button" disabled={featuredMutation.isPending} onClick={() => featuredMutation.mutate({ vehicleId: vehicle.id, isFeatured: !vehicle.isFeatured, featuredOrder: vehicle.featuredOrder ?? 0 })}><Star size={14} /> {vehicle.isFeatured ? "Remover destaque" : "Destacar"}</button><button type="button" className="outline-button admin-status-button" disabled={statusMutation.isPending || deleteMutation.isPending} onClick={() => statusMutation.mutate({ vehicleId: vehicle.id, status: nextStatus })}>{statusMutation.isPending ? <Loader2 size={14} className="spin" /> : status === "active" ? <PauseCircle size={14} /> : <PlayCircle size={14} />}{status === "active" ? "Pausar" : "Ativar"}</button><button type="button" className="outline-button admin-delete-button" disabled={deleteMutation.isPending} onClick={() => { const confirmed = window.confirm(`Excluir o anúncio ${vehicle.brand} ${vehicle.model}? Esta ação remove o anúncio, fotos, favoritos e leads relacionados.`); if (confirmed) deleteMutation.mutate({ vehicleId: vehicle.id }); }}><Trash2 size={14} /> Excluir</button></div>
                     </article>
                   );
                 })}

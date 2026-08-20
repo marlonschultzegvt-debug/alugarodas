@@ -10,6 +10,7 @@ import {
   createCompany,
   upsertUser,
   createLead,
+  deleteLeadForOwner,
   getClientArea,
   createVehicle,
   getPublisherDashboard,
@@ -21,6 +22,7 @@ import {
   saveFavorite,
   listAdminVehicles,
   updateVehicleStatus,
+  updateVehicleFeatured,
   createVehicleImage,
   deleteAdminVehicle,
   recordVehicleView,
@@ -75,6 +77,9 @@ export const appRouter = router({
     vehicleStatus: adminProcedure
       .input(z.object({ vehicleId: z.number().int().positive(), status: z.enum(["draft", "active", "paused", "rented"]) }))
       .mutation(({ input }) => updateVehicleStatus(input.vehicleId, input.status)),
+    vehicleFeatured: adminProcedure
+      .input(z.object({ vehicleId: z.number().int().positive(), isFeatured: z.boolean(), featuredOrder: z.number().int().min(0).max(99).optional() }))
+      .mutation(({ input }) => updateVehicleFeatured(input.vehicleId, input.isFeatured, input.featuredOrder ?? 0)),
     vehicleDelete: adminProcedure
       .input(z.object({ vehicleId: z.number().int().positive() }))
       .mutation(({ input }) => deleteAdminVehicle(input.vehicleId)),
@@ -137,6 +142,9 @@ export const appRouter = router({
     leadCreate: publicProcedure
       .input(z.object({ vehicleId: z.number().int().positive(), companyId: z.number().int().positive(), requesterUserId: z.number().int().positive().optional(), name: z.string().min(2).max(160), email: z.string().email().optional(), phone: z.string().max(32).optional(), message: z.string().max(2000).optional(), source: z.string().max(64).optional(), utmSource: z.string().max(120).optional(), utmMedium: z.string().max(120).optional(), utmCampaign: z.string().max(120).optional() }))
       .mutation(({ input }) => createLead(input)),
+    leadDelete: publisherProcedure
+      .input(z.object({ leadId: z.number().int().positive() }))
+      .mutation(({ ctx, input }) => deleteLeadForOwner(input.leadId, ctx.user.id)),
   }),
 });
 

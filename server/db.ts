@@ -20,6 +20,8 @@ import {
 import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
+const LEAD_RETENTION_DAYS = 15;
+const LEAD_RETENTION_MS = LEAD_RETENTION_DAYS * 24 * 60 * 60 * 1000;
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
@@ -106,12 +108,14 @@ export async function listCompaniesByOwner(ownerUserId: number) {
 
 export async function getPublisherDashboard(ownerUserId: number) {
   const db = await getDb();
-  if (!db) return { companies: [], vehicles: [], leads: [], metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } };
+  if (!db) return { companies: [], vehicles: [], leads: [], totalLeadCount: 0, retentionDays: LEAD_RETENTION_DAYS, metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } };
   const ownedCompanies = await listCompaniesByOwner(ownerUserId);
   const companyIds = ownedCompanies.map((company) => company.id);
-  if (companyIds.length === 0) return { companies: [], vehicles: [], leads: [], metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } };
+  if (companyIds.length === 0) return { companies: [], vehicles: [], leads: [], totalLeadCount: 0, retentionDays: LEAD_RETENTION_DAYS, metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } };
   const ownedVehicles = await db.select().from(vehicles).where(inArray(vehicles.companyId, companyIds)).orderBy(desc(vehicles.createdAt));
-  const ownedLeads = await db.select().from(leads).where(inArray(leads.companyId, companyIds)).orderBy(desc(leads.createdAt));
+  const ownedLeadsAll = await db.select().from(leads).where(inArray(leads.companyId, companyIds)).orderBy(desc(leads.createdAt));
+  const retentionCutoff = new Date(Date.now() - LEAD_RETENTION_MS);
+  const ownedLeads = ownedLeadsAll.filter((lead) => lead.createdAt >= retentionCutoff).map((lead) => ({ ...lead, expiresAt: new Date(lead.createdAt.getTime() + LEAD_RETENTION_MS) }));
   const viewRows = await db.select({ vehicleId: vehicleViews.vehicleId, count: sql<number>`count(*)` }).from(vehicleViews).where(inArray(vehicleViews.vehicleId, ownedVehicles.map((vehicle) => vehicle.id))).groupBy(vehicleViews.vehicleId);
   const leadCounts = new Map<number, number>();
   for (const lead of ownedLeads) leadCounts.set(lead.vehicleId, (leadCounts.get(lead.vehicleId) ?? 0) + 1);
@@ -123,6 +127,8 @@ export async function getPublisherDashboard(ownerUserId: number) {
     companies: ownedCompanies,
     vehicles: vehiclesWithMetrics,
     leads: leadsWithVehicle,
+    totalLeadCount: ownedLeadsAll.length,
+    retentionDays: LEAD_RETENTION_DAYS,
     metrics: {
       views: vehiclesWithMetrics.reduce((total, vehicle) => total + vehicle.viewCount, 0),
       whatsappClicks: 0,
@@ -159,6 +165,13 @@ export async function listAdminVehicles() {
   return db.select({ vehicle: vehicles, company: companies }).from(vehicles).leftJoin(companies, eq(vehicles.companyId, companies.id)).orderBy(desc(vehicles.createdAt));
 }
 
+export async function updateVehicleFeatured(vehicleId: number, isFeatured: boolean, featuredOrder = 0) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.update(vehicles).set({ isFeatured, featuredOrder: isFeatured ? featuredOrder : 0, featuredAt: isFeatured ? new Date() : null }).where(eq(vehicles.id, vehicleId));
+  return { vehicleId, isFeatured };
+}
+
 export async function updateVehicleStatus(vehicleId: number, status: "draft" | "active" | "paused" | "rented") {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
@@ -191,6 +204,16 @@ export async function createVehicleImage(input: InsertVehicleImage) {
   if (!db) throw new Error("Database unavailable");
   const result = await db.insert(vehicleImages).values(input);
   return Number(result[0].insertId);
+}
+
+export async function deleteLeadForOwner(leadId: number, ownerUserId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const ownedCompanyIds = await db.select({ id: companies.id }).from(companies).where(eq(companies.ownerUserId, ownerUserId));
+  if (!ownedCompanyIds.length) return { leadId, deleted: false };
+  const ownedIds = ownedCompanyIds.map((company) => company.id);
+  const result = await db.delete(leads).where(and(eq(leads.id, leadId), inArray(leads.companyId, ownedIds)));
+  return { leadId, deleted: Number(result[0].affectedRows ?? 0) > 0 };
 }
 
 export async function createLead(input: InsertLead) {

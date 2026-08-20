@@ -484,3 +484,22 @@
 - [x] Mostrar cidade e estado nas sugestões, com navegação por teclado e seleção por clique.
 - [x] Permitir pesquisar sem cidade definida e preservar o valor selecionado nos filtros.
 - [x] Validar desktop/mobile, busca, TypeScript, Vitest e build.
+
+# Controle e expiração de leads do anunciante
+
+- [x] Auditar modelo, consulta e permissões atuais dos leads recebidos.
+- [x] Definir retenção operacional de 15 dias para a lista principal, com aviso antes da expiração.
+- [ ] Adicionar status de arquivado/expirado sem apagar métricas essenciais.
+- [x] Criar ação protegida para anunciante excluir ou arquivar o próprio lead.
+- [x] Limitar a lista principal aos leads recentes e mostrar a quantidade total de contatos.
+- [x] Atualizar o painel com aviso de expiração, data relativa e confirmação da ação.
+- [x] Validar RBAC, consulta por proprietário, TypeScript, Vitest, build e responsividade.
+
+# Destaques editoriais e catálogo de demonstração
+
+- [x] Identificar e sinalizar os veículos do catálogo inicial como demonstração.
+- [x] Modelar destaque editorial aprovado pelo Admin, sem cobrança no MVP.
+- [ ] Criar ação Admin para aprovar/remover destaque e definir ordem/período.
+- [ ] Fazer a home priorizar anúncios persistentes aprovados e usar demonstrações apenas como fallback identificado.
+- [x] Exibir no Admin o estado editorial de cada anúncio.
+- [x] Validar RBAC, vitrine pública, TypeScript, Vitest, build e responsividade.
