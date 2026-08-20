@@ -511,3 +511,14 @@
 - [x] Permitir escolher outra foto como capa quando houver várias imagens.
 - [ ] Atualizar catálogo, detalhe e painel para usar a capa persistente.
 - [x] Validar upload, seleção de capa, RBAC, TypeScript, Vitest, build e responsividade.
+
+# Auditoria final de pré-lançamento
+
+- [x] Mapear rotas públicas, protegidas e permissões de Cliente, Locador e Admin.
+- [x] Executar suíte Vitest completa, TypeScript, build e verificar logs do servidor.
+- [x] Simular Cliente: cadastro/login/logout, busca, favorito, interesse, WhatsApp e área logada.
+- [x] Simular Locador: login, cadastro de anúncio, upload, capa, dashboard, lead, exclusão e logout.
+- [x] Simular Admin: acesso protegido, moderação, destaque, anunciante, exclusão e logout.
+- [x] Revisar desktop/mobile, console, rede, links, PWA, SEO e rotas de produção.
+- [x] Corrigir bloqueios críticos e repetir todos os testes afetados.
+- [x] Registrar pendências que dependem de sessão real, domínio customizado ou banco de produção.
