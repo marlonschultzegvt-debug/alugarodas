@@ -42,8 +42,7 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="brand" onClick={() => setOpen(false)} aria-label="Aluga Rodas, início">
-          <img src="/manus-storage/aluga-rodas-mark-symbol_4da6fbec.png" alt="" className="brand-mark" />
-          <span><strong>ALUGA</strong><em>RODAS</em><small>pra quem precisa rodar.</small></span>
+          <img src="/manus-storage/aluga-rodas-logo-oficial_25b5c423.png" alt="Aluga Rodas · Pra quem precisa rodar" className="brand-logo" />
         </Link>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navegação principal">
           {nav.map(([label, href]) => <Link key={label} href={href} className={location === href ? "active" : ""} onClick={() => setOpen(false)}>{label}</Link>)}

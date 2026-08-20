@@ -522,3 +522,10 @@
 - [x] Revisar desktop/mobile, console, rede, links, PWA, SEO e rotas de produção.
 - [x] Corrigir bloqueios críticos e repetir todos os testes afetados.
 - [x] Registrar pendências que dependem de sessão real, domínio customizado ou banco de produção.
+
+# Identidade visual com logo oficial
+
+- [x] Auditar usos atuais da marca, símbolo e logo nos componentes e metadados.
+- [x] Preparar versão web otimizada da logo oficial e referências persistentes.
+- [x] Aplicar a logo no cabeçalho desktop/mobile, rodapé, login, PWA e metadados.
+- [x] Validar proporção, contraste, favicon, manifest, responsividade, TypeScript, Vitest e build.

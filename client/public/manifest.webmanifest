@@ -13,25 +13,25 @@
   "categories": ["autos", "lifestyle", "business"],
   "icons": [
     {
-      "src": "/manus-storage/icon-192_20bd5e82.png",
+      "src": "/manus-storage/aluga-rodas-icon-192_c951a853.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/manus-storage/icon-512_ec5d15a0.png",
+      "src": "/manus-storage/aluga-rodas-icon-512_5e88d8f6.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/manus-storage/icon-maskable-192_7ce05b05.png",
+      "src": "/manus-storage/aluga-rodas-icon-192_c951a853.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/manus-storage/icon-maskable-512_bd9b2962.png",
+      "src": "/manus-storage/aluga-rodas-icon-512_5e88d8f6.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
