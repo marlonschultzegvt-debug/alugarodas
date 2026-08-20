@@ -436,3 +436,10 @@
 - [x] Enviar o telefone normalizado ao backend.
 - [x] Exibir feedback claro para número incompleto ou inválido.
 - [x] Testar formatos válidos, inválidos, TypeScript, Vitest, build e responsividade.
+
+# Correção da máscara duplicada do WhatsApp
+
+- [x] Sanitizar o valor antes de cada nova formatação.
+- [x] Impedir parênteses e separadores duplicados ao digitar ou colar.
+- [x] Preservar edição e apagamento do telefone sem corromper o valor.
+- [x] Testar máscara, validação, TypeScript, Vitest, build e responsividade.
