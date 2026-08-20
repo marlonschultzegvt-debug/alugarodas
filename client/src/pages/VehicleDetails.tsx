@@ -5,6 +5,26 @@ import { formatBRL, trackEvent, vehicles, type Vehicle } from "@/lib/marketplace
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 
+const validBrazilianAreaCodes = new Set([11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28, 31, 32, 33, 34, 35, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 51, 53, 54, 55, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 73, 74, 75, 77, 79, 81, 82, 83, 84, 85, 86, 87, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99]);
+
+function formatBrazilianPhone(value: string) {
+  const digits = value.replace(/\\D/g, "").slice(0, 11);
+  if (!digits) return "";
+  if (digits.length <= 2) return `(${digits}`;
+  const area = digits.slice(0, 2);
+  const subscriber = digits.slice(2);
+  if (subscriber.length <= 4) return `(${area}) ${subscriber}`;
+  const split = digits.length === 11 ? 5 : 4;
+  return `(${area}) ${subscriber.slice(0, split)}-${subscriber.slice(split)}`;
+}
+
+function normalizeAndValidateBrazilianPhone(value: string) {
+  const digits = value.replace(/\\D/g, "");
+  const areaCode = Number(digits.slice(0, 2));
+  const validLength = digits.length === 10 || digits.length === 11;
+  return validLength && validBrazilianAreaCodes.has(areaCode) ? digits : null;
+}
+
 type PersistentVehicle = {
   id: number;
   companyId: number;
@@ -104,6 +124,11 @@ export default function VehicleDetails() {
   const submitLead = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLeadError("");
+    const normalizedPhone = normalizeAndValidateBrazilianPhone(leadPhone);
+    if (!normalizedPhone) {
+      setLeadError("Informe um WhatsApp válido com DDD. Exemplo: (41) 99999-9999.");
+      return;
+    }
     try {
         if (user?.role === "cliente" || user?.role === "user") {
           await interestMutation.mutateAsync({ vehicleKey: String(vehicle.id), vehicleLabel: `${vehicle.brand} ${vehicle.model}`, message: `Interesse registrado pelo veículo ${vehicle.brand} ${vehicle.model}.` });
@@ -112,7 +137,7 @@ export default function VehicleDetails() {
             setLeadError("Este veículo ainda não está disponível para receber leads persistentes.");
             return;
           }
-          await leadMutation.mutateAsync({ vehicleId: sourceId, companyId: persistentVehicle.companyId, name: leadName, phone: leadPhone, source: "vehicle_details" });
+          await leadMutation.mutateAsync({ vehicleId: sourceId, companyId: persistentVehicle.companyId, name: leadName, phone: normalizedPhone, source: "vehicle_details" });
         }
       setLeadSent(true);
       trackEvent("lead_sent", { vehicle: vehicle.id });
@@ -133,6 +158,6 @@ export default function VehicleDetails() {
       <div className="detail-summary"><div className="vehicle-card-top"><span className="eyebrow">{vehicle.category} · {vehicle.year}</span>{vehicle.verified && <span className="verified"><ShieldCheck size={13} /> Aluga Rodas verificado</span>}</div><h1>{vehicle.brand} <strong>{vehicle.model}</strong></h1><p className="vehicle-place"><MapPin size={16} /> {vehicle.city} · {vehicle.state}</p><p className="detail-description">Uma opção pronta para acompanhar sua rotina, com condições transparentes para você entender o custo antes de conversar com o anunciante.</p><div className="detail-price"><small>A partir de</small><strong>{formatBRL(vehicle.priceWeekly)} <span>/ semana</span></strong><em>ou {formatBRL(vehicle.priceMonthly)} no plano mensal</em></div><div className="detail-actions"><button className="primary-button" onClick={() => { setInterestOpen(true); setLeadSent(false); trackEvent("lead_start", { vehicle: vehicle.id }); }}>Tenho interesse <ArrowRight size={17} /></button><a href={whatsapp} target="_blank" rel="noreferrer" className="outline-button" onClick={() => trackEvent("whatsapp_click", { vehicle: vehicle.id })}><MessageCircle size={17} /> WhatsApp</a><button className={`icon-button ${favoriteSaved ? "is-saved" : ""}`} aria-label={favoriteSaved ? "Remover veículo dos favoritos" : "Salvar veículo"} aria-pressed={favoriteSaved} disabled={favoriteSaveMutation.isPending || favoriteRemoveMutation.isPending} onClick={async () => { if (!isClient) { setFavoriteMessage(true); return; } try { if (favoriteSaved) { await favoriteRemoveMutation.mutateAsync({ vehicleKey: String(vehicle.id) }); setFavoriteSaved(false); setFavoriteMessage(true); } else { await favoriteSaveMutation.mutateAsync({ vehicleKey: String(vehicle.id) }); setFavoriteSaved(true); setFavoriteMessage(true); } } catch (error) { console.error("[VehicleDetails] failed to update favorite", error); setFavoriteMessage(true); } }}><Heart size={19} fill={favoriteSaved ? "currentColor" : "none"} /></button></div>{favoriteMessage && <p className="favorite-note" role="status">{favoriteSaved ? "Veículo salvo na sua área." : user ? "Veículo removido dos favoritos." : <>Entre para salvar este veículo. <Link href="/entrar">Entrar</Link> ou <Link href="/cadastre-se">cadastre-se</Link>.</>}</p>}<p className="response-note"><span className="availability-dot" /> {vehicle.availability}</p></div>
     </section>
     <section className="container detail-content"><div className="detail-main"><div className="detail-section"><span className="eyebrow orange">CARACTERÍSTICAS</span><h2>O que você precisa saber.</h2><div className="spec-grid"><div><span>Combustível</span><strong>{vehicle.fuel}</strong></div><div><span>Câmbio</span><strong>{vehicle.transmission}</strong></div><div><span>Quilometragem</span><strong>{vehicle.kmLimit}</strong></div><div><span>Disponibilidade</span><strong>{vehicle.availability}</strong></div><div><span>Categoria</span><strong>{vehicle.category}</strong></div><div><span>Uso indicado</span><strong>{vehicle.purpose}</strong></div></div></div><div className="detail-section conditions"><span className="eyebrow orange">CONDIÇÕES DE LOCAÇÃO</span><h2>Transparência antes do contato.</h2><div className="condition-list"><div><ShieldCheck /><div><strong>Seguro</strong><span>{vehicle.insurance}. Confirme franquia e cobertura com o anunciante.</span></div></div><div><FileText /><div><strong>Caução</strong><span>{formatBRL(vehicle.deposit)} de caução estimada. A condição pode variar.</span></div></div><div><Wrench /><div><strong>Manutenção</strong><span>Manutenções preventivas sob responsabilidade do anunciante.</span></div></div></div></div><div className="detail-section"><span className="eyebrow orange">SOBRE O ANUNCIANTE</span><h2>{vehicle.provider}</h2><p>Este perfil apresenta as informações essenciais para você comparar e iniciar uma conversa. O Aluga Rodas conecta as pontas; a combinação final é feita diretamente com o anunciante.</p><div className="info-strip"><ShieldCheck size={19} /><span>Informações transparentes e contato direto.</span></div></div></div><aside className="detail-aside"><div className="aside-card"><span className="eyebrow orange">PARA TRABALHAR COM APP</span><h3>Compatível com:</h3><div className="app-tags">{vehicle.appClasses.length ? vehicle.appClasses.map((app) => <span key={app}><Check size={14} /> {app}</span>) : <span><Check size={14} /> Consulte o anunciante</span>}</div><p>Confira os requisitos de cada plataforma e a disponibilidade com o anunciante.</p><button className="primary-button full" onClick={() => { setInterestOpen(true); setLeadSent(false); }}>Quero falar sobre este veículo</button></div></aside></section>
-    {interestOpen && <div className="modal-backdrop" onClick={() => setInterestOpen(false)}><div className="interest-modal" onClick={(e) => e.stopPropagation()}><button className="modal-close" onClick={() => setInterestOpen(false)}>×</button>{leadSent ? <><span className="eyebrow orange">INTERESSE ENVIADO</span><h2>O anunciante recebeu seus dados.</h2><p>{marketplaceApiEnabled ? "Em breve você poderá continuar a conversa diretamente pelo contato informado." : "Este é um modo de demonstração; a persistência será ativada quando o catálogo estiver conectado em produção."}</p><button className="primary-button full" onClick={() => setInterestOpen(false)}>Fechar</button></> : <><span className="eyebrow orange">PRÓXIMO PASSO</span><h2>Vamos conectar você ao anunciante.</h2><p>Deixe seus dados para registrar seu interesse no <strong>{vehicle.brand} {vehicle.model}</strong>.</p>{leadError && <p className="form-error" role="alert">{leadError}</p>}<form onSubmit={submitLead}><label>Seu nome<input required value={leadName} onChange={(event) => setLeadName(event.target.value)} placeholder="Como podemos te chamar?" /></label><label>WhatsApp<input required value={leadPhone} onChange={(event) => setLeadPhone(event.target.value)} placeholder="(00) 00000-0000" /></label><button className="primary-button full" type="submit" disabled={leadMutation.isPending || interestMutation.isPending}>{leadMutation.isPending ? "Enviando…" : "Enviar interesse"} {!leadMutation.isPending && <ArrowRight size={16} />}</button></form></>}</div></div>}
+    {interestOpen && <div className="modal-backdrop" onClick={() => setInterestOpen(false)}><div className="interest-modal" onClick={(e) => e.stopPropagation()}><button className="modal-close" onClick={() => setInterestOpen(false)}>×</button>{leadSent ? <><span className="eyebrow orange">INTERESSE ENVIADO</span><h2>O anunciante recebeu seus dados.</h2><p>{marketplaceApiEnabled ? "Em breve você poderá continuar a conversa diretamente pelo contato informado." : "Este é um modo de demonstração; a persistência será ativada quando o catálogo estiver conectado em produção."}</p><button className="primary-button full" onClick={() => setInterestOpen(false)}>Fechar</button></> : <><span className="eyebrow orange">PRÓXIMO PASSO</span><h2>Vamos conectar você ao anunciante.</h2><p>Deixe seus dados para registrar seu interesse no <strong>{vehicle.brand} {vehicle.model}</strong>.</p>{leadError && <p className="form-error" role="alert">{leadError}</p>}<form onSubmit={submitLead}><label>Seu nome<input required value={leadName} onChange={(event) => setLeadName(event.target.value)} placeholder="Como podemos te chamar?" /></label><label>WhatsApp<input required inputMode="tel" autoComplete="tel" maxLength={15} value={formatBrazilianPhone(leadPhone)} onChange={(event) => { setLeadPhone(formatBrazilianPhone(event.target.value)); setLeadError(""); }} placeholder="(41) 99999-9999" /><span className="field-hint">Informe um número com DDD.</span></label><button className="primary-button full" type="submit" disabled={leadMutation.isPending || interestMutation.isPending}>{leadMutation.isPending ? "Enviando…" : "Enviar interesse"} {!leadMutation.isPending && <ArrowRight size={16} />}</button></form></>}</div></div>}
   </main>;
 }

@@ -428,3 +428,11 @@
 - [x] Exibir mensagem correta de veículo salvo/removido.
 - [x] Atualizar a área `/cliente` com o favorito persistido.
 - [x] Testar salvar, remover, persistência, RBAC, TypeScript, Vitest, build e responsividade.
+
+# Validação do WhatsApp no interesse
+
+- [x] Aplicar máscara brasileira ao telefone no modal de interesse.
+- [x] Validar DDD e quantidade de dígitos antes do envio.
+- [x] Enviar o telefone normalizado ao backend.
+- [x] Exibir feedback claro para número incompleto ou inválido.
+- [x] Testar formatos válidos, inválidos, TypeScript, Vitest, build e responsividade.
