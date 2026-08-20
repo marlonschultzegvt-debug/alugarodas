@@ -7,6 +7,7 @@ import {
   mysqlTable,
   text,
   timestamp,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/mysql-core";
 import { relations } from "drizzle-orm";
@@ -124,6 +125,8 @@ export const leads = mysqlTable(
 export const usersRelations = relations(users, ({ many }) => ({
   companies: many(companies),
   leads: many(leads),
+  favorites: many(favorites),
+  clientInterests: many(clientInterests),
 }));
 
 export const companiesRelations = relations(companies, ({ one, many }) => ({
@@ -136,6 +139,7 @@ export const vehiclesRelations = relations(vehicles, ({ one, many }) => ({
   company: one(companies, { fields: [vehicles.companyId], references: [companies.id] }),
   images: many(vehicleImages),
   leads: many(leads),
+  favorites: many(favorites),
 }));
 
 export const vehicleImagesRelations = relations(vehicleImages, ({ one }) => ({
@@ -148,6 +152,46 @@ export const leadsRelations = relations(leads, ({ one }) => ({
   requester: one(users, { fields: [leads.requesterUserId], references: [users.id] }),
 }));
 
+export const favorites = mysqlTable(
+  "favorites",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    userId: int("userId").notNull().references(() => users.id),
+    vehicleId: int("vehicleId"),
+    vehicleKey: varchar("vehicleKey", { length: 160 }).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("favorites_user_vehicle_key_unique").on(table.userId, table.vehicleKey),
+    index("favorites_user_idx").on(table.userId),
+    index("favorites_vehicle_idx").on(table.vehicleId),
+  ],
+);
+
+export const favoritesRelations = relations(favorites, ({ one }) => ({
+  user: one(users, { fields: [favorites.userId], references: [users.id] }),
+}));
+
+export const clientInterests = mysqlTable(
+  "client_interests",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    userId: int("userId").notNull().references(() => users.id),
+    vehicleKey: varchar("vehicleKey", { length: 160 }).notNull(),
+    vehicleLabel: varchar("vehicleLabel", { length: 220 }).notNull(),
+    message: text("message"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => [
+    index("client_interests_user_idx").on(table.userId),
+    index("client_interests_created_idx").on(table.createdAt),
+  ],
+);
+
+export const clientInterestsRelations = relations(clientInterests, ({ one }) => ({
+  user: one(users, { fields: [clientInterests.userId], references: [users.id] }),
+}));
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Company = typeof companies.$inferSelect;
@@ -158,3 +202,7 @@ export type VehicleImage = typeof vehicleImages.$inferSelect;
 export type InsertVehicleImage = typeof vehicleImages.$inferInsert;
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;
+export type Favorite = typeof favorites.$inferSelect;
+export type InsertFavorite = typeof favorites.$inferInsert;
+export type ClientInterest = typeof clientInterests.$inferSelect;
+export type InsertClientInterest = typeof clientInterests.$inferInsert;

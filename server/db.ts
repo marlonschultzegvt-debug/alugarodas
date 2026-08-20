@@ -1,8 +1,12 @@
 import { and, asc, desc, eq, inArray, like, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
+  clientInterests,
   companies,
+  favorites,
   InsertCompany,
+  InsertClientInterest,
+  InsertFavorite,
   InsertLead,
   InsertUser,
   InsertVehicle,
@@ -164,5 +168,34 @@ export async function createLead(input: InsertLead) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
   const result = await db.insert(leads).values(input);
+  return Number(result[0].insertId);
+}
+
+export async function saveFavorite(input: InsertFavorite) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.insert(favorites).values(input).onDuplicateKeyUpdate({ set: { vehicleKey: input.vehicleKey } });
+  return { vehicleKey: input.vehicleKey, saved: true };
+}
+
+export async function removeFavorite(userId: number, vehicleKey: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.delete(favorites).where(and(eq(favorites.userId, userId), eq(favorites.vehicleKey, vehicleKey)));
+  return { vehicleKey, saved: false };
+}
+
+export async function getClientArea(userId: number) {
+  const db = await getDb();
+  if (!db) return { favorites: [], interests: [] };
+  const savedFavorites = await db.select().from(favorites).where(eq(favorites.userId, userId)).orderBy(desc(favorites.createdAt));
+  const interests = await db.select().from(clientInterests).where(eq(clientInterests.userId, userId)).orderBy(desc(clientInterests.createdAt));
+  return { favorites: savedFavorites, interests };
+}
+
+export async function createClientInterest(input: InsertClientInterest) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const result = await db.insert(clientInterests).values(input);
   return Number(result[0].insertId);
 }

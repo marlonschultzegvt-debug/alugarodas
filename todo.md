@@ -351,3 +351,11 @@
 - [x] Manter apenas os fluxos Cliente e Locador para seleção/cadastro público.
 - [x] Preservar Admin somente por autorização server-side e validar que a rota administrativa continua protegida.
 - [x] Testar login, cadastro, RBAC, TypeScript, Vitest, build e responsividade após o ajuste.
+
+# Persistência de favoritos e interesses do Cliente
+
+- [x] Auditar schema e procedimentos atuais de favoritos e leads.
+- [x] Criar persistência autenticada de favoritos por usuário e veículo.
+- [x] Criar consulta da área Cliente com favoritos, interesses e contadores reais.
+- [x] Integrar salvar favorito e envio de interesse à área `/cliente`.
+- [x] Testar persistência, RBAC, TypeScript, Vitest, build e responsividade.

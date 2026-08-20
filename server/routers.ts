@@ -5,19 +5,30 @@ import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import {
+  createClientInterest,
   createCompany,
   createLead,
+  getClientArea,
   createVehicle,
   getPublisherDashboard,
   getVehicleById,
   listCompaniesByOwner,
   listVehicleImages,
   listVehicles,
+  removeFavorite,
+  saveFavorite,
   listAdminVehicles,
   updateVehicleStatus,
   createVehicleImage,
   upsertUser,
 } from "./db";
+
+const clientProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.user.role !== "cliente" && ctx.user.role !== "user") {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Apenas clientes podem acessar esta área." });
+  }
+  return next({ ctx });
+});
 
 const publisherProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "locador" && ctx.user.role !== "admin") {
@@ -64,6 +75,16 @@ export const appRouter = router({
   }),
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
+    clientArea: clientProcedure.query(({ ctx }) => getClientArea(ctx.user.id)),
+    favoriteSave: clientProcedure
+      .input(z.object({ vehicleKey: z.string().min(1).max(160) }))
+      .mutation(({ ctx, input }) => saveFavorite({ userId: ctx.user.id, vehicleKey: input.vehicleKey })),
+    favoriteRemove: clientProcedure
+      .input(z.object({ vehicleKey: z.string().min(1).max(160) }))
+      .mutation(({ ctx, input }) => removeFavorite(ctx.user.id, input.vehicleKey)),
+    interestCreate: clientProcedure
+      .input(z.object({ vehicleKey: z.string().min(1).max(160), vehicleLabel: z.string().min(2).max(220), message: z.string().max(2000).optional() }))
+      .mutation(({ ctx, input }) => createClientInterest({ userId: ctx.user.id, ...input })),
     setSignupRole: protectedProcedure
       .input(z.object({ role: z.enum(["cliente", "locador"]) }))
       .mutation(async ({ ctx, input }) => {

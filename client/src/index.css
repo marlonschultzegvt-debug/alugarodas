@@ -272,3 +272,18 @@
   .dashboard-heading-actions .primary-button, .dashboard-heading-actions .outline-button { margin-top: 0; }
   .client-hero-actions { min-width: 0; margin-top: 24px; }
 }
+
+.client-data-panel { min-height: 250px; }
+.client-saved-list, .client-interest-list { display: grid; gap: 8px; margin: 18px 0 2px; }
+.client-saved-item { display: grid; grid-template-columns: 46px 1fr auto; align-items: center; gap: 10px; padding: 8px; border: 1px solid #e0e4de; color: var(--petrol); text-decoration: none; transition: border-color .18s ease, transform .18s var(--ease-out); }
+.client-saved-item:hover { border-color: #9eb8aa; transform: translateY(-1px); }
+.client-saved-image { width: 46px; height: 42px; overflow: hidden; background: #e9eeea; }
+.client-saved-image img { width: 100%; height: 100%; object-fit: cover; }
+.client-saved-item > span:nth-child(2) { display: grid; gap: 4px; min-width: 0; }
+.client-saved-item strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.client-saved-item small, .client-interest-list span { color: #718080; font-size: 10px; }
+.client-saved-item > svg { color: var(--orange); }
+.client-interest-list article { display: grid; gap: 5px; padding: 11px 0; border-top: 1px solid #e0e4de; }
+.client-interest-list article:first-child { border-top: 0; padding-top: 0; }
+.client-interest-list strong { font-size: 12px; }
+.icon-button.is-saved { color: var(--orange); background: #fff0eb; border-color: #f2c7ba; }
