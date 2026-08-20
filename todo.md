@@ -467,3 +467,11 @@
 - [x] Exibir veículos favoritos salvos, não somente contador.
 - [x] Atualizar contador e lista imediatamente após salvar/remover.
 - [x] Testar persistência, contadores, lista, RBAC, TypeScript, Vitest, build e responsividade.
+
+# Lead do Cliente para o anunciante
+
+- [x] Auditar por que Cliente grava apenas client_interests e não leads.
+- [x] Registrar lead persistente com vehicleId, companyId e requesterUserId quando o Cliente demonstrar interesse.
+- [x] Manter o registro de interesse na área do Cliente sem duplicar indevidamente o contato.
+- [x] Exibir o lead associado ao veículo correto no dashboard do anunciante.
+- [x] Testar fluxo Cliente/anunciante, associações, RBAC, TypeScript, Vitest, build e responsividade.

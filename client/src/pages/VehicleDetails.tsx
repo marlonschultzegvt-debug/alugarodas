@@ -145,6 +145,9 @@ Link do anúncio: ${announcementUrl}
     }
     try {
         if (user?.role === "cliente" || user?.role === "user") {
+          if (marketplaceApiEnabled && sourceId && persistentVehicle?.companyId && user.id) {
+            await leadMutation.mutateAsync({ vehicleId: sourceId, companyId: persistentVehicle.companyId, requesterUserId: user.id, name: leadName, phone: normalizedPhone, message: `Interesse em alugar o veículo ${vehicle.brand} ${vehicle.model}.`, source: "client_interest" });
+          }
           await interestMutation.mutateAsync({ vehicleKey: String(vehicle.id), vehicleLabel: `${vehicle.brand} ${vehicle.model}`, message: `Interesse registrado pelo veículo ${vehicle.brand} ${vehicle.model}.` });
         } else if (marketplaceApiEnabled) {
           if (!sourceId || !persistentVehicle?.companyId) {

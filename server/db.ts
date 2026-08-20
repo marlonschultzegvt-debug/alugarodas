@@ -118,10 +118,11 @@ export async function getPublisherDashboard(ownerUserId: number) {
   const viewCounts = new Map<number, number>();
   for (const row of viewRows) viewCounts.set(row.vehicleId, Number(row.count));
   const vehiclesWithMetrics = ownedVehicles.map((vehicle) => ({ ...vehicle, viewCount: viewCounts.get(vehicle.id) ?? 0, leadCount: leadCounts.get(vehicle.id) ?? 0 }));
+  const leadsWithVehicle = ownedLeads.map((lead) => ({ ...lead, vehicle: ownedVehicles.find((vehicle) => vehicle.id === lead.vehicleId) }));
   return {
     companies: ownedCompanies,
     vehicles: vehiclesWithMetrics,
-    leads: ownedLeads,
+    leads: leadsWithVehicle,
     metrics: {
       views: vehiclesWithMetrics.reduce((total, vehicle) => total + vehicle.viewCount, 0),
       whatsappClicks: 0,
