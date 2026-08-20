@@ -1,4 +1,4 @@
-import { ArrowRight, LogOut, ShieldCheck, UserRound, Store, Settings2 } from "lucide-react";
+import { ArrowRight, LogOut, ShieldCheck, UserRound, Store } from "lucide-react";
 import { Link } from "wouter";
 import { startLogin } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -38,12 +38,11 @@ export default function Login() {
         <div className="auth-intro">
           <span className="eyebrow orange">ENTRE PARA CONTINUAR</span>
           <h1>Seu próximo passo começa aqui.</h1>
-          <p>Use o acesso seguro do Aluga Rodas para acompanhar anúncios, receber contatos e encontrar veículos na sua cidade.</p>
+          <p>Use o acesso seguro do Aluga Rodas para acompanhar anúncios, receber contatos e encontrar veículos na sua cidade. O acesso público é destinado a Clientes e Locadores.</p>
         </div>
         <div className="auth-role-grid" aria-label="Perfis do Aluga Rodas">
           <div><UserRound size={18} /><strong>Cliente</strong><span>Busca e salva veículos.</span></div>
           <div><Store size={18} /><strong>Locador</strong><span>Anuncia e acompanha leads.</span></div>
-          <div><Settings2 size={18} /><strong>Admin</strong><span>Administra a plataforma.</span></div>
         </div>
         <button type="button" className="primary-button auth-submit" onClick={startLogin}>Entrar com acesso seguro <ArrowRight size={17} /></button>
         <p className="auth-security"><ShieldCheck size={15} /> Seu perfil e suas permissões são definidos no servidor, nunca pelo navegador.</p>

@@ -344,3 +344,10 @@
 - [x] Adicionar ação **Sair** dentro das áreas Cliente, Locador e Admin.
 - [x] Confirmar que o logout real limpa a sessão e retorna ao fluxo público sem deixar acesso protegido aberto.
 - [x] Testar logout, RBAC, TypeScript, Vitest, build e responsividade.
+
+# Ajuste da seleção pública de perfis
+
+- [x] Remover a apresentação visual de Admin da tela pública `/entrar`.
+- [x] Manter apenas os fluxos Cliente e Locador para seleção/cadastro público.
+- [x] Preservar Admin somente por autorização server-side e validar que a rota administrativa continua protegida.
+- [x] Testar login, cadastro, RBAC, TypeScript, Vitest, build e responsividade após o ajuste.
