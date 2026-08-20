@@ -1,23 +1,36 @@
-import { ArrowRight, ShieldCheck, UserRound, Store, Settings2 } from "lucide-react";
-import { useEffect } from "react";
-import { Link, useLocation } from "wouter";
+import { ArrowRight, LogOut, ShieldCheck, UserRound, Store, Settings2 } from "lucide-react";
+import { Link } from "wouter";
 import { startLogin } from "@/const";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { rolePath, type UserRole } from "@/lib/access";
 
 export default function Login() {
-  const [, setLocation] = useLocation();
-  const { user, loading } = useAuth();
-
-  useEffect(() => {
-    if (!loading && user) setLocation(rolePath(user.role as UserRole));
-  }, [loading, setLocation, user]);
+  const { user, loading, logout } = useAuth();
 
   if (loading) {
     return <main className="auth-page"><div className="auth-card auth-loading"><span className="eyebrow orange">ALUGA RODAS</span><h1>Verificando seu acesso.</h1><p>Aguarde enquanto confirmamos sua sessão.</p></div></main>;
   }
 
-  if (user) return null;
+  if (user) {
+    const destination = rolePath(user.role as UserRole);
+    const roleLabel = user.role === "admin" ? "Admin" : user.role === "locador" ? "Locador" : "Cliente";
+    return (
+      <main className="auth-page">
+        <section className="auth-card">
+          <div className="auth-intro">
+            <span className="eyebrow orange">SESSÃO ATIVA</span>
+            <h1>Você já está conectado.</h1>
+            <p>Seu acesso atual é de <strong>{roleLabel}</strong>. Escolha se deseja continuar na sua área ou sair para entrar com outra conta.</p>
+          </div>
+          <div className="auth-actions">
+            <a className="primary-button auth-submit" href={destination}>Ir para minha área <ArrowRight size={17} /></a>
+            <button type="button" className="outline-button auth-submit" onClick={() => void logout()}><LogOut size={17} /> Sair e entrar com outra conta</button>
+          </div>
+          <p className="auth-security"><ShieldCheck size={15} /> O perfil e as permissões são definidos no servidor, nunca pelo navegador.</p>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="auth-page">

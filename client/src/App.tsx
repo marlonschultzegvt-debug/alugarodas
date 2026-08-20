@@ -22,6 +22,7 @@ import AuthGuard from "./components/AuthGuard";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
 import { dashboardRouteRoles } from "./lib/access";
 import { SUPPORT_MAILTO } from "./lib/contact";
+import { PUBLIC_LOGIN_PATH } from "./lib/navigation";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -43,7 +44,7 @@ export function SiteHeader() {
         </Link>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navegação principal">
           {nav.map(([label, href]) => <Link key={label} href={href} className={location === href ? "active" : ""} onClick={() => setOpen(false)}>{label}</Link>)}
-          <Link href="/entrar" className="nav-login" onClick={() => setOpen(false)}>Entrar</Link>
+          <a href={PUBLIC_LOGIN_PATH} className="nav-login" onClick={() => setOpen(false)}>Entrar</a>
           <Link href="/anunciar" className="nav-cta" onClick={() => setOpen(false)}>Anuncie seu veículo <ArrowRight size={16} /></Link>
         </nav>
         <button className="mobile-menu" onClick={() => setOpen((v) => !v)} aria-label={open ? "Fechar menu" : "Abrir menu"}>{open ? <X /> : <Menu />}</button>
