@@ -412,3 +412,19 @@
 - [x] Deixar Combustível, Câmbio e Categoria inicialmente sem seleção.
 - [x] Adicionar placeholders e validação obrigatória para os campos alterados.
 - [x] Testar preenchimento, validação, TypeScript, Vitest, build e responsividade.
+
+# Navegação da galeria de fotos
+
+- [x] Adicionar botão de foto anterior na galeria do veículo.
+- [x] Adicionar botão de próxima foto na galeria do veículo.
+- [x] Atualizar indicador de posição e manter loop seguro entre as fotos.
+- [x] Garantir navegação por teclado e uso adequado no mobile.
+- [x] Testar galeria, TypeScript, Vitest, build e responsividade.
+
+# Correção do favorito no veículo
+
+- [x] Carregar o estado persistido do favorito ao abrir os detalhes do veículo.
+- [x] Fazer o primeiro clique salvar o favorito e deixar o coração vermelho.
+- [x] Exibir mensagem correta de veículo salvo/removido.
+- [x] Atualizar a área `/cliente` com o favorito persistido.
+- [x] Testar salvar, remover, persistência, RBAC, TypeScript, Vitest, build e responsividade.
