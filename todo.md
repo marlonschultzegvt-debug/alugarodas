@@ -443,3 +443,11 @@
 - [x] Impedir parênteses e separadores duplicados ao digitar ou colar.
 - [x] Preservar edição e apagamento do telefone sem corromper o valor.
 - [x] Testar máscara, validação, TypeScript, Vitest, build e responsividade.
+
+# WhatsApp contextualizado após lead
+
+- [x] Gerar link direto para o anúncio atual.
+- [x] Montar mensagem indicando interesse em alugar o veículo.
+- [x] Incluir link do anúncio e assinatura @AlugaRodas ao final.
+- [x] Exibir o botão WhatsApp somente no estado de lead salvo, com URL correta.
+- [x] Testar codificação da mensagem, link, TypeScript, Vitest, build e responsividade.
