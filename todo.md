@@ -529,3 +529,11 @@
 - [x] Preparar versão web otimizada da logo oficial e referências persistentes.
 - [x] Aplicar a logo no cabeçalho desktop/mobile, rodapé, login, PWA e metadados.
 - [x] Validar proporção, contraste, favicon, manifest, responsividade, TypeScript, Vitest e build.
+
+# Instalação PWA e ícone do app
+
+- [x] Auditar comportamento do botão de instalação no Safari iOS e Chrome.
+- [x] Criar ícone quadrado centralizado e adequado para o app instalado.
+- [x] Usar prompt nativo quando disponível e instruções específicas no iPhone.
+- [x] Atualizar manifest, favicon e Apple Touch Icon com o novo ícone.
+- [x] Validar desktop/mobile, TypeScript, Vitest, build e revisão visual.

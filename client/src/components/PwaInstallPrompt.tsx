@@ -46,6 +46,10 @@ export default function PwaInstallPrompt() {
   if (!visible) return null;
 
   const install = async () => {
+    if (status === "manual") {
+      setVisible(false);
+      return;
+    }
     if (!installEvent) {
       setStatus("manual");
       return;
@@ -72,8 +76,8 @@ export default function PwaInstallPrompt() {
       : <>Instale para abrir mais rápido, como um aplicativo.</>;
 
   const actionLabel = platform === "ios"
-    ? status === "manual" ? "Entendi" : "Como instalar"
-    : status === "installing" ? "Abrindo…" : status === "manual" ? "Entendi" : "Instalar";
+    ? status === "manual" ? "Fechar instruções" : "Como instalar"
+    : status === "installing" ? "Abrindo…" : status === "manual" ? "Fechar instruções" : "Instalar agora";
 
   return (
     <aside className="pwa-install-prompt" aria-label="Instalar Aluga Rodas">
