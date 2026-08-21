@@ -6,6 +6,7 @@ import {
   isPublicSignupRole,
   normalizeEmail,
   verifyPassword,
+  validatePassword,
 } from "./auth-local";
 
 describe("local authentication", () => {
@@ -27,5 +28,11 @@ describe("local authentication", () => {
   it("recognizes the configured admin address without making it a public role", () => {
     expect(isAdminEmail("suporte@alugarodas.com.br")).toBe(true);
     expect(isPublicSignupRole("admin")).toBe(false);
+  });
+
+  it("enforces letters, numbers, and minimum length for new passwords", () => {
+    expect(() => validatePassword("12345678")).toThrow();
+    expect(() => validatePassword("abcdefgh")).toThrow();
+    expect(() => validatePassword("Aluga2026")).not.toThrow();
   });
 });

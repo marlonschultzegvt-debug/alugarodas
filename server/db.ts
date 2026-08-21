@@ -88,7 +88,7 @@ export async function createLocalUser(input: {
 }) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  const result = await db.insert(users).values({
+  await db.insert(users).values({
     openId: input.openId,
     name: input.name,
     email: input.email,
@@ -97,7 +97,14 @@ export async function createLocalUser(input: {
     role: input.role,
     lastSignedIn: new Date(),
   });
-  return getUserByOpenId(input.openId).then((user) => user ?? { id: Number(result[0].insertId) });
+  return getUserByOpenId(input.openId);
+}
+
+export async function updateLocalPassword(userId: number, passwordHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.update(users).set({ passwordHash, loginMethod: "password", emailVerifiedAt: new Date() }).where(eq(users.id, userId));
+  return { userId, updated: true };
 }
 
 export async function listVehicles(filters?: { city?: string; category?: string; purpose?: string; search?: string }) {

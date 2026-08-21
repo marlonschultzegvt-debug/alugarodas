@@ -28,6 +28,7 @@ import {
   recordVehicleView,
   getUserByEmail,
   createLocalUser,
+  updateLocalPassword,
 } from "./db";
 import { sdk } from "./_core/sdk";
 import {
@@ -38,6 +39,7 @@ import {
   normalizeEmail,
   safeDisplayName,
   verifyPassword,
+  validatePassword,
 } from "./auth-local";
 
 const clientProcedure = protectedProcedure.use(({ ctx, next }) => {
@@ -139,6 +141,16 @@ export const appRouter = router({
         });
         ctx.res.cookie(COOKIE_NAME, token, getSessionCookieOptions(ctx.req));
         return { success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } } as const;
+      }),
+    changePassword: protectedProcedure
+      .input(z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(8).max(128) }))
+      .mutation(async ({ ctx, input }) => {
+        if (!verifyPassword(input.currentPassword, ctx.user.passwordHash)) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "A senha atual está incorreta." });
+        }
+        validatePassword(input.newPassword);
+        await updateLocalPassword(ctx.user.id, hashPassword(input.newPassword));
+        return { success: true } as const;
       }),
     clientArea: clientProcedure.query(({ ctx }) => getClientArea(ctx.user.id)),
     favoriteSave: clientProcedure
