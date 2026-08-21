@@ -42,7 +42,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 
   const values: InsertUser = { openId: user.openId };
   const updateSet: Record<string, unknown> = {};
-  const textFields = ["name", "email", "loginMethod"] as const;
+  const textFields = ["name", "email", "loginMethod", "passwordHash"] as const;
   for (const field of textFields) {
     if (user[field] !== undefined) {
       values[field] = user[field] ?? null;
@@ -70,6 +70,34 @@ export async function getUserByOpenId(openId: string) {
   if (!db) return undefined;
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
   return result[0];
+}
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return result[0];
+}
+
+export async function createLocalUser(input: {
+  openId: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+  role: "cliente" | "locador";
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const result = await db.insert(users).values({
+    openId: input.openId,
+    name: input.name,
+    email: input.email,
+    passwordHash: input.passwordHash,
+    loginMethod: "password",
+    role: input.role,
+    lastSignedIn: new Date(),
+  });
+  return getUserByOpenId(input.openId).then((user) => user ?? { id: Number(result[0].insertId) });
 }
 
 export async function listVehicles(filters?: { city?: string; category?: string; purpose?: string; search?: string }) {

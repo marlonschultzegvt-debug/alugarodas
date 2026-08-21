@@ -43,6 +43,13 @@
       "when": 1787192940823,
       "tag": "0005_white_rage",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1787342040984,
+      "tag": "0006_public_virginia_dare",
+      "breakpoints": true
     }
   ]
 }

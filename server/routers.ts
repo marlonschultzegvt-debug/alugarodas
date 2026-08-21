@@ -26,7 +26,19 @@ import {
   createVehicleImage,
   deleteAdminVehicle,
   recordVehicleView,
+  getUserByEmail,
+  createLocalUser,
 } from "./db";
+import { sdk } from "./_core/sdk";
+import {
+  createLocalOpenId,
+  hashPassword,
+  isPublicSignupRole,
+  isValidEmail,
+  normalizeEmail,
+  safeDisplayName,
+  verifyPassword,
+} from "./auth-local";
 
 const clientProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "cliente" && ctx.user.role !== "user") {
@@ -86,6 +98,48 @@ export const appRouter = router({
   }),
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
+    register: publicProcedure
+      .input(z.object({
+        name: z.string().min(2).max(160),
+        email: z.string().email(),
+        password: z.string().min(8).max(128),
+        role: z.enum(["cliente", "locador"]),
+      }))
+      .mutation(async ({ input }) => {
+        const email = normalizeEmail(input.email);
+        if (!isValidEmail(email) || !isPublicSignupRole(input.role)) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Dados de cadastro inválidos." });
+        }
+        const existing = await getUserByEmail(email);
+        if (existing) {
+          throw new TRPCError({ code: "CONFLICT", message: "Já existe uma conta com este email." });
+        }
+        const name = safeDisplayName(input.name, email);
+        await createLocalUser({
+          openId: createLocalOpenId(),
+          name,
+          email,
+          passwordHash: hashPassword(input.password),
+          role: input.role,
+        });
+        return { success: true, message: "Cadastro concluído. Agora entre com seu email e senha." } as const;
+      }),
+    login: publicProcedure
+      .input(z.object({ email: z.string().email(), password: z.string().min(1).max(128) }))
+      .mutation(async ({ ctx, input }) => {
+        const email = normalizeEmail(input.email);
+        const user = await getUserByEmail(email);
+        if (!user || !verifyPassword(input.password, user.passwordHash)) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "Email ou senha inválidos." });
+        }
+        const token = await sdk.signSession({
+          openId: user.openId,
+          appId: "local-password",
+          name: safeDisplayName(user.name ?? "", user.email ?? email),
+        });
+        ctx.res.cookie(COOKIE_NAME, token, getSessionCookieOptions(ctx.req));
+        return { success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } } as const;
+      }),
     clientArea: clientProcedure.query(({ ctx }) => getClientArea(ctx.user.id)),
     favoriteSave: clientProcedure
       .input(z.object({ vehicleKey: z.string().min(1).max(160) }))

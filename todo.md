@@ -587,3 +587,45 @@
 - [ ] Exportar o código atual para o repositório sem secrets ou arquivos `.env`.
 - [ ] Confirmar commit na branch `main` e acionar o deploy no Render.
 - [ ] Validar o serviço externo após o primeiro deploy.
+
+# Correção do primeiro deploy Render
+
+- [x] Confirmar no log que o erro é `EROFS` ao executar `corepack enable`.
+- [ ] Ajustar o Build Command do Render para usar pnpm sem corepack.
+- [ ] Refazer o deploy e confirmar status Live ou novo erro.
+- [ ] Validar a URL externa após o deploy.
+
+# Auditoria do Render externo
+
+- [ ] Testar rotas públicas e resposta do serviço externo.
+- [ ] Confirmar quais variáveis de banco, sessão, OAuth e storage faltam no Render.
+- [ ] Validar comportamento esperado sem secrets, sem expor credenciais.
+- [ ] Orientar preenchimento seguro e repetir deploy após configuração.
+
+# OAuth no Render
+
+- [x] Confirmar que `DATABASE_URL` foi aceita e o serviço ficou Live.
+- [ ] Configurar `OAUTH_SERVER_URL` no Render.
+- [ ] Configurar `VITE_APP_ID`, `VITE_OAUTH_PORTAL_URL`, `OWNER_OPEN_ID` e `JWT_SECRET`.
+- [ ] Autorizar o callback `https://aluga-rodas.onrender.com/api/oauth/callback`.
+- [ ] Testar login Cliente, Locador e Admin no domínio externo.
+
+# Limitação OAuth na hospedagem externa
+
+- [x] Confirmar que o painel Manus não oferece OAuth externo nas integrações disponíveis.
+- [ ] Solicitar autorização/configuração OAuth para `https://aluga-rodas.onrender.com/api/oauth/callback`.
+- [ ] Avaliar autenticação alternativa compatível com o Render, TiDB e RBAC atual.
+- [x] Manter o serviço público e o banco funcionando sem expor credenciais.
+- [ ] Revalidar Cliente, Locador e Admin após resolver autenticação.
+
+# Migração para autenticação própria
+
+- [x] Auditar OAuth Manus, contexto de sessão, schema de usuários e guards.
+- [ ] Adicionar credenciais de email com hash seguro, verificação e recuperação de senha.
+- [x] Implementar registro de Cliente/Locador, login, logout e sessão por cookie seguro.
+- [x] Manter Admin sem criação pública e preservar RBAC de dashboard, anúncio e `/adm`.
+- [x] Adaptar `/entrar`, cadastro e estados de autenticação do frontend.
+- [ ] Adicionar testes de segurança, sessão, RBAC, duplicidade e credenciais inválidas.
+- [ ] Validar Render/TiDB, TypeScript, Vitest, build e fluxos reais antes de publicar.
+
+- [x] Definir `suporte@alugarodas.com.br` como email Admin principal, sem criar senha ou permitir seleção pública de Admin.
