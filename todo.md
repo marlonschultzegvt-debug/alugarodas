@@ -625,7 +625,7 @@
 - [x] Implementar registro de Cliente/Locador, login, logout e sessão por cookie seguro.
 - [x] Manter Admin sem criação pública e preservar RBAC de dashboard, anúncio e `/adm`.
 - [x] Adaptar `/entrar`, cadastro e estados de autenticação do frontend.
-- [ ] Adicionar testes de segurança, sessão, RBAC, duplicidade e credenciais inválidas.
+- [x] Adicionar testes de segurança, sessão, RBAC, duplicidade e credenciais inválidas.
 - [ ] Validar Render/TiDB, TypeScript, Vitest, build e fluxos reais antes de publicar.
 
 - [x] Definir `suporte@alugarodas.com.br` como email Admin principal, sem criar senha ou permitir seleção pública de Admin.
