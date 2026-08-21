@@ -631,5 +631,5 @@
 - [x] Definir `suporte@alugarodas.com.br` como email Admin principal, sem criar senha ou permitir seleção pública de Admin.
 
 - [x] Remover a inicialização obrigatória do OAuth Manus no startup do Render, pois a autenticação de produção agora é local.
-- [ ] Publicar novamente e confirmar que os logs do Render não exigem `OAUTH_SERVER_URL` para iniciar.
-- [ ] Validar no Render as rotas `/entrar`, `/cadastre-se`, login, logout e proteção por papel após a correção.
+- [x] Publicar novamente e confirmar que os logs do Render não exigem `OAUTH_SERVER_URL` para iniciar.
+- [x] Validar no Render as rotas `/entrar`, `/cadastre-se`, login, logout e proteção por papel após a correção.
