@@ -563,3 +563,27 @@
 - [x] Corrigir autocomplete e filtro mobile para mostrar todas as opções relevantes.
 - [x] Validar Curitiba, Maringá, Londrina, Fortaleza, Olinda e cidades sem resultados.
 - [x] Executar Vitest, TypeScript, build e revisão desktop/mobile antes de publicar.
+
+# Migração externa para Render
+
+- [ ] Confirmar se o código está disponível em um repositório GitHub conectado ao Render.
+- [ ] Criar Web Service com build `pnpm build` e start usando o bundle de produção.
+- [ ] Configurar Node/pnpm, região, health check e variáveis públicas mínimas.
+- [ ] Executar deploy temporário no domínio onrender.com.
+- [ ] Validar frontend, backend, rotas, autenticação, banco, storage e OAuth no Render.
+- [ ] Configurar secrets, domínio alugarodas.com.br e DNS somente após validação temporária.
+
+# Deploy externo no Render
+
+- [ ] Confirmar o repositório local e o destino `marlonschulztegvt-debug/alugarodas`.
+- [ ] Garantir que nenhum `.env` ou secret seja incluído no commit.
+- [ ] Enviar o código atual para o repositório GitHub conectado ao Render.
+- [ ] Acionar o primeiro deploy e corrigir build/start se necessário.
+- [ ] Validar a URL `aluga-rodas.onrender.com` antes de configurar o domínio próprio.
+
+# Exportação GitHub conectada
+
+- [ ] Confirmar integração GitHub ativa e acesso ao repositório `marlonschulztegvt-debug/alugarodas`.
+- [ ] Exportar o código atual para o repositório sem secrets ou arquivos `.env`.
+- [ ] Confirmar commit na branch `main` e acionar o deploy no Render.
+- [ ] Validar o serviço externo após o primeiro deploy.
