@@ -27,10 +27,23 @@ let authSchemaReady: Promise<void> | null = null;
 async function ensureLocalAuthSchema(db: ReturnType<typeof drizzle>) {
   if (!authSchemaReady) {
     authSchemaReady = (async () => {
-      await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passwordHash VARCHAR(255) NULL`));
-      await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN IF NOT EXISTS emailVerifiedAt TIMESTAMP NULL`));
-      await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passwordResetTokenHash VARCHAR(128) NULL`));
-      await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passwordResetExpiresAt TIMESTAMP NULL`));
+      const [rows] = await db.execute(sql.raw(`
+        SELECT COLUMN_NAME AS columnName
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users'
+      `)) as unknown as [Array<{ columnName?: string; COLUMN_NAME?: string }>, unknown];
+      const existing = new Set(rows.map(row => row.columnName ?? row.COLUMN_NAME));
+      const missingColumns = [
+        ["passwordHash", "VARCHAR(255) NULL"],
+        ["emailVerifiedAt", "TIMESTAMP NULL"],
+        ["passwordResetTokenHash", "VARCHAR(128) NULL"],
+        ["passwordResetExpiresAt", "TIMESTAMP NULL"],
+      ] as const;
+      for (const [name, definition] of missingColumns) {
+        if (!existing.has(name)) {
+          await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN ${name} ${definition}`));
+        }
+      }
     })().catch(error => {
       authSchemaReady = null;
       console.error("[Database] Local auth schema migration failed:", error);
