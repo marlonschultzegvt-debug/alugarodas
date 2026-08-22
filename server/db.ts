@@ -22,6 +22,23 @@ import { ENV } from "./_core/env";
 let _db: ReturnType<typeof drizzle> | null = null;
 const LEAD_RETENTION_DAYS = 15;
 const LEAD_RETENTION_MS = LEAD_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+let authSchemaReady: Promise<void> | null = null;
+
+async function ensureLocalAuthSchema(db: ReturnType<typeof drizzle>) {
+  if (!authSchemaReady) {
+    authSchemaReady = (async () => {
+      await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passwordHash VARCHAR(255) NULL`));
+      await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN IF NOT EXISTS emailVerifiedAt TIMESTAMP NULL`));
+      await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passwordResetTokenHash VARCHAR(128) NULL`));
+      await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN IF NOT EXISTS passwordResetExpiresAt TIMESTAMP NULL`));
+    })().catch(error => {
+      authSchemaReady = null;
+      console.error("[Database] Local auth schema migration failed:", error);
+      throw error;
+    });
+  }
+  await authSchemaReady;
+}
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
@@ -32,6 +49,7 @@ export async function getDb() {
       _db = null;
     }
   }
+  if (_db) await ensureLocalAuthSchema(_db);
   return _db;
 }
 

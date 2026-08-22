@@ -633,3 +633,10 @@
 - [x] Remover a inicialização obrigatória do OAuth Manus no startup do Render, pois a autenticação de produção agora é local.
 - [x] Publicar novamente e confirmar que os logs do Render não exigem `OAUTH_SERVER_URL` para iniciar.
 - [x] Validar no Render as rotas `/entrar`, `/cadastre-se`, login, logout e proteção por papel após a correção.
+
+- [x] Corrigir divergência do schema TiDB em produção: adicionar com segurança as colunas exigidas pela autenticação local na tabela `users`.
+- [ ] Repetir o cadastro externo após a migração e validar que a conta é persistida sem expor erro SQL ao usuário.
+
+- [ ] Auditar todos os erros atuais do fluxo SQL e autenticação no código, logs e Render.
+- [x] Corrigir a causa raiz do cadastro/login externo e eliminar exposição de erros SQL ao usuário.
+- [ ] Validar schema, sessão local, logout, RBAC e endpoints externos antes de entregar a solução.
