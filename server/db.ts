@@ -22,33 +22,6 @@ import { ENV } from "./_core/env";
 let _db: ReturnType<typeof drizzle> | null = null;
 const LEAD_RETENTION_DAYS = 15;
 const LEAD_RETENTION_MS = LEAD_RETENTION_DAYS * 24 * 60 * 60 * 1000;
-let authSchemaReady: Promise<void> | null = null;
-
-async function ensureLocalAuthSchema(db: ReturnType<typeof drizzle>) {
-  if (!authSchemaReady) {
-    authSchemaReady = (async () => {
-      const [rows] = await db.execute(sql.raw(`SHOW COLUMNS FROM users`)) as unknown as [Array<{ Field?: string; field?: string }>, unknown];
-      const existing = new Set(rows.map(row => row.Field ?? row.field));
-      const missingColumns = [
-        ["passwordHash", "VARCHAR(255) NULL"],
-        ["emailVerifiedAt", "TIMESTAMP NULL"],
-        ["passwordResetTokenHash", "VARCHAR(128) NULL"],
-        ["passwordResetExpiresAt", "TIMESTAMP NULL"],
-      ] as const;
-      for (const [name, definition] of missingColumns) {
-        if (!existing.has(name)) {
-          await db.execute(sql.raw(`ALTER TABLE users ADD COLUMN ${name} ${definition}`));
-        }
-      }
-    })().catch(error => {
-      authSchemaReady = null;
-      console.error("[Database] Local auth schema migration failed:", error);
-      throw error;
-    });
-  }
-  await authSchemaReady;
-}
-
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -58,7 +31,6 @@ export async function getDb() {
       _db = null;
     }
   }
-  if (_db) await ensureLocalAuthSchema(_db);
   return _db;
 }
 
