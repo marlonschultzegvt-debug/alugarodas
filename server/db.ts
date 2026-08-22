@@ -27,12 +27,8 @@ let authSchemaReady: Promise<void> | null = null;
 async function ensureLocalAuthSchema(db: ReturnType<typeof drizzle>) {
   if (!authSchemaReady) {
     authSchemaReady = (async () => {
-      const [rows] = await db.execute(sql.raw(`
-        SELECT COLUMN_NAME AS columnName
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users'
-      `)) as unknown as [Array<{ columnName?: string; COLUMN_NAME?: string }>, unknown];
-      const existing = new Set(rows.map(row => row.columnName ?? row.COLUMN_NAME));
+      const [rows] = await db.execute(sql.raw(`SHOW COLUMNS FROM users`)) as unknown as [Array<{ Field?: string; field?: string }>, unknown];
+      const existing = new Set(rows.map(row => row.Field ?? row.field));
       const missingColumns = [
         ["passwordHash", "VARCHAR(255) NULL"],
         ["emailVerifiedAt", "TIMESTAMP NULL"],

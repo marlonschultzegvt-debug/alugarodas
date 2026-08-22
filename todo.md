@@ -637,6 +637,9 @@
 - [x] Corrigir divergência do schema TiDB em produção: adicionar com segurança as colunas exigidas pela autenticação local na tabela `users`.
 - [ ] Repetir o cadastro externo após a migração e validar que a conta é persistida sem expor erro SQL ao usuário.
 
-- [ ] Auditar todos os erros atuais do fluxo SQL e autenticação no código, logs e Render.
+- [x] Auditar todos os erros atuais do fluxo SQL e autenticação no código, logs e Render.
 - [x] Corrigir a causa raiz do cadastro/login externo e eliminar exposição de erros SQL ao usuário.
 - [ ] Validar schema, sessão local, logout, RBAC e endpoints externos antes de entregar a solução.
+
+- [x] Substituir a consulta `INFORMATION_SCHEMA` da auto-migração por `SHOW COLUMNS FROM users`, compatível com o TiDB externo.
+- [ ] Revalidar o cadastro no iPhone/Render e confirmar que o erro SQL não é mais exibido.
