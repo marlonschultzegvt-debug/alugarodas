@@ -22,6 +22,7 @@ import { ENV } from "./_core/env";
 let _db: ReturnType<typeof drizzle> | null = null;
 const LEAD_RETENTION_DAYS = 15;
 const LEAD_RETENTION_MS = LEAD_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
@@ -64,18 +65,65 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
 }
 
+type LocalAuthRow = {
+  id: number;
+  openId: string;
+  name: string | null;
+  email: string | null;
+  loginMethod: string | null;
+  role: "user" | "admin" | "cliente" | "locador";
+  createdAt: Date;
+  updatedAt: Date;
+  lastSignedIn: Date;
+  passwordHash: string | null;
+  emailVerifiedAt: Date | null;
+  passwordResetTokenHash: string | null;
+  passwordResetExpiresAt: Date | null;
+};
+
+function unwrapRows(result: unknown): Record<string, unknown>[] {
+  if (Array.isArray(result) && Array.isArray(result[0])) return result[0] as Record<string, unknown>[];
+  return Array.isArray(result) ? result as Record<string, unknown>[] : [];
+}
+
+async function ensureLocalAuthTable(db: ReturnType<typeof drizzle>) {
+  await db.execute(sql`CREATE TABLE IF NOT EXISTS local_auth_credentials (
+    userId INT NOT NULL PRIMARY KEY,
+    passwordHash VARCHAR(255) NOT NULL,
+    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  )`);
+}
+
+async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: ReturnType<typeof sql>) {
+  await ensureLocalAuthTable(db);
+  const result = await db.execute(sql`
+    SELECT
+      u.id, u.openId, u.name, u.email, u.loginMethod, u.role,
+      u.createdAt, u.updatedAt, u.lastSignedIn,
+      c.passwordHash AS passwordHash,
+      NULL AS emailVerifiedAt,
+      NULL AS passwordResetTokenHash,
+      NULL AS passwordResetExpiresAt
+    FROM users u
+    LEFT JOIN local_auth_credentials c ON c.userId = u.id
+    WHERE ${whereSql}
+    LIMIT 1
+  `);
+  const row = unwrapRows(result)[0];
+  return row as LocalAuthRow | undefined;
+}
+
 export async function getUserByOpenId(openId: string) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-  return result[0];
+  return getLocalUserWhere(db, sql`u.openId = ${openId}`);
 }
 
 export async function getUserByEmail(email: string) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
-  return result[0];
+  return getLocalUserWhere(db, sql`u.email = ${email}`);
 }
 
 export async function createLocalUser(input: {
@@ -87,55 +135,77 @@ export async function createLocalUser(input: {
 }) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
+  await ensureLocalAuthTable(db);
   await db.insert(users).values({
     openId: input.openId,
     name: input.name,
     email: input.email,
-    passwordHash: input.passwordHash,
     loginMethod: "password",
     role: input.role,
     lastSignedIn: new Date(),
   });
+  const user = await getUserByOpenId(input.openId);
+  if (!user) throw new Error("User was not created");
+  await db.execute(sql`
+    INSERT INTO local_auth_credentials (userId, passwordHash)
+    VALUES (${user.id}, ${input.passwordHash})
+  `);
   return getUserByOpenId(input.openId);
 }
 
 export async function updateLocalPassword(userId: number, passwordHash: string) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await db.update(users).set({ passwordHash, loginMethod: "password", emailVerifiedAt: new Date() }).where(eq(users.id, userId));
+  await ensureLocalAuthTable(db);
+  await db.execute(sql`
+    INSERT INTO local_auth_credentials (userId, passwordHash)
+    VALUES (${userId}, ${passwordHash})
+    ON DUPLICATE KEY UPDATE passwordHash = VALUES(passwordHash)
+  `);
+  await db.update(users).set({ loginMethod: "password" }).where(eq(users.id, userId));
   return { userId, updated: true };
 }
 
 export async function listVehicles(filters?: { city?: string; category?: string; purpose?: string; search?: string }) {
   const db = await getDb();
   if (!db) return [];
-  const conditions = [eq(vehicles.status, "active")];
-  if (filters?.city) conditions.push(eq(vehicles.city, filters.city));
-  if (filters?.category) conditions.push(eq(vehicles.category, filters.category as typeof vehicles.category.enumValues[number]));
-  if (filters?.search) {
-    const term = `%${filters.search}%`;
-    conditions.push(or(like(vehicles.brand, term), like(vehicles.model, term))!);
+  try {
+    const conditions = [eq(vehicles.status, "active")];
+    if (filters?.city) conditions.push(eq(vehicles.city, filters.city));
+    if (filters?.category) conditions.push(eq(vehicles.category, filters.category as typeof vehicles.category.enumValues[number]));
+    if (filters?.search) {
+      const term = `%${filters.search}%`;
+      conditions.push(or(like(vehicles.brand, term), like(vehicles.model, term))!);
+    }
+    if (filters?.purpose === "APP") conditions.push(eq(vehicles.acceptsApp, true));
+    if (filters?.purpose === "UberX") conditions.push(eq(vehicles.acceptsUberX, true));
+    if (filters?.purpose === "Uber Comfort") conditions.push(eq(vehicles.acceptsUberComfort, true));
+    if (filters?.purpose === "Uber Black") conditions.push(eq(vehicles.acceptsUberBlack, true));
+    if (filters?.purpose === "99") conditions.push(eq(vehicles.accepts99, true));
+    const rows = await db.select().from(vehicles).where(and(...conditions)).orderBy(desc(vehicles.createdAt));
+    return Promise.all(rows.map(async (vehicle) => {
+      const cover = await db.select({ url: vehicleImages.url }).from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicle.id)).orderBy(asc(vehicleImages.sortOrder)).limit(1);
+      return { ...vehicle, coverImageUrl: cover[0]?.url ?? null };
+    }));
+  } catch (error) {
+    console.warn("[Marketplace] public vehicle search unavailable:", error instanceof Error ? error.message : error);
+    return [];
   }
-  if (filters?.purpose === "APP") conditions.push(eq(vehicles.acceptsApp, true));
-  if (filters?.purpose === "UberX") conditions.push(eq(vehicles.acceptsUberX, true));
-  if (filters?.purpose === "Uber Comfort") conditions.push(eq(vehicles.acceptsUberComfort, true));
-  if (filters?.purpose === "Uber Black") conditions.push(eq(vehicles.acceptsUberBlack, true));
-  if (filters?.purpose === "99") conditions.push(eq(vehicles.accepts99, true));
-  const rows = await db.select().from(vehicles).where(and(...conditions)).orderBy(desc(vehicles.createdAt));
-  return Promise.all(rows.map(async (vehicle) => {
-    const cover = await db.select({ url: vehicleImages.url }).from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicle.id)).orderBy(asc(vehicleImages.sortOrder)).limit(1);
-    return { ...vehicle, coverImageUrl: cover[0]?.url ?? null };
-  }));
 }
 
 export async function getVehicleById(id: number) {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(vehicles).where(eq(vehicles.id, id)).limit(1);
-  if (!result[0]) return undefined;
-  const images = await db.select().from(vehicleImages).where(eq(vehicleImages.vehicleId, id)).orderBy(asc(vehicleImages.sortOrder));
-  const company = await db.select().from(companies).where(eq(companies.id, result[0].companyId)).limit(1);
-  return { ...result[0], images, company: company[0] };
+  try {
+    const result = await db.select().from(vehicles).where(eq(vehicles.id, id)).limit(1);
+    if (!result[0]) return undefined;
+    const images = await db.select().from(vehicleImages).where(eq(vehicleImages.vehicleId, id)).orderBy(asc(vehicleImages.sortOrder));
+    const company = await db.select().from(companies).where(eq(companies.id, result[0].companyId)).limit(1);
+    return { ...result[0], images, company: company[0] };
+  } catch (error) {
+    console.warn("[Marketplace] public vehicle detail unavailable:", error instanceof Error ? error.message : error);
+    return undefined;
+  }
 }
 
 export async function listCompaniesByOwner(ownerUserId: number) {

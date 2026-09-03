@@ -634,12 +634,35 @@
 - [x] Publicar novamente e confirmar que os logs do Render não exigem `OAUTH_SERVER_URL` para iniciar.
 - [x] Validar no Render as rotas `/entrar`, `/cadastre-se`, login, logout e proteção por papel após a correção.
 
-- [x] Corrigir divergência do schema TiDB em produção: adicionar com segurança as colunas exigidas pela autenticação local na tabela `users`.
-- [ ] Repetir o cadastro externo após a migração e validar que a conta é persistida sem expor erro SQL ao usuário.
+- [x] Registrar que a tela Data do TiDB não oferece editor SQL no plano atual e que a migração manual não será mais pré-requisito do MVP.
+- [x] Adaptar autenticação local para tabela separada de credenciais sem depender das colunas novas em `users`.
+- [ ] Validar cadastro, login e sessão no banco externo após o fallback.
 
-- [x] Auditar todos os erros atuais do fluxo SQL e autenticação no código, logs e Render.
-- [x] Corrigir a causa raiz do cadastro/login externo e eliminar exposição de erros SQL ao usuário.
-- [ ] Validar schema, sessão local, logout, RBAC e endpoints externos antes de entregar a solução.
+# Auditoria completa pós-fallback
 
-- [x] Substituir a consulta `INFORMATION_SCHEMA` da auto-migração por `SHOW COLUMNS FROM users`, compatível com o TiDB externo.
-- [ ] Revalidar o cadastro no iPhone/Render e confirmar que o erro SQL não é mais exibido.
+- [x] Testar rotas públicas do preview e do Render com respostas HTTP válidas.
+- [x] Revisar home, busca, detalhe, anunciar, como funciona e autenticação em desktop e mobile.
+- [ ] Validar cadastro, login, logout e proteção de Cliente/Locador/Admin no Render.
+- [ ] Validar busca por cidade/categoria, favoritos, interesses, leads, dashboard e ações administrativas.
+- [x] Revisar PWA, manifest, service worker, sitemap, robots, console e rede.
+- [ ] Corrigir falhas encontradas e executar nova rodada de testes.
+- [ ] Registrar relatório final da auditoria e pendências de lançamento.
+
+- [x] Corrigir o detalhe público que retorna HTTP 500 quando a tabela `vehicles` não existe no banco externo.
+- [ ] Garantir fallback editorial explícito para busca e detalhe públicos sem mascarar falhas de cadastro, leads ou dashboard.
+- [x] Repetir a auditoria HTTP e visual após a correção do fallback.
+
+# Correção de imagens (alugarodas.com.br)
+
+- [x] Diagnosticar por que as imagens não carregam no domínio oficial.
+- [x] Verificar URLs do storage, proxy de imagens e referências no frontend.
+- [x] Testar carregamento no Render e no preview para isolar o problema.
+- [x] Corrigir caminhos ou permissões no código e validar as novas URLs públicas.
+- [ ] Publicar o commit `abdb4ac` no repositório conectado ao Render; o domínio ainda serve o bundle antigo com caminhos `/manus-storage/`.
+- [ ] Validar logo, hero, catálogo e ícones PWA no domínio oficial após o novo deploy.
+
+# Sincronização Render e Git
+
+- [x] Confirmar que o Render publicou `d3c69c4`, diferente do commit atual `abdb4ac`.
+- [ ] Identificar o repositório e branch Git exibidos em Settings → Build & Deploy do serviço Render.
+- [ ] Conectar o Render ao repositório/branch que contém `abdb4ac` e publicar a versão correta.

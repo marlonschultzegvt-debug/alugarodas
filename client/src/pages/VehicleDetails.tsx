@@ -77,7 +77,7 @@ function mapPersistentVehicle(item: PersistentVehicle): Vehicle & { companyId: n
       ...(item.acceptsUberBlack ? ["Uber Black"] : []),
       ...(item.accepts99 ? ["99"] : []),
     ],
-    image: item.images.find((image) => image.isCover)?.url ?? item.images[0]?.url ?? "/manus-storage/aluga-rodas-hero_82e5fd36.jpg",
+    image: item.images.find((image) => image.isCover)?.url ?? item.images[0]?.url ?? "https://files.manuscdn.com/user_upload_by_module/session_file/310519663892022031/neLaCNtNcjpXFjlZ.jpg",
     imageUrls: item.images.map((image) => image.url),
     accent: "",
     verified: Boolean(item.company?.verified),
@@ -91,7 +91,7 @@ export default function VehicleDetails() {
   const staticVehicle = vehicles.find((item) => item.slug === params?.slug) || vehicles[0];
   const marketplaceApiEnabled = import.meta.env.VITE_MARKETPLACE_API_ENABLED === "true";
   const apiVehicleId = Number(params?.slug);
-  const apiVehicleQuery = trpc.marketplace.vehicle.useQuery({ id: apiVehicleId }, { enabled: marketplaceApiEnabled && Number.isInteger(apiVehicleId) && apiVehicleId > 0 });
+  const apiVehicleQuery = trpc.marketplace.vehicle.useQuery({ id: apiVehicleId }, { enabled: marketplaceApiEnabled && Number.isInteger(apiVehicleId) && apiVehicleId > 0, retry: false });
   const persistentVehicle = apiVehicleQuery.data ? mapPersistentVehicle(apiVehicleQuery.data) : undefined;
   const usingPersistentRoute = marketplaceApiEnabled && Number.isInteger(apiVehicleId) && apiVehicleId > 0;
   const vehicle = persistentVehicle ?? staticVehicle;
@@ -103,6 +103,7 @@ export default function VehicleDetails() {
   const [leadSent, setLeadSent] = useState(false);
   const [favoriteMessage, setFavoriteMessage] = useState(false);
   const [favoriteSaved, setFavoriteSaved] = useState(false);
+  const [apiTimedOut, setApiTimedOut] = useState(false);
   const { user } = useAuth();
   const trpcUtils = trpc.useUtils();
   const isClient = user?.role === "cliente" || user?.role === "user";
@@ -123,6 +124,11 @@ Link do anúncio: ${announcementUrl}
   const gallery = useMemo(() => persistentVehicle?.imageUrls.length ? persistentVehicle.imageUrls : [vehicle.image], [persistentVehicle, vehicle.image]);
   const [photoIndex, setPhotoIndex] = useState(0);
   useEffect(() => { setPhotoIndex(0); }, [vehicle.id, gallery.length]);
+  useEffect(() => {
+    if (!usingPersistentRoute || !apiVehicleQuery.isLoading) return;
+    const timeoutId = window.setTimeout(() => setApiTimedOut(true), 8000);
+    return () => window.clearTimeout(timeoutId);
+  }, [apiVehicleQuery.isLoading, usingPersistentRoute]);
   useEffect(() => {
     if (!sourceId || trackedViewId.current === sourceId) return;
     trackedViewId.current = sourceId;
@@ -164,8 +170,8 @@ Link do anúncio: ${announcementUrl}
     }
   };
 
-  if (usingPersistentRoute && apiVehicleQuery.isLoading) return <main className="detail-page"><div className="container empty-state"><h1>Carregando veículo…</h1><p>Buscando condições e disponibilidade atuais.</p></div></main>;
-  if (usingPersistentRoute && apiVehicleQuery.isError) return <main className="detail-page"><div className="container empty-state"><h1>Não foi possível carregar este veículo.</h1><p>Tente novamente ou volte para a busca.</p><Link href="/buscar" className="primary-button">Voltar para busca</Link></div></main>;
+  if (usingPersistentRoute && apiVehicleQuery.isLoading && !apiTimedOut) return <main className="detail-page"><div className="container empty-state"><h1>Carregando veículo…</h1><p>Buscando condições e disponibilidade atuais.</p></div></main>;
+  if (usingPersistentRoute && (apiVehicleQuery.isError || apiTimedOut)) return <main className="detail-page"><div className="container empty-state"><h1>Este anúncio está temporariamente indisponível.</h1><p>Não conseguimos consultar a disponibilidade agora. Volte para a busca e tente outro veículo.</p><Link href="/buscar" className="primary-button">Voltar para busca</Link></div></main>;
   if (usingPersistentRoute && !persistentVehicle) return <main className="detail-page"><div className="container empty-state"><h1>Veículo não encontrado.</h1><p>Este anúncio pode ter sido pausado ou removido.</p><Link href="/buscar" className="primary-button">Voltar para busca</Link></div></main>;
 
   return <main className="detail-page">

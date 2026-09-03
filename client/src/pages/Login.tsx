@@ -5,11 +5,6 @@ import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { rolePath, type UserRole } from "@/lib/access";
 
-const safeLoginError = (message?: string) => {
-  if (message === "Email ou senha inválidos.") return message;
-  return "Não foi possível entrar agora. Confira seus dados e tente novamente.";
-};
-
 export default function Login() {
   const [, navigate] = useLocation();
   const { user, loading, logout } = useAuth();
@@ -39,5 +34,5 @@ export default function Login() {
     } catch {}
   };
 
-  return <main className="auth-page"><section className="auth-card"><div className="auth-intro"><span className="eyebrow orange">ENTRE PARA CONTINUAR</span><h1>Seu próximo passo começa aqui.</h1><p>Entre com email e senha para acompanhar anúncios, receber contatos ou encontrar veículos na sua cidade.</p></div><div className="auth-role-grid" aria-label="Perfis do Aluga Rodas"><div><UserRound size={18} /><strong>Cliente</strong><span>Busca e salva veículos.</span></div><div><Store size={18} /><strong>Locador</strong><span>Anuncia e acompanha leads.</span></div></div><form className="auth-form" onSubmit={submit}><label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" required /></label><label>Senha<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required /></label>{login.error && <p className="auth-error" role="alert">{safeLoginError(login.error.message)}</p>}<button type="submit" className="primary-button auth-submit" disabled={login.isPending}>{login.isPending ? "Entrando…" : "Entrar"} {!login.isPending && <ArrowRight size={17} />}</button></form><p className="auth-security"><ShieldCheck size={15} /> O perfil e as permissões são definidos no servidor, nunca pelo navegador.</p><p className="signup-footer">Ainda não tem uma conta? <Link href="/cadastre-se">Cadastre-se</Link></p></section></main>;
+  return <main className="auth-page"><section className="auth-card"><div className="auth-intro"><span className="eyebrow orange">ENTRE PARA CONTINUAR</span><h1>Seu próximo passo começa aqui.</h1><p>Entre com email e senha para acompanhar anúncios, receber contatos ou encontrar veículos na sua cidade.</p></div><div className="auth-role-grid" aria-label="Perfis do Aluga Rodas"><div><UserRound size={18} /><strong>Cliente</strong><span>Busca e salva veículos.</span></div><div><Store size={18} /><strong>Locador</strong><span>Anuncia e acompanha leads.</span></div></div><form className="auth-form" onSubmit={submit}><label>Email<input type="email" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" required /></label><label>Senha<input type="password" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" required /></label>{login.error && <p className="auth-error" role="alert">{login.error.message}</p>}<button type="submit" className="primary-button auth-submit" disabled={login.isPending}>{login.isPending ? "Entrando…" : "Entrar"} {!login.isPending && <ArrowRight size={17} />}</button></form><p className="auth-security"><ShieldCheck size={15} /> O perfil e as permissões são definidos no servidor, nunca pelo navegador.</p><p className="signup-footer">Ainda não tem uma conta? <Link href="/cadastre-se">Cadastre-se</Link></p></section></main>;
 }

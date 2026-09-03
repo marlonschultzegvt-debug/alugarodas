@@ -42,7 +42,7 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="container header-inner">
         <Link href="/" className="brand" onClick={() => setOpen(false)} aria-label="Aluga Rodas, início">
-          <img src="/manus-storage/aluga-rodas-logo-oficial_25b5c423.png" alt="Aluga Rodas · Pra quem precisa rodar" className="brand-logo" />
+          <img src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663892022031/LmFSPMSDKJnbugsJ.png" alt="Aluga Rodas · Pra quem precisa rodar" className="brand-logo" />
         </Link>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navegação principal">
           {nav.map(([label, href]) => <Link key={label} href={href} className={location === href ? "active" : ""} onClick={() => setOpen(false)}>{label}</Link>)}
