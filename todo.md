@@ -666,6 +666,12 @@
 - [x] Mapear e corrigir a URL de background da primeira dobra da home no domínio oficial.
 - [ ] Validar a imagem do hero em desktop e mobile após o redeploy.
 
+# Refinamento dos atalhos da home
+
+- [x] Reduzir o espaço vertical excessivo acima e abaixo da seção “Encontre do seu jeito”.
+- [x] Substituir símbolos quebrados por ícones vetoriais premium e semânticos nos cinco atalhos.
+- [x] Revisar tamanho, contraste, alinhamento e resposta mobile dos cards de atalho.
+
 # Sincronização Render e Git
 
 - [x] Confirmar que o Render publicou `d3c69c4`, diferente do commit atual `abdb4ac`.
@@ -678,3 +684,19 @@
 - [x] Diagnosticar a recusa do TiDB ao criar `local_auth_credentials` com a conexão de produção atual.
 - [x] Ajustar a persistência de credenciais para não depender de DDL automático em produção, usando o campo legado `loginMethod` somente para o hash scrypt com prefixo interno.
 - [ ] Repetir cadastro técnico, login, sessão protegida e logout no domínio oficial.
+
+# Diagnóstico de cadastro pós-sincronização
+
+- [ ] Identificar a causa da falha genérica de cadastro no Render após eliminar a criação automática de tabela.
+- [ ] Corrigir a incompatibilidade remanescente do schema legado sem expor erros internos ao usuário.
+- [ ] Revalidar criação de conta, login, sessão e logout após a nova publicação.
+
+# Conexão TiDB para migração
+
+- [x] Identificar a falha de deploy `1045 Access denied` ao executar as migrações no Render.
+- [ ] Restaurar uma `DATABASE_URL` TiDB válida e com acesso ao banco de aplicação.
+- [ ] Executar `pnpm drizzle-kit migrate` com a conexão válida e confirmar o deploy Live.
+- [x] Criar e validar o script controlado `scripts/create-app-database.mjs` para provisionar o banco `alugarodas` no Shell do Render sem expor credenciais.
+- [ ] Executar o provisionamento do banco `alugarodas` no Shell do Render e confirmar a mensagem de sucesso.
+- [x] Confirmar que o Shell do Render exige upgrade no plano gratuito e não será usado para uma migração pontual.
+- [ ] Executar o provisionamento e as migrações pelo computador local com a URL TiDB protegida apenas no ambiente local.

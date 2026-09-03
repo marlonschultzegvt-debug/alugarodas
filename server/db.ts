@@ -81,17 +81,6 @@ type LocalAuthRow = {
   passwordResetExpiresAt: Date | null;
 };
 
-const LOCAL_PASSWORD_PREFIX = "password:";
-
-function encodeLocalPasswordHash(passwordHash: string) {
-  return `${LOCAL_PASSWORD_PREFIX}${passwordHash}`;
-}
-
-function decodeLocalPasswordHash(loginMethod: unknown) {
-  if (typeof loginMethod !== "string" || !loginMethod.startsWith(LOCAL_PASSWORD_PREFIX)) return null;
-  return loginMethod.slice(LOCAL_PASSWORD_PREFIX.length);
-}
-
 function unwrapRows(result: unknown): Record<string, unknown>[] {
   if (Array.isArray(result) && Array.isArray(result[0])) return result[0] as Record<string, unknown>[];
   return Array.isArray(result) ? result as Record<string, unknown>[] : [];
@@ -102,6 +91,7 @@ async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: Retur
     SELECT
       u.id, u.openId, u.name, u.email, u.loginMethod, u.role,
       u.createdAt, u.updatedAt, u.lastSignedIn,
+      u.passwordHash AS passwordHash,
       NULL AS emailVerifiedAt,
       NULL AS passwordResetTokenHash,
       NULL AS passwordResetExpiresAt
@@ -110,8 +100,7 @@ async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: Retur
     LIMIT 1
   `);
   const row = unwrapRows(result)[0];
-  if (!row) return undefined;
-  return { ...row, passwordHash: decodeLocalPasswordHash(row.loginMethod) } as LocalAuthRow;
+  return row as LocalAuthRow | undefined;
 }
 
 export async function getUserByOpenId(openId: string) {
@@ -139,7 +128,8 @@ export async function createLocalUser(input: {
     openId: input.openId,
     name: input.name,
     email: input.email,
-    loginMethod: encodeLocalPasswordHash(input.passwordHash),
+    loginMethod: "password",
+    passwordHash: input.passwordHash,
     role: input.role,
     lastSignedIn: new Date(),
   });
@@ -149,7 +139,7 @@ export async function createLocalUser(input: {
 export async function updateLocalPassword(userId: number, passwordHash: string) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await db.update(users).set({ loginMethod: encodeLocalPasswordHash(passwordHash) }).where(eq(users.id, userId));
+  await db.update(users).set({ loginMethod: "password", passwordHash }).where(eq(users.id, userId));
   return { userId, updated: true };
 }
 
