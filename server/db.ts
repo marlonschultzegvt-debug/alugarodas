@@ -81,37 +81,37 @@ type LocalAuthRow = {
   passwordResetExpiresAt: Date | null;
 };
 
+const LOCAL_PASSWORD_PREFIX = "password:";
+
+function encodeLocalPasswordHash(passwordHash: string) {
+  return `${LOCAL_PASSWORD_PREFIX}${passwordHash}`;
+}
+
+function decodeLocalPasswordHash(loginMethod: unknown) {
+  if (typeof loginMethod !== "string" || !loginMethod.startsWith(LOCAL_PASSWORD_PREFIX)) return null;
+  return loginMethod.slice(LOCAL_PASSWORD_PREFIX.length);
+}
+
 function unwrapRows(result: unknown): Record<string, unknown>[] {
   if (Array.isArray(result) && Array.isArray(result[0])) return result[0] as Record<string, unknown>[];
   return Array.isArray(result) ? result as Record<string, unknown>[] : [];
 }
 
-async function ensureLocalAuthTable(db: ReturnType<typeof drizzle>) {
-  await db.execute(sql`CREATE TABLE IF NOT EXISTS local_auth_credentials (
-    userId INT NOT NULL PRIMARY KEY,
-    passwordHash VARCHAR(255) NOT NULL,
-    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-  )`);
-}
-
 async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: ReturnType<typeof sql>) {
-  await ensureLocalAuthTable(db);
   const result = await db.execute(sql`
     SELECT
       u.id, u.openId, u.name, u.email, u.loginMethod, u.role,
       u.createdAt, u.updatedAt, u.lastSignedIn,
-      c.passwordHash AS passwordHash,
       NULL AS emailVerifiedAt,
       NULL AS passwordResetTokenHash,
       NULL AS passwordResetExpiresAt
     FROM users u
-    LEFT JOIN local_auth_credentials c ON c.userId = u.id
     WHERE ${whereSql}
     LIMIT 1
   `);
   const row = unwrapRows(result)[0];
-  return row as LocalAuthRow | undefined;
+  if (!row) return undefined;
+  return { ...row, passwordHash: decodeLocalPasswordHash(row.loginMethod) } as LocalAuthRow;
 }
 
 export async function getUserByOpenId(openId: string) {
@@ -135,34 +135,21 @@ export async function createLocalUser(input: {
 }) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await ensureLocalAuthTable(db);
   await db.insert(users).values({
     openId: input.openId,
     name: input.name,
     email: input.email,
-    loginMethod: "password",
+    loginMethod: encodeLocalPasswordHash(input.passwordHash),
     role: input.role,
     lastSignedIn: new Date(),
   });
-  const user = await getUserByOpenId(input.openId);
-  if (!user) throw new Error("User was not created");
-  await db.execute(sql`
-    INSERT INTO local_auth_credentials (userId, passwordHash)
-    VALUES (${user.id}, ${input.passwordHash})
-  `);
   return getUserByOpenId(input.openId);
 }
 
 export async function updateLocalPassword(userId: number, passwordHash: string) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
-  await ensureLocalAuthTable(db);
-  await db.execute(sql`
-    INSERT INTO local_auth_credentials (userId, passwordHash)
-    VALUES (${userId}, ${passwordHash})
-    ON DUPLICATE KEY UPDATE passwordHash = VALUES(passwordHash)
-  `);
-  await db.update(users).set({ loginMethod: "password" }).where(eq(users.id, userId));
+  await db.update(users).set({ loginMethod: encodeLocalPasswordHash(passwordHash) }).where(eq(users.id, userId));
   return { userId, updated: true };
 }
 

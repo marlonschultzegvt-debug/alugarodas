@@ -658,11 +658,18 @@
 - [x] Verificar URLs do storage, proxy de imagens e referências no frontend.
 - [x] Testar carregamento no Render e no preview para isolar o problema.
 - [x] Corrigir caminhos ou permissões no código e validar as novas URLs públicas.
-- [ ] Publicar o commit `abdb4ac` no repositório conectado ao Render; o domínio ainda serve o bundle antigo com caminhos `/manus-storage/`.
-- [ ] Validar logo, hero, catálogo e ícones PWA no domínio oficial após o novo deploy.
+- [x] Publicar o commit `abdb4ac` no repositório conectado ao Render; o domínio agora recebeu o commit sincronizado `83c5e4a`.
+- [x] Validar logo, hero, catálogo e ícones PWA no domínio oficial após o novo deploy.
 
 # Sincronização Render e Git
 
 - [x] Confirmar que o Render publicou `d3c69c4`, diferente do commit atual `abdb4ac`.
 - [ ] Identificar o repositório e branch Git exibidos em Settings → Build & Deploy do serviço Render.
 - [ ] Conectar o Render ao repositório/branch que contém `abdb4ac` e publicar a versão correta.
+
+# Correção do cadastro em produção
+
+- [x] Ocultar a mensagem SQL interna exposta após falha de cadastro e apresentar orientação segura ao usuário.
+- [x] Diagnosticar a recusa do TiDB ao criar `local_auth_credentials` com a conexão de produção atual.
+- [x] Ajustar a persistência de credenciais para não depender de DDL automático em produção, usando o campo legado `loginMethod` somente para o hash scrypt com prefixo interno.
+- [ ] Repetir cadastro técnico, login, sessão protegida e logout no domínio oficial.
