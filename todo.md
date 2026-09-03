@@ -661,6 +661,11 @@
 - [x] Publicar o commit `abdb4ac` no repositório conectado ao Render; o domínio agora recebeu o commit sincronizado `83c5e4a`.
 - [x] Validar logo, hero, catálogo e ícones PWA no domínio oficial após o novo deploy.
 
+# Correção isolada do hero
+
+- [x] Mapear e corrigir a URL de background da primeira dobra da home no domínio oficial.
+- [ ] Validar a imagem do hero em desktop e mobile após o redeploy.
+
 # Sincronização Render e Git
 
 - [x] Confirmar que o Render publicou `d3c69c4`, diferente do commit atual `abdb4ac`.

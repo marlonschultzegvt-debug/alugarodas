@@ -374,3 +374,8 @@
     padding-bottom: 180px;
   }
 }
+
+/* Hero: URL pública para manter a imagem de fundo disponível no domínio externo. */
+.hero-image {
+  background-image: url("https://files.manuscdn.com/user_upload_by_module/session_file/310519663892022031/neLaCNtNcjpXFjlZ.jpg");
+}
