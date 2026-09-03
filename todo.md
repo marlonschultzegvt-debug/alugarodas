@@ -719,3 +719,36 @@
 - [x] Invalidar tokens de sessão no servidor após logout, além de limpar o cookie do navegador.
 - [x] Cobrir a revogação de logout e o contrato de token com testes Vitest locais.
 - [ ] Publicar e revalidar o fluxo de autenticação no domínio oficial.
+
+# Correção de sessão pós-login
+
+- [x] Corrigir a rejeição imediata de sessão local causada pela conversão temporal do TiDB.
+- [x] Validar no preview que `auth.me` retorna o usuário após login e retorna `null` somente após logout.
+
+# Auditoria conclusiva de produção
+
+- [ ] Validar a versão e a conectividade entre domínio oficial, Render, GitHub e banco `alugarodas`.
+- [ ] Executar teste integral de cadastro, login, proteção de sessão e logout com evidência técnica.
+- [ ] Testar perfis Cliente, Locador e Admin, incluindo favoritos, interesse, leads, anúncios, imagens e moderação.
+- [ ] Testar home, busca, detalhe, PWA, SEO técnico, acessibilidade básica, console e rede em desktop/mobile.
+- [ ] Mapear requisitos e riscos da autenticação por Google, Facebook e código/magic link de email.
+- [ ] Corrigir falhas que não dependam de credenciais externas e registrar as pendências bloqueadas.
+- [ ] Consolidar um relatório de lançamento com resultado por fluxo, causa, correção e próximos passos.
+
+# Evidência técnica do marketplace
+
+- [x] Validar no preview a criação de empresa e veículo pelo Locador, favoritos e interesse pelo Cliente.
+- [x] Validar a ativação de anúncio por Admin, o destaque, a visualização, o lead e a exibição subsequente no catálogo público.
+
+# Achados confirmados da auditoria de produção
+
+- [x] Corrigir o catálogo público vazio quando ainda não houver anúncios persistentes, com identificação explícita de prévia editorial.
+- [x] Corrigir robots, sitemap, canonical, Open Graph e ícones offline para o domínio canônico alugarodas.com.br.
+- [x] Adicionar cabeçalhos defensivos e remover a assinatura do Express no servidor.
+- [x] Impedir a publicação de source maps públicos na build de produção.
+- [x] Corrigir a sessão local nula logo após login e revalidar a revogação após logout no preview.
+
+# Compatibilidade de desenvolvimento e PWA
+
+- [x] Fazer `pnpm dev` funcionar no Windows sem comando manual para definir NODE_ENV.
+- [x] Verificar registro do service worker e rota offline com teste automatizado de configuração.

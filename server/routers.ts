@@ -12,6 +12,7 @@ import {
   createLead,
   deleteLeadForOwner,
   getClientArea,
+  getCompanyById,
   createVehicle,
   getPublisherDashboard,
   getVehicleById,
@@ -177,7 +178,7 @@ export const appRouter = router({
         await invalidateLocalSessions(ctx.user.openId);
       }
       const cookieOptions = getSessionCookieOptions(ctx.req);
-      ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+      ctx.res.clearCookie(COOKIE_NAME, cookieOptions);
       return { success: true } as const;
     }),
   }),
@@ -192,7 +193,13 @@ export const appRouter = router({
     companyCreate: publisherProcedure
       .input(z.object({ name: z.string().min(2).max(160), legalName: z.string().max(200).optional(), document: z.string().max(32).optional(), type: z.enum(["anunciante", "locadora"]), phone: z.string().max(32).optional(), whatsapp: z.string().max(32).optional(), email: z.string().email().optional() }))
       .mutation(({ ctx, input }) => createCompany({ ...input, ownerUserId: ctx.user.id })),
-    vehicleCreate: publisherProcedure.input(vehicleInput).mutation(({ input }) => createVehicle(input)),
+    vehicleCreate: publisherProcedure.input(vehicleInput).mutation(async ({ ctx, input }) => {
+      const company = await getCompanyById(input.companyId);
+      if (!company || (ctx.user.role !== "admin" && company.ownerUserId !== ctx.user.id)) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Você não pode anunciar por esta empresa." });
+      }
+      return createVehicle(input);
+    }),
     vehicleImages: publicProcedure.input(z.object({ vehicleId: z.number().int().positive() })).query(({ input }) => listVehicleImages(input.vehicleId)),
     vehicleImageCreate: publisherProcedure
       .input(z.object({ vehicleId: z.number().int().positive(), url: z.string().url(), storageKey: z.string().max(512).optional(), altText: z.string().max(180).optional(), sortOrder: z.number().int().nonnegative().optional(), isCover: z.boolean().optional() }))

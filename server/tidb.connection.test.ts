@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import mysql from "mysql2/promise";
 
-describe("TiDB external connection", () => {
+const describeTiDB = process.env.RUN_TIDB_INTEGRATION_TESTS === "true" ? describe : describe.skip;
+
+describeTiDB("TiDB external connection", () => {
   it("connects with the configured staging secret and executes a read-only probe", async () => {
     const url = process.env.TIDB_DATABASE_URL;
 

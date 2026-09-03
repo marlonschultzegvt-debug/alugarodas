@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://alugarodas-jp8f2bzz.manus.space/sitemap.xml
+Sitemap: https://alugarodas.com.br/sitemap.xml

@@ -1,5 +1,5 @@
 import { ArrowRight, Check, ShieldCheck, Store, UserRound } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 

@@ -315,7 +315,8 @@ class SDKServer {
     }
 
     if (session.appId === "local-password") {
-      if (session.issuedAt * 1000 < user.lastSignedIn.getTime()) {
+      const lastSignedInMs = new Date(user.lastSignedIn).getTime();
+      if (!Number.isFinite(lastSignedInMs) || session.issuedAt * 1000 < lastSignedInMs) {
         throw ForbiddenError("Session revoked");
       }
     } else {

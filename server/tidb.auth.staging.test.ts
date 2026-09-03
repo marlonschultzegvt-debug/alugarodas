@@ -1,7 +1,9 @@
 import mysql from "mysql2/promise";
 import { describe, expect, it } from "vitest";
 
-describe("TiDB staging auth persistence", () => {
+const describeTiDB = process.env.RUN_TIDB_INTEGRATION_TESTS === "true" ? describe : describe.skip;
+
+describeTiDB("TiDB staging auth persistence", () => {
   it("can write and read an auth-shaped user inside a rolled-back transaction", async () => {
     const url = process.env.TIDB_DATABASE_URL;
     if (!url) throw new Error("TIDB_DATABASE_URL is required");

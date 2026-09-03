@@ -2,7 +2,9 @@ import { readFile } from "node:fs/promises";
 import mysql from "mysql2/promise";
 import { describe, expect, it } from "vitest";
 
-describe("TiDB CA certificate", () => {
+const describeTiDB = process.env.RUN_TIDB_INTEGRATION_TESTS === "true" ? describe : describe.skip;
+
+describeTiDB("TiDB CA certificate", () => {
   it("connects with the supplied CA and runs a read-only probe", async () => {
     const url = process.env.TIDB_DATABASE_URL;
     const caPath = process.env.TIDB_CA_PATH || "/home/ubuntu/upload/isrgrootx1.pem";

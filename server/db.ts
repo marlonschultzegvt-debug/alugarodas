@@ -244,6 +244,13 @@ export async function createCompany(input: InsertCompany) {
   return Number(result[0].insertId);
 }
 
+export async function getCompanyById(companyId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(companies).where(eq(companies.id, companyId)).limit(1);
+  return result[0];
+}
+
 export async function createVehicle(input: InsertVehicle) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");

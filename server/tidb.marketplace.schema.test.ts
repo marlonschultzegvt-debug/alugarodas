@@ -1,7 +1,9 @@
 import mysql from "mysql2/promise";
 import { describe, expect, it } from "vitest";
 
-describe("TiDB marketplace schema", () => {
+const describeTiDB = process.env.RUN_TIDB_INTEGRATION_TESTS === "true" ? describe : describe.skip;
+
+describeTiDB("TiDB marketplace schema", () => {
   it("has marketplace tables and expected foreign keys without requiring seed data", async () => {
     const url = process.env.TIDB_DATABASE_URL;
     if (!url) throw new Error("TIDB_DATABASE_URL is required");
