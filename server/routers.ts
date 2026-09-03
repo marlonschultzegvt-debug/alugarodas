@@ -84,6 +84,16 @@ const vehicleInput = z.object({
   status: z.enum(["draft", "active", "paused", "rented"]).optional(),
 });
 
+function toPublicSessionUser(user: {
+  id: number;
+  name: string | null;
+  email: string | null;
+  role: "user" | "admin" | "cliente" | "locador";
+} | null) {
+  if (!user) return null;
+  return { id: user.id, name: user.name, email: user.email, role: user.role };
+}
+
 export const appRouter = router({
   system: systemRouter,
   admin: router({
@@ -101,7 +111,7 @@ export const appRouter = router({
       .mutation(({ input }) => deleteAdminVehicle(input.vehicleId)),
   }),
   auth: router({
-    me: publicProcedure.query((opts) => opts.ctx.user),
+    me: publicProcedure.query((opts) => toPublicSessionUser(opts.ctx.user)),
     register: publicProcedure
       .input(z.object({
         name: z.string().min(2).max(160),

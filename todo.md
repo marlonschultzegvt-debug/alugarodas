@@ -720,6 +720,12 @@
 - [x] Cobrir a revogação de logout e o contrato de token com testes Vitest locais.
 - [ ] Publicar e revalidar o fluxo de autenticação no domínio oficial.
 
+# Sanitização de sessão
+
+- [x] Remover passwordHash, tokens de reset e campos internos da resposta pública de `auth.me`.
+- [x] Cobrir a sanitização do usuário autenticado com teste automatizado.
+- [ ] Publicar e confirmar no domínio oficial que a sessão não expõe dados sensíveis.
+
 # Correção de sessão pós-login
 
 - [x] Corrigir a rejeição imediata de sessão local causada pela conversão temporal do TiDB.
