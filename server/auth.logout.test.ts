@@ -1,4 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { invalidateLocalSessions } from "./db";
+
+vi.mock("./db", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./db")>();
+  return { ...actual, invalidateLocalSessions: vi.fn().mockResolvedValue(undefined) };
+});
+
 import { appRouter } from "./routers";
 import { COOKIE_NAME } from "../shared/const";
 import type { TrpcContext } from "./_core/context";
@@ -18,7 +25,7 @@ function createAuthContext(): { ctx: TrpcContext; clearedCookies: CookieCall[] }
     openId: "sample-user",
     email: "sample@example.com",
     name: "Sample User",
-    loginMethod: "manus",
+    loginMethod: "password",
     role: "user",
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -58,5 +65,6 @@ describe("auth.logout", () => {
       httpOnly: true,
       path: "/",
     });
+    expect(invalidateLocalSessions).toHaveBeenCalledWith("sample-user");
   });
 });

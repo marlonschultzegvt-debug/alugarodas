@@ -694,9 +694,28 @@
 # Conexão TiDB para migração
 
 - [x] Identificar a falha de deploy `1045 Access denied` ao executar as migrações no Render.
-- [ ] Restaurar uma `DATABASE_URL` TiDB válida e com acesso ao banco de aplicação.
-- [ ] Executar `pnpm drizzle-kit migrate` com a conexão válida e confirmar o deploy Live.
+- [x] Restaurar uma `DATABASE_URL` TiDB válida e com acesso ao banco de aplicação.
+- [x] Executar `pnpm drizzle-kit migrate` com a conexão válida e confirmar as migrações concluídas no computador local.
 - [x] Criar e validar o script controlado `scripts/create-app-database.mjs` para provisionar o banco `alugarodas` no Shell do Render sem expor credenciais.
-- [ ] Executar o provisionamento do banco `alugarodas` no Shell do Render e confirmar a mensagem de sucesso.
+- [x] Criar o banco `alugarodas` pelo computador local e confirmar a mensagem de sucesso.
 - [x] Confirmar que o Shell do Render exige upgrade no plano gratuito e não será usado para uma migração pontual.
-- [ ] Executar o provisionamento e as migrações pelo computador local com a URL TiDB protegida apenas no ambiente local.
+- [x] Executar o provisionamento e as migrações pelo computador local com a URL TiDB protegida apenas no ambiente local.
+
+# Validação final de cadastro externo
+
+- [ ] Confirmar que o Render recebeu a `DATABASE_URL` com o banco `alugarodas` e reiniciou com essa configuração.
+- [ ] Capturar e corrigir a causa técnica remanescente do cadastro após as migrações concluídas localmente.
+- [ ] Repetir o cadastro real somente após a resposta de backend indicar schema e conexão corretos.
+
+# Sincronização localhost e Render
+
+- [x] Confirmar que cadastro e banco `alugarodas` funcionam no localhost.
+- [ ] Enviar ao GitHub a mesma versão local validada que usa `passwordHash` próprio e os refinamentos atuais de UI.
+- [ ] Configurar Render para `DATABASE_URL` no banco `alugarodas` e confirmar o deploy correspondente.
+- [ ] Repetir cadastro pelo domínio oficial após a sincronização.
+
+# Segurança de sessão
+
+- [x] Invalidar tokens de sessão no servidor após logout, além de limpar o cookie do navegador.
+- [x] Cobrir a revogação de logout e o contrato de token com testes Vitest locais.
+- [ ] Publicar e revalidar o fluxo de autenticação no domínio oficial.

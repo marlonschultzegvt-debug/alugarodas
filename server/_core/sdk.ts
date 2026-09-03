@@ -192,13 +192,14 @@ class SDKServer {
       name: payload.name,
     })
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+      .setIssuedAt()
       .setExpirationTime(expirationSeconds)
       .sign(secretKey);
   }
 
   async verifySession(
     cookieValue: string | undefined | null
-  ): Promise<{ openId: string; appId: string; name: string } | null> {
+  ): Promise<{ openId: string; appId: string; name: string; issuedAt: number } | null> {
     if (!cookieValue) {
       console.warn("[Auth] Missing session cookie");
       return null;
@@ -209,12 +210,13 @@ class SDKServer {
       const { payload } = await jwtVerify(cookieValue, secretKey, {
         algorithms: ["HS256"],
       });
-      const { openId, appId, name } = payload as Record<string, unknown>;
+      const { openId, appId, name, iat } = payload as Record<string, unknown>;
 
       if (
         !isNonEmptyString(openId) ||
         !isNonEmptyString(appId) ||
-        !isNonEmptyString(name)
+        !isNonEmptyString(name) ||
+        typeof iat !== "number"
       ) {
         console.warn("[Auth] Session payload missing required fields");
         return null;
@@ -224,6 +226,7 @@ class SDKServer {
         openId,
         appId,
         name,
+        issuedAt: iat,
       };
     } catch (error) {
       console.warn("[Auth] Session verification failed", String(error));
@@ -311,10 +314,16 @@ class SDKServer {
       throw ForbiddenError("User not found");
     }
 
-    await db.upsertUser({
-      openId: user.openId,
-      lastSignedIn: signedInAt,
-    });
+    if (session.appId === "local-password") {
+      if (session.issuedAt * 1000 < user.lastSignedIn.getTime()) {
+        throw ForbiddenError("Session revoked");
+      }
+    } else {
+      await db.upsertUser({
+        openId: user.openId,
+        lastSignedIn: signedInAt,
+      });
+    }
 
     return user;
   }

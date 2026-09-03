@@ -143,6 +143,13 @@ export async function updateLocalPassword(userId: number, passwordHash: string) 
   return { userId, updated: true };
 }
 
+export async function invalidateLocalSessions(openId: string) {
+  const db = await getDb();
+  if (!db) return;
+  const invalidAfter = new Date((Math.floor(Date.now() / 1000) + 1) * 1000);
+  await db.update(users).set({ lastSignedIn: invalidAfter }).where(eq(users.openId, openId));
+}
+
 export async function listVehicles(filters?: { city?: string; category?: string; purpose?: string; search?: string }) {
   const db = await getDb();
   if (!db) return [];

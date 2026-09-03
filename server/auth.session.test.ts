@@ -10,6 +10,7 @@ describe("local session contract", () => {
     }, { expiresInMs: 60_000 });
     const session = await sdk.verifySession(token);
     expect(session).toMatchObject({ openId: "local_test_user", appId: "local-password", name: "Teste Aluga Rodas" });
+    expect(session?.issuedAt).toEqual(expect.any(Number));
   });
 
   it("rejects an invalid local session", async () => {

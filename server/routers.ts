@@ -28,6 +28,7 @@ import {
   recordVehicleView,
   getUserByEmail,
   createLocalUser,
+  invalidateLocalSessions,
   updateLocalPassword,
 } from "./db";
 import { sdk } from "./_core/sdk";
@@ -134,6 +135,8 @@ export const appRouter = router({
         if (!user || !verifyPassword(input.password, user.passwordHash)) {
           throw new TRPCError({ code: "UNAUTHORIZED", message: "Email ou senha inválidos." });
         }
+        const signedInAt = new Date(Math.floor(Date.now() / 1000) * 1000);
+        await upsertUser({ openId: user.openId, lastSignedIn: signedInAt });
         const token = await sdk.signSession({
           openId: user.openId,
           appId: "local-password",
@@ -169,7 +172,10 @@ export const appRouter = router({
         await upsertUser({ openId: ctx.user.openId, role: input.role });
         return { role: input.role };
       }),
-    logout: publicProcedure.mutation(({ ctx }) => {
+    logout: publicProcedure.mutation(async ({ ctx }) => {
+      if (ctx.user?.loginMethod === "password") {
+        await invalidateLocalSessions(ctx.user.openId);
+      }
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
