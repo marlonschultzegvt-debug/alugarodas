@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, like, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, like, ne, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   clientInterests,
@@ -266,6 +266,13 @@ export async function createVehicle(input: InsertVehicle) {
   return Number(result[0].insertId);
 }
 
+export async function updateVehicle(vehicleId: number, input: Partial<Omit<InsertVehicle, "companyId">>) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.update(vehicles).set(input).where(eq(vehicles.id, vehicleId));
+  return vehicleId;
+}
+
 export async function listAdminVehicles() {
   const db = await getDb();
   if (!db) return [];
@@ -311,6 +318,29 @@ export async function createVehicleImage(input: InsertVehicleImage) {
   if (!db) throw new Error("Database unavailable");
   const result = await db.insert(vehicleImages).values(input);
   return Number(result[0].insertId);
+}
+
+export async function deleteVehicleImage(vehicleId: number, imageId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const result = await db.delete(vehicleImages).where(and(eq(vehicleImages.id, imageId), eq(vehicleImages.vehicleId, vehicleId)));
+  return Number(result[0].affectedRows ?? 0) > 0;
+}
+
+export async function setVehicleImageCover(vehicleId: number, imageId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  return db.transaction(async (tx) => {
+    const images = await tx.select().from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicleId)).orderBy(asc(vehicleImages.sortOrder));
+    const selected = images.find((image) => image.id === imageId);
+    if (!selected) return false;
+    const ordered = [selected, ...images.filter((image) => image.id !== imageId)];
+    for (let index = 0; index < ordered.length; index += 1) {
+      const image = ordered[index];
+      await tx.update(vehicleImages).set({ isCover: index === 0, sortOrder: index }).where(and(eq(vehicleImages.id, image.id), eq(vehicleImages.vehicleId, vehicleId)));
+    }
+    return true;
+  });
 }
 
 export async function deleteLeadForOwner(leadId: number, ownerUserId: number) {

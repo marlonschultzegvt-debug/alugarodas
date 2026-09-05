@@ -789,3 +789,18 @@
 - [x] Preencher leads com o WhatsApp confirmado do perfil, evitando contato vazio para o anunciante.
 - [x] Criar uma etapa de completar perfil com privacidade e finalidade explícitas antes de ações que exigem contato.
 - [x] Validar o fluxo completo de cadastro, perfil, interesse e contato por WhatsApp.
+
+# Falha atual de cadastro ou login em produção
+
+- [ ] Reproduzir o cadastro e login no domínio oficial com uma conta técnica descartável.
+- [ ] Confirmar o commit ativo no Render, a conexão com o banco `alugarodas` e a resposta do backend.
+- [ ] Corrigir qualquer bloqueio de sessão, banco ou versão publicada identificado.
+- [ ] Revalidar cadastro, login, sessão e logout no domínio oficial.
+
+# Edição de anúncios pelo Locador
+
+- [x] Criar procedimento protegido para atualizar somente veículos pertencentes ao Locador autenticado.
+- [x] Criar rota de edição com formulário pré-preenchido para dados comerciais e operacionais do veículo.
+- [x] Adicionar ação "Editar anúncio" no inventário e no menu de opções do veículo.
+- [x] Permitir gerenciar fotos e capa do anúncio na edição, preservando a autorização de proprietário.
+- [x] Testar negação para Cliente e para empresa de outro Locador, além do fluxo desktop/mobile do proprietário.

@@ -13,6 +13,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
 const VehicleDetails = lazy(() => import("./pages/VehicleDetails"));
 const Advertise = lazy(() => import("./pages/Advertise"));
+const EditVehicle = lazy(() => import("./pages/EditVehicle"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -90,6 +91,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/buscar" component={Search} />
       <Route path="/veiculo/:slug" component={VehicleDetails} />
+      <Route path="/anunciar/:vehicleId"><AuthGuard roles={["admin", "locador"]}><EditVehicle /></AuthGuard></Route>
       <Route path="/anunciar"><AuthGuard roles={["admin", "locador"]}><Advertise /></AuthGuard></Route>
       <Route path="/entrar" component={Login} />
       <Route path="/cadastre-se" component={SignUp} />
