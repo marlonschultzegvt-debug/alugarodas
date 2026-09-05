@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
 import "./index.css";
+import "./photo-controls.css";
 
 function registerPwa() {
   const isProductionBuild = Array.from(document.scripts).some((script) => script.src.includes("/assets/"));

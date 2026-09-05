@@ -703,28 +703,28 @@
 
 # Validação final de cadastro externo
 
-- [ ] Confirmar que o Render recebeu a `DATABASE_URL` com o banco `alugarodas` e reiniciou com essa configuração.
-- [ ] Capturar e corrigir a causa técnica remanescente do cadastro após as migrações concluídas localmente.
-- [ ] Repetir o cadastro real somente após a resposta de backend indicar schema e conexão corretos.
+- [x] Confirmar que o Render recebeu a `DATABASE_URL` com o banco `alugarodas` e reiniciou com essa configuração.
+- [x] Capturar e corrigir a causa técnica remanescente do cadastro após as migrações concluídas localmente.
+- [x] Repetir o cadastro real somente após a resposta de backend indicar schema e conexão corretos.
 
 # Sincronização localhost e Render
 
 - [x] Confirmar que cadastro e banco `alugarodas` funcionam no localhost.
-- [ ] Enviar ao GitHub a mesma versão local validada que usa `passwordHash` próprio e os refinamentos atuais de UI.
-- [ ] Configurar Render para `DATABASE_URL` no banco `alugarodas` e confirmar o deploy correspondente.
-- [ ] Repetir cadastro pelo domínio oficial após a sincronização.
+- [x] Enviar ao GitHub a mesma versão local validada que usa `passwordHash` próprio e os refinamentos atuais de UI.
+- [x] Configurar Render para `DATABASE_URL` no banco `alugarodas` e confirmar o deploy correspondente.
+- [x] Repetir cadastro pelo domínio oficial após a sincronização.
 
 # Segurança de sessão
 
 - [x] Invalidar tokens de sessão no servidor após logout, além de limpar o cookie do navegador.
 - [x] Cobrir a revogação de logout e o contrato de token com testes Vitest locais.
-- [ ] Publicar e revalidar o fluxo de autenticação no domínio oficial.
+- [x] Publicar e revalidar o fluxo de autenticação no domínio oficial.
 
 # Sanitização de sessão
 
 - [x] Remover passwordHash, tokens de reset e campos internos da resposta pública de `auth.me`.
 - [x] Cobrir a sanitização do usuário autenticado com teste automatizado.
-- [ ] Publicar e confirmar no domínio oficial que a sessão não expõe dados sensíveis.
+- [x] Publicar e confirmar no domínio oficial que a sessão não expõe dados sensíveis.
 
 # Correção de sessão pós-login
 
@@ -733,13 +733,18 @@
 
 # Auditoria conclusiva de produção
 
-- [ ] Validar a versão e a conectividade entre domínio oficial, Render, GitHub e banco `alugarodas`.
-- [ ] Executar teste integral de cadastro, login, proteção de sessão e logout com evidência técnica.
+- [x] Validar a versão e a conectividade entre domínio oficial, Render, GitHub e banco `alugarodas`.
+- [x] Executar teste integral de cadastro, login, proteção de sessão e logout com evidência técnica.
 - [ ] Testar perfis Cliente, Locador e Admin, incluindo favoritos, interesse, leads, anúncios, imagens e moderação.
 - [ ] Testar home, busca, detalhe, PWA, SEO técnico, acessibilidade básica, console e rede em desktop/mobile.
-- [ ] Mapear requisitos e riscos da autenticação por Google, Facebook e código/magic link de email.
-- [ ] Corrigir falhas que não dependam de credenciais externas e registrar as pendências bloqueadas.
-- [ ] Consolidar um relatório de lançamento com resultado por fluxo, causa, correção e próximos passos.
+- [x] Mapear requisitos e riscos da autenticação por Google, Facebook e código/magic link de email.
+- [x] Corrigir falhas que não dependam de credenciais externas e registrar as pendências bloqueadas.
+- [x] Consolidar um relatório de lançamento com resultado por fluxo, causa, correção e próximos passos.
+
+# Validação externa de Cliente e Locador
+
+- [x] Validar no domínio oficial empresa e veículo em rascunho pelo Locador, favoritos e interesse pelo Cliente.
+- [ ] Promover e validar uma conta Admin real no banco `alugarodas` para concluir a moderação externa.
 
 # Evidência técnica do marketplace
 
@@ -758,3 +763,20 @@
 
 - [x] Fazer `pnpm dev` funcionar no Windows sem comando manual para definir NODE_ENV.
 - [x] Verificar registro do service worker e rota offline com teste automatizado de configuração.
+
+# Falha ao salvar anúncio
+
+- [x] Reproduzir a falha de publicação de veículo no domínio oficial sem utilizar dados pessoais do usuário.
+- [x] Identificar que o bloqueio estava no upload para o armazenamento interno indisponível no Render.
+- [x] Corrigir o fluxo de salvamento e retornar mensagens específicas e seguras ao anunciante.
+- [ ] Validar cadastro de anúncio com múltiplas fotos no preview e no domínio oficial.
+
+# Fotos de anúncios no Render
+
+- [x] Substituir o armazenamento interno indisponível no Render por adaptador Cloudinary compatível com produção; credenciais foram validadas com a API administrativa.
+- [x] Adicionar ação para remover individualmente fotos selecionadas antes do envio.
+- [x] Manter a escolha de foto de capa consistente ao remover ou reordenar fotos na prévia.
+- [x] Impedir confirmação final de publicação quando existirem fotos selecionadas que não foram enviadas.
+- [x] Exibir uma imagem de ausência de foto adequada, sem repetir uma foto editorial como se fosse a foto real do anúncio.
+- [x] Validar no preview o upload técnico de imagem no Cloudinary e a persistência da URL resultante.
+- [ ] Configurar as três credenciais Cloudinary também no Render e testar upload real no domínio oficial.

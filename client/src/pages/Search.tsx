@@ -2,7 +2,7 @@
 // Descoberta e filtro do inventário, preparada para rotas SEO por cidade, categoria e finalidade.
 import { useMemo, useState } from "react";
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, ArrowRight, Check, Filter, MapPin, Search as SearchIcon, ShieldCheck, SlidersHorizontal } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Filter, ImageOff, MapPin, Search as SearchIcon, ShieldCheck, SlidersHorizontal } from "lucide-react";
 import { cities, categories, formatBRL, trackEvent, vehicles } from "@/lib/marketplace";
 import { trpc } from "@/lib/trpc";
 
@@ -10,7 +10,7 @@ const normalizeCity = (value: string) => value.normalize("NFD").replace(/[\u0300
 
 function Card({ vehicle }: { vehicle: typeof vehicles[number] }) {
   const wa = `https://wa.me/5541999990000?text=${encodeURIComponent(`Olá! Tenho interesse no ${vehicle.brand} ${vehicle.model}.`)}`;
-  return <article className="vehicle-card search-card"><Link href={`/veiculo/${vehicle.slug}`} className="vehicle-image-wrap"><img src={vehicle.image} alt={`${vehicle.brand} ${vehicle.model}`} /><span className="availability"><span className="availability-dot" />{vehicle.availability}</span></Link><div className="vehicle-card-body"><div className="vehicle-card-top"><span className="eyebrow">{vehicle.category} · {vehicle.year}</span>{vehicle.verified && <span className="verified"><ShieldCheck size={13} /> Aluga Rodas verificado</span>}</div><Link href={`/veiculo/${vehicle.slug}`} className="vehicle-title">{vehicle.brand} <strong>{vehicle.model}</strong></Link><p className="vehicle-place"><MapPin size={14} /> {vehicle.city} · {vehicle.state}</p><div className="vehicle-specs"><span>{vehicle.fuel}</span><span>{vehicle.transmission}</span><span>{vehicle.kmLimit}</span></div><div className="vehicle-card-bottom"><div><small>A partir de</small><strong>{formatBRL(vehicle.priceWeekly)} <small>/ semana</small></strong><span>{vehicle.insurance}</span></div><a href={wa} target="_blank" rel="noreferrer" className="whatsapp-link" onClick={() => trackEvent("whatsapp_click", { vehicle: vehicle.id })}>WhatsApp <ArrowRight size={15} /></a></div></div></article>;
+  return <article className="vehicle-card search-card"><Link href={`/veiculo/${vehicle.slug}`} className="vehicle-image-wrap">{vehicle.image ? <img src={vehicle.image} alt={`${vehicle.brand} ${vehicle.model}`} /> : <span className="vehicle-image-empty"><ImageOff size={28} /><span>Foto em atualização</span></span>}<span className="availability"><span className="availability-dot" />{vehicle.availability}</span></Link><div className="vehicle-card-body"><div className="vehicle-card-top"><span className="eyebrow">{vehicle.category} · {vehicle.year}</span>{vehicle.verified && <span className="verified"><ShieldCheck size={13} /> Aluga Rodas verificado</span>}</div><Link href={`/veiculo/${vehicle.slug}`} className="vehicle-title">{vehicle.brand} <strong>{vehicle.model}</strong></Link><p className="vehicle-place"><MapPin size={14} /> {vehicle.city} · {vehicle.state}</p><div className="vehicle-specs"><span>{vehicle.fuel}</span><span>{vehicle.transmission}</span><span>{vehicle.kmLimit}</span></div><div className="vehicle-card-bottom"><div><small>A partir de</small><strong>{formatBRL(vehicle.priceWeekly)} <small>/ semana</small></strong><span>{vehicle.insurance}</span></div><a href={wa} target="_blank" rel="noreferrer" className="whatsapp-link" onClick={() => trackEvent("whatsapp_click", { vehicle: vehicle.id })}>WhatsApp <ArrowRight size={15} /></a></div></div></article>;
 }
 
 export default function Search() {
@@ -60,7 +60,7 @@ export default function Search() {
         insurance: item.insuranceIncluded ? "Seguro incluso" : "Seguro a consultar",
         availability: item.status === "active" ? "Disponível agora" : "Consulte disponibilidade",
         verified: false,
-        image: item.coverImageUrl ?? "https://files.manuscdn.com/user_upload_by_module/session_file/310519663892022031/neLaCNtNcjpXFjlZ.jpg",
+        image: item.coverImageUrl ?? "",
         purpose: item.acceptsApp ? "APP" : "Uso pessoal",
         appClasses: [
           ...(item.acceptsUberX ? ["UberX"] : []),
