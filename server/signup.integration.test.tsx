@@ -20,7 +20,8 @@ import SignUp from "../client/src/pages/SignUp";
 describe("/cadastre-se", () => {
   it("renders safe customer and advertiser registration paths", () => {
     const html = renderToStaticMarkup(<SignUp />);
-    expect(html).toContain("Cadastre-se no Aluga Rodas");
+    expect(html).toContain("Crie sua conta. É grátis.");
+    expect(html).toContain("Seu WhatsApp só será pedido");
     expect(html).toContain("Quero alugar");
     expect(html).toContain("Quero anunciar");
     expect(html).toContain("Use pelo menos 8 caracteres");

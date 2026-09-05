@@ -10,6 +10,7 @@ describe("auth.me public contract", () => {
         openId: "local_sensitive_test",
         name: "Conta de teste",
         email: "conta@example.com",
+        phone: "41999999999",
         role: "cliente",
         loginMethod: "password",
         passwordHash: "scrypt$never-expose",
@@ -30,6 +31,7 @@ describe("auth.me public contract", () => {
       id: 77,
       name: "Conta de teste",
       email: "conta@example.com",
+      phone: "41999999999",
       role: "cliente",
     });
     expect(JSON.stringify(result)).not.toContain("passwordHash");

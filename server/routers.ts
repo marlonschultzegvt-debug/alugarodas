@@ -31,6 +31,7 @@ import {
   createLocalUser,
   invalidateLocalSessions,
   updateLocalPassword,
+  updateLocalPhone,
 } from "./db";
 import { sdk } from "./_core/sdk";
 import {
@@ -88,10 +89,18 @@ function toPublicSessionUser(user: {
   id: number;
   name: string | null;
   email: string | null;
+  phone: string | null;
   role: "user" | "admin" | "cliente" | "locador";
 } | null) {
   if (!user) return null;
-  return { id: user.id, name: user.name, email: user.email, role: user.role };
+  return { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role };
+}
+
+function normalizeBrazilianPhone(value: string) {
+  const digits = value.replace(/\D/g, "");
+  const validLength = digits.length === 10 || digits.length === 11;
+  if (!validLength || !/^[1-9][1-9]/.test(digits)) return null;
+  return digits;
 }
 
 export const appRouter = router({
@@ -154,7 +163,7 @@ export const appRouter = router({
           name: safeDisplayName(user.name ?? "", user.email ?? email),
         });
         ctx.res.cookie(COOKIE_NAME, token, getSessionCookieOptions(ctx.req));
-        return { success: true, user: { id: user.id, name: user.name, email: user.email, role: user.role } } as const;
+        return { success: true, user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role } } as const;
       }),
     changePassword: protectedProcedure
       .input(z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(8).max(128) }))
@@ -165,6 +174,14 @@ export const appRouter = router({
         validatePassword(input.newPassword);
         await updateLocalPassword(ctx.user.id, hashPassword(input.newPassword));
         return { success: true } as const;
+      }),
+    updateContact: protectedProcedure
+      .input(z.object({ phone: z.string().min(10).max(32) }))
+      .mutation(async ({ ctx, input }) => {
+        const phone = normalizeBrazilianPhone(input.phone);
+        if (!phone) throw new TRPCError({ code: "BAD_REQUEST", message: "Informe um WhatsApp válido com DDD." });
+        await updateLocalPhone(ctx.user.id, phone);
+        return { phone } as const;
       }),
     clientArea: clientProcedure.query(({ ctx }) => getClientArea(ctx.user.id)),
     favoriteSave: clientProcedure
@@ -202,7 +219,12 @@ export const appRouter = router({
     dashboard: publisherProcedure.query(({ ctx }) => getPublisherDashboard(ctx.user.id)),
     companyCreate: publisherProcedure
       .input(z.object({ name: z.string().min(2).max(160), legalName: z.string().max(200).optional(), document: z.string().max(32).optional(), type: z.enum(["anunciante", "locadora"]), phone: z.string().max(32).optional(), whatsapp: z.string().max(32).optional(), email: z.string().email().optional() }))
-      .mutation(({ ctx, input }) => createCompany({ ...input, ownerUserId: ctx.user.id })),
+      .mutation(({ ctx, input }) => createCompany({
+        ...input,
+        phone: input.phone ?? ctx.user.phone ?? undefined,
+        whatsapp: input.whatsapp ?? ctx.user.phone ?? undefined,
+        ownerUserId: ctx.user.id,
+      })),
     vehicleCreate: publisherProcedure.input(vehicleInput).mutation(async ({ ctx, input }) => {
       const company = await getCompanyById(input.companyId);
       if (!company || (ctx.user.role !== "admin" && company.ownerUserId !== ctx.user.id)) {
@@ -230,7 +252,16 @@ export const appRouter = router({
       }),
     leadCreate: publicProcedure
       .input(z.object({ vehicleId: z.number().int().positive(), companyId: z.number().int().positive(), requesterUserId: z.number().int().positive().optional(), name: z.string().min(2).max(160), email: z.string().email().optional(), phone: z.string().max(32).optional(), message: z.string().max(2000).optional(), source: z.string().max(64).optional(), utmSource: z.string().max(120).optional(), utmMedium: z.string().max(120).optional(), utmCampaign: z.string().max(120).optional() }))
-      .mutation(({ input }) => createLead(input)),
+      .mutation(({ ctx, input }) => {
+        if (input.requesterUserId && ctx.user?.id !== input.requesterUserId) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Você não pode enviar interesse em nome de outra pessoa." });
+        }
+        const phone = normalizeBrazilianPhone(input.phone ?? ctx.user?.phone ?? "");
+        if (!phone) {
+          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Informe um WhatsApp válido antes de enviar seu interesse." });
+        }
+        return createLead({ ...input, phone, requesterUserId: ctx.user?.id ?? input.requesterUserId });
+      }),
     leadDelete: publisherProcedure
       .input(z.object({ leadId: z.number().int().positive() }))
       .mutation(({ ctx, input }) => deleteLeadForOwner(input.leadId, ctx.user.id)),

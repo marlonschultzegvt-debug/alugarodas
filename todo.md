@@ -780,3 +780,12 @@
 - [x] Exibir uma imagem de ausência de foto adequada, sem repetir uma foto editorial como se fosse a foto real do anúncio.
 - [x] Validar no preview o upload técnico de imagem no Cloudinary e a persistência da URL resultante.
 - [ ] Configurar as três credenciais Cloudinary também no Render e testar upload real no domínio oficial.
+
+# Perfil de contato e login progressivo
+
+- [x] Adotar uma entrada por e-mail clara, inspirada na hierarquia da referência da OLX, sem copiar marca ou textos.
+- [x] Armazenar WhatsApp validado no perfil do Cliente e no perfil/empresa do Locador.
+- [x] Exigir WhatsApp válido no primeiro envio de interesse, sem bloquear a criação inicial da conta.
+- [x] Preencher leads com o WhatsApp confirmado do perfil, evitando contato vazio para o anunciante.
+- [x] Criar uma etapa de completar perfil com privacidade e finalidade explícitas antes de ações que exigem contato.
+- [x] Validar o fluxo completo de cadastro, perfil, interesse e contato por WhatsApp.

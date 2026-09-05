@@ -42,7 +42,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
 
   const values: InsertUser = { openId: user.openId };
   const updateSet: Record<string, unknown> = {};
-  const textFields = ["name", "email", "loginMethod", "passwordHash"] as const;
+  const textFields = ["name", "email", "phone", "loginMethod", "passwordHash"] as const;
   for (const field of textFields) {
     if (user[field] !== undefined) {
       values[field] = user[field] ?? null;
@@ -70,6 +70,7 @@ type LocalAuthRow = {
   openId: string;
   name: string | null;
   email: string | null;
+  phone: string | null;
   loginMethod: string | null;
   role: "user" | "admin" | "cliente" | "locador";
   createdAt: Date;
@@ -89,7 +90,7 @@ function unwrapRows(result: unknown): Record<string, unknown>[] {
 async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: ReturnType<typeof sql>) {
   const result = await db.execute(sql`
     SELECT
-      u.id, u.openId, u.name, u.email, u.loginMethod, u.role,
+      u.id, u.openId, u.name, u.email, u.phone, u.loginMethod, u.role,
       u.createdAt, u.updatedAt, u.lastSignedIn,
       u.passwordHash AS passwordHash,
       NULL AS emailVerifiedAt,
@@ -141,6 +142,13 @@ export async function updateLocalPassword(userId: number, passwordHash: string) 
   if (!db) throw new Error("Database unavailable");
   await db.update(users).set({ loginMethod: "password", passwordHash }).where(eq(users.id, userId));
   return { userId, updated: true };
+}
+
+export async function updateLocalPhone(userId: number, phone: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.update(users).set({ phone }).where(eq(users.id, userId));
+  return { userId, phone };
 }
 
 export async function invalidateLocalSessions(openId: string) {

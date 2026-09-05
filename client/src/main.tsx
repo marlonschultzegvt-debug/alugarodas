@@ -7,6 +7,7 @@ import superjson from "superjson";
 import App from "./App";
 import "./index.css";
 import "./photo-controls.css";
+import "./contact-profile.css";
 
 function registerPwa() {
   const isProductionBuild = Array.from(document.scripts).some((script) => script.src.includes("/assets/"));

@@ -50,6 +50,13 @@
       "when": 1787342040984,
       "tag": "0006_public_virginia_dare",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1788567812132,
+      "tag": "0007_woozy_supernaut",
+      "breakpoints": true
     }
   ]
 }
