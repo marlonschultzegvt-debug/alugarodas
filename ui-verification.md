@@ -95,3 +95,9 @@ Na auditoria pós-deploy, o console do navegador não apresentou saída de erro.
 Após o deploy `0515555b`, a home publicada carregou corretamente com navegação, busca, atalhos, catálogo e CTA de instalação. O manifest encontrado foi `/manifest.webmanifest`; o service worker ativo foi `https://alugarodas-jp8f2bzz.manus.space/sw.js`, em estado `activated`, com escopo raiz. O navegador de auditoria estava em modo não instalado (`display-mode: standalone: false`), portanto a checagem confirma a infraestrutura PWA, não uma instalação física em aparelho.
 
 A nova consulta do console após o carregamento da home não apresentou erros de runtime; a saída registrada correspondeu apenas à consulta controlada do estado PWA.
+
+## Atalhos compactos para PWA
+
+No desktop, a faixa de intenção mantém os cinco atalhos na mesma linha, com cards baixos, ícones vetoriais menores e setas discretas. Os rótulos continuam legíveis e não há quebras de grid na largura de 1280px.
+
+No mobile em 390px, os atalhos passam a formar uma faixa horizontal compacta com rolagem e pontos de encaixe. A home preserva hierarquia, legibilidade e áreas clicáveis; nenhum card é cortado pela largura da tela.

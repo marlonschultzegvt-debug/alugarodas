@@ -87,15 +87,34 @@ type LocalAuthRow = {
   passwordResetExpiresAt: Date | null;
 };
 
+const OPTIONAL_PROFILE_COLUMNS = ["phone", "accountType", "document", "displayName", "birthDate", "legalName"] as const;
+
+/**
+ * Releases of the web service and schema migrations are deployed separately.
+ * A temporary retry with null profile fields keeps existing password accounts
+ * able to sign in while the additive profile migration is being reconciled.
+ */
+export function shouldRetryLocalAuthWithoutProfileColumns(error: unknown) {
+  const source = error instanceof Error
+    ? [error.message, String((error as Error & { cause?: unknown }).cause ?? "")].join(" ")
+    : String(error);
+  const isUnknownColumn = /unknown column|column .+ does not exist/i.test(source);
+  return isUnknownColumn && OPTIONAL_PROFILE_COLUMNS.some((column) => new RegExp(`\\b${column}\\b`, "i").test(source));
+}
+
 function unwrapRows(result: unknown): Record<string, unknown>[] {
   if (Array.isArray(result) && Array.isArray(result[0])) return result[0] as Record<string, unknown>[];
   return Array.isArray(result) ? result as Record<string, unknown>[] : [];
 }
 
 async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: ReturnType<typeof sql>) {
-  const result = await db.execute(sql`
+  const selectUser = async (includeProfileColumns: boolean) => db.execute(sql`
     SELECT
-      u.id, u.openId, u.name, u.email, u.phone, u.accountType, u.document, u.displayName, u.birthDate, u.legalName, u.loginMethod, u.role,
+      u.id, u.openId, u.name, u.email,
+      ${includeProfileColumns
+        ? sql`u.phone, u.accountType, u.document, u.displayName, u.birthDate, u.legalName,`
+        : sql`NULL AS phone, NULL AS accountType, NULL AS document, NULL AS displayName, NULL AS birthDate, NULL AS legalName,`}
+      u.loginMethod, u.role,
       u.createdAt, u.updatedAt, u.lastSignedIn,
       u.passwordHash AS passwordHash,
       NULL AS emailVerifiedAt,
@@ -105,6 +124,15 @@ async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: Retur
     WHERE ${whereSql}
     LIMIT 1
   `);
+
+  let result: Awaited<ReturnType<typeof selectUser>>;
+  try {
+    result = await selectUser(true);
+  } catch (error) {
+    if (!shouldRetryLocalAuthWithoutProfileColumns(error)) throw error;
+    console.warn("[Auth] Perfil de usuário ainda não migrado; login realizado sem campos adicionais.");
+    result = await selectUser(false);
+  }
   const row = unwrapRows(result)[0];
   return row as LocalAuthRow | undefined;
 }

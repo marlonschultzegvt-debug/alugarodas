@@ -7,7 +7,7 @@ vi.mock("./db", () => ({
   createVehicleImage: vi.fn().mockResolvedValue(14),
   getCompanyById: vi.fn().mockResolvedValue({ id: 11, ownerUserId: 1 }),
   getPublisherDashboard: vi.fn().mockResolvedValue({ companies: [], vehicles: [], leads: [], metrics: { views: 0, whatsappClicks: 0, leads: 0, activeVehicles: 0 } }),
-  getVehicleById: vi.fn(),
+  getVehicleById: vi.fn().mockResolvedValue({ id: 13, company: { ownerUserId: 1 } }),
   listCompaniesByOwner: vi.fn().mockResolvedValue([]),
   listVehicleImages: vi.fn().mockResolvedValue([]),
   listVehicles: vi.fn().mockResolvedValue([]),

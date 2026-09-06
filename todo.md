@@ -814,3 +814,16 @@
 - [x] Preparar a interface para Google, Facebook e código por e-mail sem exibir botões funcionais antes das credenciais externas.
 - [x] Manter a coleta de WhatsApp progressiva, exigindo-o apenas antes de lead ou contato de anúncio.
 - [x] Testar o cadastro em desktop/mobile, segurança dos campos e compatibilidade com Cliente e Locador.
+
+# Regressão de login após cadastro PF/PJ publicado
+
+- [x] Diagnosticar a consulta de login que falha ao ler campos de perfil no TiDB de produção.
+- [x] Corrigir a compatibilidade de schema sem exibir SQL ou detalhes internos na interface.
+- [x] Criar teste de regressão de login com perfil progressivo e campos opcionais.
+- [ ] Validar login, sessão e logout no domínio oficial após a correção.
+
+# Atalhos compactos para PWA
+
+- [x] Reduzir o tamanho visual dos ícones e a altura dos cards de navegação por intenção.
+- [x] Organizar todos os cinco atalhos em uma linha no desktop e em rolagem horizontal acessível no mobile.
+- [x] Revisar contraste, espaçamento, foco por teclado e responsividade da nova faixa de atalhos.
