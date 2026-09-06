@@ -71,6 +71,11 @@ type LocalAuthRow = {
   name: string | null;
   email: string | null;
   phone: string | null;
+  accountType: "pf" | "pj" | null;
+  document: string | null;
+  displayName: string | null;
+  birthDate: string | null;
+  legalName: string | null;
   loginMethod: string | null;
   role: "user" | "admin" | "cliente" | "locador";
   createdAt: Date;
@@ -90,7 +95,7 @@ function unwrapRows(result: unknown): Record<string, unknown>[] {
 async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: ReturnType<typeof sql>) {
   const result = await db.execute(sql`
     SELECT
-      u.id, u.openId, u.name, u.email, u.phone, u.loginMethod, u.role,
+      u.id, u.openId, u.name, u.email, u.phone, u.accountType, u.document, u.displayName, u.birthDate, u.legalName, u.loginMethod, u.role,
       u.createdAt, u.updatedAt, u.lastSignedIn,
       u.passwordHash AS passwordHash,
       NULL AS emailVerifiedAt,
@@ -122,6 +127,11 @@ export async function createLocalUser(input: {
   email: string;
   passwordHash: string;
   role: "cliente" | "locador";
+  accountType: "pf" | "pj";
+  document: string;
+  displayName: string;
+  birthDate?: string;
+  legalName?: string;
 }) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
@@ -129,6 +139,11 @@ export async function createLocalUser(input: {
     openId: input.openId,
     name: input.name,
     email: input.email,
+    accountType: input.accountType,
+    document: input.document,
+    displayName: input.displayName,
+    birthDate: input.birthDate,
+    legalName: input.legalName,
     loginMethod: "password",
     passwordHash: input.passwordHash,
     role: input.role,

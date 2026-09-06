@@ -21,10 +21,12 @@ describe("/cadastre-se", () => {
   it("renders safe customer and advertiser registration paths", () => {
     const html = renderToStaticMarkup(<SignUp />);
     expect(html).toContain("Crie sua conta. É grátis.");
-    expect(html).toContain("Seu WhatsApp só será pedido");
+    expect(html).toContain("Seu WhatsApp só será solicitado");
     expect(html).toContain("Quero alugar");
     expect(html).toContain("Quero anunciar");
-    expect(html).toContain("Use pelo menos 8 caracteres");
+    expect(html).toContain("Pessoa Física");
+    expect(html).toContain("Pessoa Jurídica");
+    expect(html).toContain("Um caractere especial");
     expect(html).toContain("Admin não pode ser criado publicamente");
     expect(html).not.toContain("Criar Admin");
     expect(html).toContain('href="/entrar"');

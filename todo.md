@@ -804,3 +804,13 @@
 - [x] Adicionar ação "Editar anúncio" no inventário e no menu de opções do veículo.
 - [x] Permitir gerenciar fotos e capa do anúncio na edição, preservando a autorização de proprietário.
 - [x] Testar negação para Cliente e para empresa de outro Locador, além do fluxo desktop/mobile do proprietário.
+
+# Cadastro completo de Cliente e Locador
+
+- [x] Adicionar escolha explícita entre Pessoa Física e Pessoa Jurídica no cadastro.
+- [x] Coletar CPF para Pessoa Física e CNPJ/razão social para Pessoa Jurídica com máscara e validação local.
+- [x] Adicionar nome de exibição e data de nascimento apenas quando necessários ao perfil de confiança.
+- [x] Tornar os critérios de senha visíveis e validar letra, número, comprimento e caractere especial.
+- [x] Preparar a interface para Google, Facebook e código por e-mail sem exibir botões funcionais antes das credenciais externas.
+- [x] Manter a coleta de WhatsApp progressiva, exigindo-o apenas antes de lead ou contato de anúncio.
+- [x] Testar o cadastro em desktop/mobile, segurança dos campos e compatibilidade com Cliente e Locador.

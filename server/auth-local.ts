@@ -17,9 +17,35 @@ export function sanitizeName(name: string): string {
 }
 
 export function validatePassword(password: string): void {
-  if (password.length < 8 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
-    throw new Error("A senha deve ter pelo menos 8 caracteres e conter letras e números.");
+  if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password) || !/[^A-Za-z0-9]/.test(password)) {
+    throw new Error("A senha deve ter 8 caracteres, maiúscula, minúscula, número e símbolo.");
   }
+}
+
+export function normalizeBrazilianDocument(value: string): string {
+  return value.replace(/\D/g, "");
+}
+
+export function isValidCpf(value: string): boolean {
+  const cpf = normalizeBrazilianDocument(value);
+  if (!/^\d{11}$/.test(cpf) || /^(\d)\1{10}$/.test(cpf)) return false;
+  const digit = (length: number) => {
+    const sum = cpf.slice(0, length).split("").reduce((total, item, index) => total + Number(item) * (length + 1 - index), 0);
+    return (sum * 10) % 11 % 10;
+  };
+  return digit(9) === Number(cpf[9]) && digit(10) === Number(cpf[10]);
+}
+
+export function isValidCnpj(value: string): boolean {
+  const cnpj = normalizeBrazilianDocument(value);
+  if (!/^\d{14}$/.test(cnpj) || /^(\d)\1{13}$/.test(cnpj)) return false;
+  const calculate = (base: string) => {
+    const weights = base.length === 12 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    const total = base.split("").reduce((sum, digit, index) => sum + Number(digit) * weights[index], 0);
+    const rest = total % 11;
+    return rest < 2 ? 0 : 11 - rest;
+  };
+  return calculate(cnpj.slice(0, 12)) === Number(cnpj[12]) && calculate(cnpj.slice(0, 13)) === Number(cnpj[13]);
 }
 
 export function hashPassword(password: string): string {

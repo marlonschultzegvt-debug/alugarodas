@@ -40,9 +40,12 @@ import { sdk } from "./_core/sdk";
 import {
   createLocalOpenId,
   hashPassword,
+  isValidCnpj,
+  isValidCpf,
   isPublicSignupRole,
   isValidEmail,
   normalizeEmail,
+  normalizeBrazilianDocument,
   safeDisplayName,
   verifyPassword,
   validatePassword,
@@ -140,12 +143,22 @@ export const appRouter = router({
         email: z.string().email(),
         password: z.string().min(8).max(128),
         role: z.enum(["cliente", "locador"]),
+        accountType: z.enum(["pf", "pj"]),
+        document: z.string().min(11).max(18),
+        displayName: z.string().min(2).max(100),
+        birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+        legalName: z.string().min(2).max(200).optional(),
       }))
       .mutation(async ({ input }) => {
         const email = normalizeEmail(input.email);
         if (!isValidEmail(email) || !isPublicSignupRole(input.role)) {
           throw new TRPCError({ code: "BAD_REQUEST", message: "Dados de cadastro inválidos." });
         }
+        const document = normalizeBrazilianDocument(input.document);
+        const documentValid = input.accountType === "pf" ? isValidCpf(document) : isValidCnpj(document);
+        if (!documentValid) throw new TRPCError({ code: "BAD_REQUEST", message: input.accountType === "pf" ? "Informe um CPF válido." : "Informe um CNPJ válido." });
+        if (input.accountType === "pf" && !input.birthDate) throw new TRPCError({ code: "BAD_REQUEST", message: "Informe sua data de nascimento." });
+        if (input.accountType === "pj" && !input.legalName) throw new TRPCError({ code: "BAD_REQUEST", message: "Informe a razão social." });
         const existing = await getUserByEmail(email);
         if (existing) {
           throw new TRPCError({ code: "CONFLICT", message: "Já existe uma conta com este email." });
@@ -157,6 +170,11 @@ export const appRouter = router({
           email,
           passwordHash: hashPassword(input.password),
           role: input.role,
+          accountType: input.accountType,
+          document,
+          displayName: safeDisplayName(input.displayName, email),
+          birthDate: input.accountType === "pf" ? input.birthDate : undefined,
+          legalName: input.accountType === "pj" ? input.legalName?.trim() : undefined,
         });
         return { success: true, message: "Cadastro concluído. Agora entre com seu email e senha." } as const;
       }),

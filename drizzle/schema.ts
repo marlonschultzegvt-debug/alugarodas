@@ -18,6 +18,11 @@ export const users = mysqlTable("users", {
   name: text("name"),
   email: varchar("email", { length: 320 }),
   phone: varchar("phone", { length: 32 }),
+  accountType: mysqlEnum("accountType", ["pf", "pj"]),
+  document: varchar("document", { length: 18 }),
+  displayName: varchar("displayName", { length: 100 }),
+  birthDate: varchar("birthDate", { length: 10 }),
+  legalName: varchar("legalName", { length: 200 }),
   passwordHash: varchar("passwordHash", { length: 255 }),
   emailVerifiedAt: timestamp("emailVerifiedAt"),
   passwordResetTokenHash: varchar("passwordResetTokenHash", { length: 128 }),
@@ -27,7 +32,7 @@ export const users = mysqlTable("users", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
-});
+}, (table) => [uniqueIndex("users_document_unique").on(table.document)]);
 
 export const companies = mysqlTable(
   "companies",
