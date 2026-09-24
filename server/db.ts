@@ -198,14 +198,9 @@ export async function updateLocalPassword(userId: number, passwordHash: string) 
 }
 
 export async function getUserForPasswordReset(email: string) {
-  const db = await getDb();
-  if (!db) return undefined;
-  const result = await db.execute(sql`
-    SELECT id, email
-    FROM users
-    WHERE email = ${email}
-  `);
-  return unwrapRows(result)[0] as { id: number; email: string | null } | undefined;
+  const user = await getUserByEmail(email);
+  if (!user?.id || !user.email) return undefined;
+  return { id: user.id, email: user.email };
 }
 
 export async function savePasswordResetToken(userId: number, tokenHash: string, expiresAt: Date) {
