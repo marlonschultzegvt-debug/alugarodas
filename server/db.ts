@@ -125,7 +125,7 @@ async function getLocalUserWhere(db: ReturnType<typeof drizzle>, whereSql: Retur
         ? sql`u.phone, u.accountType, u.document, u.displayName, u.birthDate, u.legalName,`
         : sql`NULL AS phone, NULL AS accountType, NULL AS document, NULL AS displayName, NULL AS birthDate, NULL AS legalName,`}
       u.loginMethod, u.role,
-      u.createdAt, u.updatedAt, u.lastSignedIn,
+      NULL AS createdAt, NULL AS updatedAt, u.lastSignedIn,
       u.passwordHash AS passwordHash,
       NULL AS emailVerifiedAt,
       NULL AS passwordResetTokenHash,
