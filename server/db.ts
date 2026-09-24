@@ -204,7 +204,6 @@ export async function getUserForPasswordReset(email: string) {
     SELECT id, email
     FROM users
     WHERE email = ${email}
-    LIMIT 1
   `);
   return unwrapRows(result)[0] as { id: number; email: string | null } | undefined;
 }
