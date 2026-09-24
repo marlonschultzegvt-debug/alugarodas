@@ -10,4 +10,11 @@ export const ENV = {
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "",
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY ?? "",
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET ?? "",
+  smtpHost: process.env.SMTP_HOST ?? "smtp.zoho.com",
+  smtpPort: Number(process.env.SMTP_PORT ?? 465),
+  smtpSecure: process.env.SMTP_SECURE !== "false",
+  smtpUser: process.env.SMTP_USER ?? "",
+  smtpPassword: process.env.SMTP_PASSWORD ?? "",
+  smtpFrom: process.env.SMTP_FROM ?? process.env.SMTP_USER ?? "suporte@alugarodas.com.br",
+  publicAppUrl: process.env.PUBLIC_APP_URL ?? "https://alugarodas.com.br",
 };

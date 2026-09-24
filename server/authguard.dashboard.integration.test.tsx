@@ -21,10 +21,9 @@ function DashboardChildren() {
 }
 
 describe("/dashboard AuthGuard render integration", () => {
-  it("shows the visual restriction and omits dashboard metrics for cliente", () => {
+  it("renders dashboard metrics for cliente-anunciante", () => {
     const html = renderToStaticMarkup(<AuthGuard roles={dashboardRouteRoles}><DashboardChildren /></AuthGuard>);
-    expect(html).toContain("Acesso restrito.");
-    expect(html).not.toContain("dashboard-metrics");
-    expect(html).not.toContain("1.284");
+    expect(html).toContain("dashboard-metrics");
+    expect(html).toContain("1.284");
   });
 });

@@ -18,6 +18,8 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Login = lazy(() => import("./pages/Login"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const SignUp = lazy(() => import("./pages/SignUp"));
 const ClientArea = lazy(() => import("./pages/ClientArea"));
 import AuthGuard from "./components/AuthGuard";
@@ -91,9 +93,11 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/buscar" component={Search} />
       <Route path="/veiculo/:slug" component={VehicleDetails} />
-      <Route path="/anunciar/:vehicleId"><AuthGuard roles={["admin", "locador"]}><EditVehicle /></AuthGuard></Route>
-      <Route path="/anunciar"><AuthGuard roles={["admin", "locador"]}><Advertise /></AuthGuard></Route>
+      <Route path="/anunciar/:vehicleId"><AuthGuard roles={["admin", "locador", "cliente", "user"]}><EditVehicle /></AuthGuard></Route>
+      <Route path="/anunciar"><AuthGuard roles={["admin", "locador", "cliente", "user"]}><Advertise /></AuthGuard></Route>
       <Route path="/entrar" component={Login} />
+      <Route path="/esqueci-senha" component={ForgotPassword} />
+      <Route path="/redefinir-senha" component={ResetPassword} />
       <Route path="/cadastre-se" component={SignUp} />
       <Route path="/cliente"><AuthGuard roles={["cliente", "user"]}><ClientArea /></AuthGuard></Route>
       <Route path="/adm"><AuthGuard roles={["admin"]}><Admin /></AuthGuard></Route>

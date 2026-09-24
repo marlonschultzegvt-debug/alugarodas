@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 
-function contextFor(role: "admin" | "cliente" | "locador"): TrpcContext {
+function contextFor(role: "admin" | "cliente" | "locador" | "guest"): TrpcContext {
   return {
     user: {
       id: 1,
@@ -10,7 +10,7 @@ function contextFor(role: "admin" | "cliente" | "locador"): TrpcContext {
       email: `${role}@example.com`,
       name: role,
       loginMethod: "test",
-      role,
+      role: role as "admin" | "cliente" | "locador",
       createdAt: new Date(),
       updatedAt: new Date(),
       lastSignedIn: new Date(),
@@ -21,13 +21,13 @@ function contextFor(role: "admin" | "cliente" | "locador"): TrpcContext {
 }
 
 describe("marketplace publisher RBAC", () => {
-  it("rejects dashboard metrics for cliente before accessing the database", async () => {
-    await expect(appRouter.createCaller(contextFor("cliente")).marketplace.dashboard()).rejects.toMatchObject({ code: "FORBIDDEN" });
+  it("rejects dashboard metrics for an unknown role before accessing the database", async () => {
+    await expect(appRouter.createCaller(contextFor("guest")).marketplace.dashboard()).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
-  it("rejects vehicle creation for cliente before accessing the database", async () => {
+  it("rejects vehicle creation for an unknown role before accessing the database", async () => {
     await expect(
-      appRouter.createCaller(contextFor("cliente")).marketplace.vehicleCreate({
+      appRouter.createCaller(contextFor("guest")).marketplace.vehicleCreate({
         companyId: 1,
         brand: "Renault",
         model: "Kwid",

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, like, ne, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gt, inArray, like, ne, or, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   clientInterests,
@@ -22,6 +22,14 @@ import { ENV } from "./_core/env";
 let _db: ReturnType<typeof drizzle> | null = null;
 const LEAD_RETENTION_DAYS = 15;
 const LEAD_RETENTION_MS = LEAD_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+
+function publicImageUrl(url: string | null | undefined, storageKey: string | null | undefined) {
+  const value = url?.trim();
+  if (value?.startsWith("http://") || value?.startsWith("https://")) return value;
+  if (value?.startsWith("/")) return value;
+  if (value) return `/${value}`;
+  return storageKey ? `/manus-storage/${storageKey.replace(/^\/+/, "")}` : null;
+}
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
@@ -99,7 +107,9 @@ export function shouldRetryLocalAuthWithoutProfileColumns(error: unknown) {
     ? [error.message, String((error as Error & { cause?: unknown }).cause ?? "")].join(" ")
     : String(error);
   const isUnknownColumn = /unknown column|column .+ does not exist/i.test(source);
-  return isUnknownColumn && OPTIONAL_PROFILE_COLUMNS.some((column) => new RegExp(`\\b${column}\\b`, "i").test(source));
+  const readsProfileFields = OPTIONAL_PROFILE_COLUMNS.some((column) => new RegExp(`\\bu\\.${column}\\b`, "i").test(source));
+  const isWrappedProfileQuery = /failed query:/i.test(source) && /select/i.test(source) && readsProfileFields;
+  return (isUnknownColumn && OPTIONAL_PROFILE_COLUMNS.some((column) => new RegExp(`\\b${column}\\b`, "i").test(source))) || isWrappedProfileQuery;
 }
 
 function unwrapRows(result: unknown): Record<string, unknown>[] {
@@ -187,6 +197,35 @@ export async function updateLocalPassword(userId: number, passwordHash: string) 
   return { userId, updated: true };
 }
 
+export async function getUserForPasswordReset(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email)).limit(1);
+  return result[0];
+}
+
+export async function savePasswordResetToken(userId: number, tokenHash: string, expiresAt: Date) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  await db.update(users).set({ passwordResetTokenHash: tokenHash, passwordResetExpiresAt: expiresAt }).where(eq(users.id, userId));
+}
+
+export async function clearPasswordResetToken(userId: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({ passwordResetTokenHash: null, passwordResetExpiresAt: null }).where(eq(users.id, userId));
+}
+
+export async function consumePasswordResetToken(tokenHash: string, passwordHash: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const now = new Date();
+  const match = await db.select({ id: users.id }).from(users).where(and(eq(users.passwordResetTokenHash, tokenHash), gt(users.passwordResetExpiresAt, now))).limit(1);
+  if (!match[0]) return false;
+  await db.update(users).set({ loginMethod: "password", passwordHash, passwordResetTokenHash: null, passwordResetExpiresAt: null, lastSignedIn: now }).where(eq(users.id, match[0].id));
+  return true;
+}
+
 export async function updateLocalPhone(userId: number, phone: string) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
@@ -219,8 +258,8 @@ export async function listVehicles(filters?: { city?: string; category?: string;
     if (filters?.purpose === "99") conditions.push(eq(vehicles.accepts99, true));
     const rows = await db.select().from(vehicles).where(and(...conditions)).orderBy(desc(vehicles.createdAt));
     return Promise.all(rows.map(async (vehicle) => {
-      const cover = await db.select({ url: vehicleImages.url }).from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicle.id)).orderBy(asc(vehicleImages.sortOrder)).limit(1);
-      return { ...vehicle, coverImageUrl: cover[0]?.url ?? null };
+      const cover = await db.select({ url: vehicleImages.url, storageKey: vehicleImages.storageKey }).from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicle.id)).orderBy(asc(vehicleImages.sortOrder)).limit(1);
+      return { ...vehicle, coverImageUrl: publicImageUrl(cover[0]?.url, cover[0]?.storageKey) };
     }));
   } catch (error) {
     console.warn("[Marketplace] public vehicle search unavailable:", error instanceof Error ? error.message : error);
@@ -236,7 +275,7 @@ export async function getVehicleById(id: number) {
     if (!result[0]) return undefined;
     const images = await db.select().from(vehicleImages).where(eq(vehicleImages.vehicleId, id)).orderBy(asc(vehicleImages.sortOrder));
     const company = await db.select().from(companies).where(eq(companies.id, result[0].companyId)).limit(1);
-    return { ...result[0], images, company: company[0] };
+    return { ...result[0], images: images.map((image) => ({ ...image, url: publicImageUrl(image.url, image.storageKey) ?? image.url })), company: company[0] };
   } catch (error) {
     console.warn("[Marketplace] public vehicle detail unavailable:", error instanceof Error ? error.message : error);
     return undefined;
@@ -353,7 +392,8 @@ export async function deleteAdminVehicle(vehicleId: number) {
 export async function listVehicleImages(vehicleId: number) {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicleId)).orderBy(asc(vehicleImages.sortOrder));
+  const images = await db.select().from(vehicleImages).where(eq(vehicleImages.vehicleId, vehicleId)).orderBy(asc(vehicleImages.sortOrder));
+  return images.map((image) => ({ ...image, url: publicImageUrl(image.url, image.storageKey) ?? image.url }));
 }
 
 export async function createVehicleImage(input: InsertVehicleImage) {

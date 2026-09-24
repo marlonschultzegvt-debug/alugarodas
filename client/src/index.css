@@ -76,64 +76,10 @@
 }
 
 
-/* Aluga Rodas · Estrada Editorial · Selects nativos: o valor selecionado precisa aparecer também em WebViews móveis. */
-.listing-form select,
-.fipe-assist select {
-  appearance: auto !important;
-  -webkit-appearance: auto !important;
-  text-indent: 0 !important;
-  color: #10252b !important;
-  -webkit-text-fill-color: #10252b !important;
-}
+/* Selects do cadastro: aparência consistente sem forçar o modo nativo problemático do Safari/iOS. */
+.listing-form select,.fipe-assist select{width:100%;min-height:44px;appearance:none;-webkit-appearance:none;border:1px solid var(--border);border-radius:7px;padding:12px 34px 12px 11px;background-color:#fffefa;background-image:linear-gradient(45deg,transparent 50%,#10252b 50%),linear-gradient(135deg,#10252b 50%,transparent 50%);background-position:calc(100% - 17px) 19px,calc(100% - 12px) 19px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;color:#10252b!important;-webkit-text-fill-color:#10252b!important;font-weight:700;line-height:1.2;text-indent:0;opacity:1;color-scheme:light}.listing-form select:disabled{opacity:.55}.listing-form select option,.fipe-assist select option{color:#10252b;background:#fffefa}
 
-.listing-form select option,
-.fipe-assist select option {
-  color: #10252b !important;
-  -webkit-text-fill-color: #10252b !important;
-  background: #fffefa !important;
-}
-
-
-/* Aluga Rodas · Estrada Editorial · Fallback de renderização para selects em WebViews iOS. */
-.listing-form select,
-.fipe-assist select,
-.listing-form input,
-.listing-form textarea {
-  text-shadow: 0 0 0 #10252b !important;
-  -webkit-text-fill-color: #10252b !important;
-  color: #10252b !important;
-}
-
-
-/* Aluga Rodas · Estrada Editorial · Compatibilidade adicional com Safari/iOS WebView. */
-.listing-form select,
-.fipe-assist select {
-  appearance: menulist-button !important;
-  -webkit-appearance: menulist-button !important;
-  color-scheme: light !important;
-  font-weight: 700 !important;
-  line-height: 1.25 !important;
-  color: #10252b !important;
-  -webkit-text-fill-color: #10252b !important;
-}
-
-
-/* Aluga Rodas · Estrada Editorial · Selects alinhados e legíveis em WebViews móveis. */
-.listing-form select,
-.fipe-assist select {
-  min-height: 44px;
-  line-height: 1.2;
-  vertical-align: middle;
-  color: #10252b !important;
-  -webkit-text-fill-color: #10252b !important;
-  background-color: #fffefa !important;
-}
-
-.listing-form select option,
-.fipe-assist select option {
-  color: #10252b;
-  background: #fffefa;
-}
+.location-confirmation{grid-column:1/-1;display:flex;align-items:center;gap:6px;margin:-3px 0 2px;padding:9px 11px;border:1px solid #c8ddd0;border-radius:7px;background:#edf6f0;color:#537c69;font-size:11px;line-height:1.35}.location-confirmation svg{flex:none;color:var(--orange)}.location-confirmation strong{color:var(--petrol)}
 
 
 /* Aluga Rodas · Estrada Editorial · PWA install prompt. */
@@ -464,3 +410,5 @@
   .shortcut-card { min-width: 150px; min-height: 64px; padding: 10px 11px; scroll-snap-align: start; }
   .shortcut-icon { width: 25px; height: 25px; }
 }
+
+.vehicle-image-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#82908d;font-size:11px;font-weight:700}.image-load-failed{background:linear-gradient(135deg,#e7ebe7,#dce4df)}.image-load-failed::after{content:"Foto em atualização";position:absolute;inset:0;display:grid;place-items:center;color:#82908d;font-size:11px;font-weight:700}

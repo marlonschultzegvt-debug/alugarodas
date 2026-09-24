@@ -821,6 +821,7 @@
 - [x] Corrigir a compatibilidade de schema sem exibir SQL ou detalhes internos na interface.
 - [x] Criar teste de regressão de login com perfil progressivo e campos opcionais.
 - [ ] Validar login, sessão e logout no domínio oficial após a correção.
+- [x] Reconhecer o erro encapsulado do TiDB para acionar o fallback de colunas opcionais.
 
 # Atalhos compactos para PWA
 

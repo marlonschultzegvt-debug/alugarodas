@@ -51,6 +51,7 @@ describe("local authentication", () => {
   it("retries password lookup without optional profile columns during an additive schema rollout", () => {
     expect(shouldRetryLocalAuthWithoutProfileColumns(new Error("Unknown column 'u.phone' in 'field list'"))).toBe(true);
     expect(shouldRetryLocalAuthWithoutProfileColumns(new Error("Unknown column 'u.accountType' in 'field list'"))).toBe(true);
+    expect(shouldRetryLocalAuthWithoutProfileColumns(new Error("Failed query: SELECT u.id, u.phone, u.accountType FROM users u WHERE u.email = ?"))).toBe(true);
     expect(shouldRetryLocalAuthWithoutProfileColumns(new Error("Unknown column 'u.passwordHash' in 'field list'"))).toBe(false);
     expect(shouldRetryLocalAuthWithoutProfileColumns(new Error("Access denied for user"))).toBe(false);
   });

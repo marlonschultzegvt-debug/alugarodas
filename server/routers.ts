@@ -35,6 +35,9 @@ import {
   invalidateLocalSessions,
   updateLocalPassword,
   updateLocalPhone,
+  getUserForPasswordReset,
+  savePasswordResetToken,
+  consumePasswordResetToken,
 } from "./db";
 import { sdk } from "./_core/sdk";
 import {
@@ -46,10 +49,14 @@ import {
   isValidEmail,
   normalizeEmail,
   normalizeBrazilianDocument,
+  createResetToken,
+  hashResetToken,
+  resetExpiry,
   safeDisplayName,
   verifyPassword,
   validatePassword,
 } from "./auth-local";
+import { sendPasswordResetEmail } from "./password-reset-mail";
 
 const clientProcedure = protectedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== "cliente" && ctx.user.role !== "user") {
@@ -59,8 +66,8 @@ const clientProcedure = protectedProcedure.use(({ ctx, next }) => {
 });
 
 const publisherProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.user.role !== "locador" && ctx.user.role !== "admin") {
-    throw new TRPCError({ code: "FORBIDDEN", message: "Apenas locadores e administradores podem anunciar." });
+  if (ctx.user.role !== "cliente" && ctx.user.role !== "user" && ctx.user.role !== "locador" && ctx.user.role !== "admin") {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Sua conta não tem permissão para anunciar." });
   }
   return next({ ctx });
 });
@@ -182,19 +189,58 @@ export const appRouter = router({
       .input(z.object({ email: z.string().email(), password: z.string().min(1).max(128) }))
       .mutation(async ({ ctx, input }) => {
         const email = normalizeEmail(input.email);
-        const user = await getUserByEmail(email);
-        if (!user || !verifyPassword(input.password, user.passwordHash)) {
-          throw new TRPCError({ code: "UNAUTHORIZED", message: "Email ou senha inválidos." });
+        try {
+          const user = await getUserByEmail(email);
+          console.info(`[Auth] Local login lookup: ${email} -> ${user ? `user ${user.id}` : "not found"}`);
+          if (!user || !verifyPassword(input.password, user.passwordHash)) {
+            console.info(`[Auth] Local login rejected: ${email}`);
+            throw new TRPCError({ code: "UNAUTHORIZED", message: "Email ou senha inválidos." });
+          }
+          console.info(`[Auth] Local password accepted: user ${user.id}, role ${user.role}`);
+          const signedInAt = new Date(Math.floor(Date.now() / 1000) * 1000);
+          await upsertUser({ openId: user.openId, lastSignedIn: signedInAt });
+          console.info(`[Auth] Local session timestamp persisted: user ${user.id}`);
+          const token = await sdk.signSession({
+            openId: user.openId,
+            appId: "local-password",
+            name: safeDisplayName(user.name ?? "", user.email ?? email),
+          });
+          ctx.res.cookie(COOKIE_NAME, token, getSessionCookieOptions(ctx.req));
+          console.info(`[Auth] Local login completed: user ${user.id}`);
+          return { success: true, user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role } } as const;
+        } catch (error) {
+          if (error instanceof TRPCError) throw error;
+          console.error(`[Auth] Local login failed for ${email}:`, error instanceof Error ? error.message : String(error));
+          throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Não foi possível entrar agora. Tente novamente em alguns instantes." });
         }
-        const signedInAt = new Date(Math.floor(Date.now() / 1000) * 1000);
-        await upsertUser({ openId: user.openId, lastSignedIn: signedInAt });
-        const token = await sdk.signSession({
-          openId: user.openId,
-          appId: "local-password",
-          name: safeDisplayName(user.name ?? "", user.email ?? email),
-        });
-        ctx.res.cookie(COOKIE_NAME, token, getSessionCookieOptions(ctx.req));
-        return { success: true, user: { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role } } as const;
+      }),
+    requestPasswordReset: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        const email = normalizeEmail(input.email);
+        const user = await getUserForPasswordReset(email);
+        if (user?.id && user.email) {
+          const token = createResetToken();
+          await savePasswordResetToken(user.id, hashResetToken(token), resetExpiry());
+          try {
+            await sendPasswordResetEmail(user.email, token);
+          } catch (error) {
+            console.error("[Auth] Password reset email could not be sent", error);
+          }
+        }
+        return { success: true, message: "Se houver uma conta com esse e-mail, enviaremos um link para redefinir sua senha." } as const;
+      }),
+    resetPassword: publicProcedure
+      .input(z.object({ token: z.string().min(20).max(200), newPassword: z.string().min(8).max(128) }))
+      .mutation(async ({ input }) => {
+        try {
+          validatePassword(input.newPassword);
+        } catch {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "A senha deve ter 8 caracteres, maiúscula, minúscula, número e símbolo." });
+        }
+        const updated = await consumePasswordResetToken(hashResetToken(input.token), hashPassword(input.newPassword));
+        if (!updated) throw new TRPCError({ code: "UNAUTHORIZED", message: "Este link expirou ou já foi utilizado. Solicite outro." });
+        return { success: true } as const;
       }),
     changePassword: protectedProcedure
       .input(z.object({ currentPassword: z.string().min(1).max(128), newPassword: z.string().min(8).max(128) }))
@@ -300,7 +346,7 @@ export const appRouter = router({
         if (!updated) throw new TRPCError({ code: "NOT_FOUND", message: "Foto não encontrada neste anúncio." });
         return { updated: true };
       }),
-    leadCreate: publicProcedure
+    leadCreate: protectedProcedure
       .input(z.object({ vehicleId: z.number().int().positive(), companyId: z.number().int().positive(), requesterUserId: z.number().int().positive().optional(), name: z.string().min(2).max(160), email: z.string().email().optional(), phone: z.string().max(32).optional(), message: z.string().max(2000).optional(), source: z.string().max(64).optional(), utmSource: z.string().max(120).optional(), utmMedium: z.string().max(120).optional(), utmCampaign: z.string().max(120).optional() }))
       .mutation(({ ctx, input }) => {
         if (input.requesterUserId && ctx.user?.id !== input.requesterUserId) {

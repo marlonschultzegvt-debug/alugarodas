@@ -7,21 +7,21 @@ describe("role access", () => {
     expect(rolePath("user")).toBe("/cliente");
   });
 
-  it("allows only locador and admin into advertiser areas", () => {
-    expect(canAccess("locador", ["locador", "admin"])).toBe(true);
-    expect(canAccess("admin", ["locador", "admin"])).toBe(true);
-    expect(canAccess("cliente", ["locador", "admin"])).toBe(false);
-    expect(canAccess("user", ["locador", "admin"])).toBe(false);
+  it("allows cliente, locador and admin into advertiser areas", () => {
+    expect(canAccess("locador", dashboardRouteRoles)).toBe(true);
+    expect(canAccess("admin", dashboardRouteRoles)).toBe(true);
+    expect(canAccess("cliente", dashboardRouteRoles)).toBe(true);
+    expect(canAccess("user", dashboardRouteRoles)).toBe(true);
   });
 
-  it("blocks cliente from the advertiser dashboard", () => {
-    expect(canAccess("cliente", dashboardRouteRoles)).toBe(false);
+  it("allows cliente into the advertiser dashboard", () => {
+    expect(canAccess("cliente", dashboardRouteRoles)).toBe(true);
     expect(canAccess("locador", dashboardRouteRoles)).toBe(true);
     expect(canAccess("admin", dashboardRouteRoles)).toBe(true);
   });
 
-  it("blocks an authenticated cliente before dashboard children render", () => {
-    expect(authGuardDecision("cliente", false, dashboardRouteRoles)).toBe("denied");
+  it("allows an authenticated cliente to open the advertiser dashboard", () => {
+    expect(authGuardDecision("cliente", false, dashboardRouteRoles)).toBe("allowed");
     expect(authGuardDecision("locador", false, dashboardRouteRoles)).toBe("allowed");
     expect(authGuardDecision("admin", false, dashboardRouteRoles)).toBe("allowed");
     expect(authGuardDecision(undefined, false, dashboardRouteRoles)).toBe("redirect");
